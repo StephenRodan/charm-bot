@@ -293,6 +293,71 @@
       color: var(--teal);
     }
 
+    /* Engagement popup */
+    .engage-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .engage-overlay.show { display: flex; }
+    .engage-box {
+      background: #111;
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      padding: 28px 24px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      font-family: var(--mono);
+    }
+    .engage-box h3 { color: var(--green); font-size: 16px; margin-bottom: 6px; }
+    .engage-box p { color: var(--muted); font-size: 11px; margin-bottom: 18px; }
+    .engage-box input {
+      width: 100%;
+      padding: 10px 12px;
+      background: #0a0a0a;
+      border: 1px solid #333;
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 13px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .engage-box input:focus { outline: none; border-color: var(--green); }
+    .engage-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: none;
+      border: 1px solid;
+      font-family: var(--mono);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .engage-btn:hover { opacity: 0.8; }
+    .engage-btn.primary { border-color: var(--green); color: var(--green); }
+    .engage-btn.invest { border-color: var(--coral); color: var(--coral); }
+    .engage-btn.donate { border-color: var(--teal); color: var(--teal); }
+    .engage-skip {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .engage-skip:hover { color: var(--white); }
+
     /* Hidden state */
     .hidden { display: none !important; }
 
@@ -510,7 +575,7 @@
         <div class="streak" id="streak"></div>
 
         <button class="feed-btn" id="feedBtn" onclick="feed()">
-          > FEED
+          > Feed Your Brain Coral
         </button>
 
         <div class="stats">
@@ -560,11 +625,30 @@
   <!-- Achievement popup -->
   <div class="achievement" id="ach"></div>
 
+  <!-- Engagement popup -->
+  <div class="engage-overlay" id="engageOverlay">
+    <div class="engage-box">
+      <h3>> nice reef building 🪸</h3>
+      <p>you're clearly invested. want to make it official?</p>
+      <input type="email" id="engageEmail" placeholder="your email (optional)">
+      <button class="engage-btn primary" onclick="submitEngage('email')">
+        > stay in the loop
+      </button>
+      <button class="engage-btn invest" onclick="submitEngage('invest')">
+        > invest in CHARM
+      </button>
+      <button class="engage-btn donate" onclick="submitEngage('donate')">
+        > donate to Beyond Coral
+      </button>
+      <button class="engage-skip" onclick="closeEngage()">keep feeding →</button>
+    </div>
+  </div>
+
   <!-- ==================== BACK CHARM ==================== -->
   <div class="section" id="back-charm" style="background:#080808;">
     <div class="section-inner">
       <div class="section-title">// back charm</div>
-      <h3>Claim Your Piece of the Reef</h3>
+      <h3>Invest in the CHARM Business Today</h3>
       <p style="color:var(--muted);font-size:13px;">$7M seed round. Any amount. No minimum. You're early.</p>
 
       <div style="margin:20px 0;padding:16px;border:1px solid #1a1a1a;text-align:center;">
@@ -657,7 +741,7 @@
   <div class="section" id="feed-section" style="background:#0a0a0a;">
     <div class="section-inner">
       <div class="section-title">// feed a real coral</div>
-      <h3>Not Ready to Invest? Feed a Coral Instead.</h3>
+      <h3>Prefer to Donate? Support Beyond Coral Foundation Here</h3>
       <p style="color:var(--muted);font-size:13px;">$10 grows and outplants one coral to the Great Barrier Reef. Monthly recurring. 501(c)(3) tax-deductible.<br>
       <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
 
@@ -972,8 +1056,49 @@
     var currentLBTab = 'event';
     var writeTimer = null;
 
-    // ---- Reaction-Diffusion Colors ----
-    var RD_PRESET = { name: 'super-resonant mazes', f: 0.029, k: 0.057, fill: 3000 };
+    // ---- Engagement popup ----
+    var ENGAGE_AT = [50, 200, 500];
+    var engageShown = JSON.parse(localStorage.getItem('charm_engage_shown') || '[]');
+
+    function maybeShowEngage(feeds) {
+      for (var i = 0; i < ENGAGE_AT.length; i++) {
+        if (feeds === ENGAGE_AT[i] && engageShown.indexOf(ENGAGE_AT[i]) === -1) {
+          document.getElementById('engageOverlay').classList.add('show');
+          engageShown.push(ENGAGE_AT[i]);
+          localStorage.setItem('charm_engage_shown', JSON.stringify(engageShown));
+          return;
+        }
+      }
+    }
+
+    function submitEngage(action) {
+      var email = document.getElementById('engageEmail').value.trim();
+      if (email) {
+        db.ref('emails/' + playerId).set({ email: email, name: playerName, feeds: myFeeds, time: Date.now() });
+      }
+      closeEngage();
+      if (action === 'invest') {
+        document.getElementById('back-charm').scrollIntoView({behavior:'smooth'});
+      } else if (action === 'donate') {
+        document.getElementById('feed-section').scrollIntoView({behavior:'smooth'});
+      }
+    }
+
+    function closeEngage() {
+      document.getElementById('engageOverlay').classList.remove('show');
+    }
+
+    // ---- Reaction-Diffusion Presets & Colors ----
+    var RD_PRESETS = [
+      { name: 'super-resonant mazes', f: 0.029, k: 0.057, fill: 3000 },
+      { name: 'worms join into maze',  f: 0.046, k: 0.063, fill: 2800 },
+      { name: 'turing patterns',       f: 0.042, k: 0.063, fill: 3000 },
+      { name: 'chaos to negatons',     f: 0.039, k: 0.058, fill: 3200 },
+      { name: 'fingerprints',          f: 0.037, k: 0.06,  fill: 3500 },
+      { name: 'spots and worms',       f: 0.014, k: 0.054, fill: 3500 },
+      { name: 'mazes',                 f: 0.029, k: 0.057, fill: 3000 }
+    ];
+    var rdPresetIdx = 0;
     var RD_COLORS = [
       [[10,10,10],[0,80,70],[255,107,53],[0,212,170]],
       [[5,5,20],[0,50,130],[56,189,248],[220,240,255]],
@@ -1007,9 +1132,10 @@
         this.gB = new Float32Array(sz);
         this.nA = new Float32Array(sz);
         this.nB = new Float32Array(sz);
-        this.f = RD_PRESET.f;
-        this.k = RD_PRESET.k;
-        this.totalFill = RD_PRESET.fill;
+        var p = RD_PRESETS[rdPresetIdx];
+        this.f = p.f;
+        this.k = p.k;
+        this.totalFill = p.fill;
         this.resetGrid(this.getLevel(feeds));
         this.fastForward(feeds);
       },
@@ -1035,6 +1161,11 @@
       },
 
       newLevel: function(feeds) {
+        rdPresetIdx = (rdPresetIdx + 1) % RD_PRESETS.length;
+        var p = RD_PRESETS[rdPresetIdx];
+        this.f = p.f;
+        this.k = p.k;
+        this.totalFill = p.fill;
         this.colorIdx = Math.floor(Math.random() * RD_COLORS.length);
         this.colors = RD_COLORS[this.colorIdx];
         this.resetGrid(this.getLevel(feeds));
@@ -1134,6 +1265,9 @@
       RD.init(myFeeds);
       updateColonyUI();
       renderLocal();
+      setTimeout(function() {
+        document.getElementById('game').scrollIntoView({behavior:'smooth', block:'start'});
+      }, 100);
     }
 
     document.getElementById('nameInput').addEventListener('keydown', function(e) {
@@ -1160,7 +1294,7 @@
         btn.style.color = '#ff3333';
         setTimeout(function() {
           botCooldown = false;
-          btn.textContent = '> FEED CORAL';
+          btn.textContent = '> Feed Your Brain Coral';
           btn.style.borderColor = '';
           btn.style.color = '';
         }, COOLDOWN_MS);
@@ -1174,8 +1308,10 @@
 
       if (oldStage.name !== newStage.name) {
         RD.newLevel(myFeeds);
-        showAchievement('> ' + newStage.name.toLowerCase() + ' unlocked');
+        showAchievement('> ' + newStage.name.toLowerCase() + ' // ' + RD_PRESETS[rdPresetIdx].name);
       }
+
+      maybeShowEngage(myFeeds);
 
       if (now - lastFeedTime < 600) { streakCount++; } else { streakCount = 1; }
       lastFeedTime = now;
