@@ -551,13 +551,109 @@
   <!-- Achievement popup -->
   <div class="achievement" id="ach"></div>
 
+  <!-- ==================== BACK CHARM ==================== -->
+  <div class="section" id="back-charm" style="background:#080808;">
+    <div class="section-inner">
+      <div class="section-title">// back charm</div>
+      <h3>Claim Your Piece of the Reef</h3>
+      <p style="color:var(--muted);font-size:13px;">$7M seed round. Any amount. No minimum. You're early.</p>
+
+      <div style="margin:20px 0;padding:16px;border:1px solid #1a1a1a;text-align:center;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+          <span style="font-size:11px;color:var(--muted);">raised</span>
+          <span style="font-size:11px;color:var(--muted);">$7,000,000 target</span>
+        </div>
+        <div style="height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden;margin-bottom:12px;">
+          <div id="fundFill" style="height:100%;background:var(--green);border-radius:3px;transition:width 0.5s;width:0%;"></div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:24px;">
+          <div>
+            <div style="color:var(--green);font-size:20px;font-weight:700;" id="backerCount">0</div>
+            <div style="font-size:10px;color:var(--muted);">backers</div>
+          </div>
+          <div>
+            <div style="color:var(--green);font-size:20px;font-weight:700;" id="fundRaised">$0</div>
+            <div style="font-size:10px;color:var(--muted);">raised</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="backPrompt">
+        <button class="feed-btn" onclick="backCharm()" style="border-color:var(--green);color:var(--green);margin-bottom:12px;">
+          > I'M IN
+        </button>
+        <p style="text-align:center;font-size:10px;color:var(--muted);">SAFE or equity · crypto or wire · any amount</p>
+      </div>
+
+      <div id="backReveal" class="hidden">
+        <div style="text-align:center;padding:12px 0;color:var(--green);font-size:13px;font-weight:700;">you're a reef builder now</div>
+
+        <div class="card">
+          <div class="card-label">crypto</div>
+          <div class="wallet-label"><span class="dot"></span> EVM — any token, any network</div>
+          <a class="wallet-box" href="ethereum:0x1A8B512e50D53aFC4eAb97A944D8f999F118a305">
+            <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
+            <button class="copy-btn" id="cpInvEvm" onclick="event.preventDefault();copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpInvEvm')">copy</button>
+          </a>
+          <div class="networks">
+            <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Arbitrum</span><span class="net-tag">Base</span><span class="net-tag">Optimism</span><span class="net-tag">Avalanche</span>
+          </div>
+          <hr class="divider">
+          <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
+          <a class="wallet-box" href="bitcoin:3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ">
+            <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
+            <button class="copy-btn" id="cpInvBtc" onclick="event.preventDefault();copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpInvBtc')">copy</button>
+          </a>
+          <div style="margin-top:12px;">
+            <div class="info-row">
+              <span class="info-icon">→</span>
+              <div class="info-text">ETH, BTC, USDT, USDC, DAI, WBTC, any ERC-20 / BEP-20</div>
+            </div>
+            <div class="info-row">
+              <span class="info-icon">→</span>
+              <div class="info-text"><strong>Solana, Tron?</strong> Email for address.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">bank wire (aud)</div>
+          <div class="wire-details">
+            <div class="wire-row"><span class="wire-label">Account</span><span class="wire-value">CHARM Holdings Pty Ltd</span></div>
+            <div class="wire-row"><span class="wire-label">BSB</span><span class="wire-value">014-730</span></div>
+            <div class="wire-row"><span class="wire-label">Acct #</span><span class="wire-value">6438-79602</span></div>
+            <div class="wire-row"><span class="wire-label">ABN</span><span class="wire-value">27 656 176 939</span></div>
+            <div class="wire-row"><span class="wire-label">Address</span><span class="wire-value">6/53a Jackson St, St Kilda VIC 3182</span></div>
+          </div>
+          <div class="info-row" style="margin-top:10px;">
+            <span class="info-icon">→</span>
+            <div class="info-text"><strong>USD/EUR wire?</strong> Email for SWIFT details.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">after you send</div>
+          <div class="info-row">
+            <span class="info-icon">→</span>
+            <div class="info-text">Email <strong>stephen.rodan@beyondcoral.com</strong> with tx hash or transfer ref. We confirm + send SAFE.</div>
+          </div>
+          <hr class="divider">
+          <div class="info-row">
+            <span class="info-icon">→</span>
+            <div class="info-text">No middlemen. Crypto → self-custodied wallet. Wire → CHARM Holdings Pty Ltd (ACN 656 176 939).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== FEED A CORAL (donations) ==================== -->
   <div class="section" id="feed-section" style="background:#0a0a0a;">
     <div class="section-inner">
-      <div class="section-title">// donate</div>
-      <h3>Feed a Real Coral</h3>
-      <p>Every dollar goes directly to growing baby corals.<br>
-      Learn more at <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
+      <div class="section-title">// feed a real coral</div>
+      <h3>Not Ready to Invest? Feed a Coral Instead.</h3>
+      <p>Every dollar goes directly to growing baby corals on the Great Barrier Reef.<br>
+      <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
 
       <div class="feed-tiers">
         <div class="tier" onclick="selectTier(this,'$5')">
@@ -600,75 +696,6 @@
         <p class="note" style="font-size:10px;margin-top:12px;">
           email <strong style="color:var(--white)">stephen.rodan@beyondcoral.com</strong> with tx hash for a photo of your coral
         </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== INVEST ==================== -->
-  <div class="section" id="invest" style="background:#080808;">
-    <div class="section-inner">
-      <div class="section-title">// invest</div>
-      <h3>Ready to Go Bigger?</h3>
-      <p>Build the future of reef restoration with us.</p>
-      <div style="text-align:center;margin:16px 0;">
-        <div class="ask-badge">$7M</div>
-        <div class="ask-round">Seed Round · SAFE or Equity</div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">crypto</div>
-        <div class="wallet-label"><span class="dot"></span> EVM — any token, any network</div>
-        <a class="wallet-box" href="ethereum:0x1A8B512e50D53aFC4eAb97A944D8f999F118a305">
-          <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
-          <button class="copy-btn" id="cpInvEvm" onclick="event.preventDefault();copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpInvEvm')">copy</button>
-        </a>
-        <div class="networks">
-          <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Arbitrum</span><span class="net-tag">Base</span><span class="net-tag">Optimism</span><span class="net-tag">Avalanche</span>
-        </div>
-        <hr class="divider">
-        <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
-        <a class="wallet-box" href="bitcoin:3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ">
-          <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
-          <button class="copy-btn" id="cpInvBtc" onclick="event.preventDefault();copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpInvBtc')">copy</button>
-        </a>
-        <div style="margin-top:12px;">
-          <div class="info-row">
-            <span class="info-icon">→</span>
-            <div class="info-text">ETH, BTC, USDT, USDC, DAI, WBTC, wSOL, any ERC-20 / BEP-20</div>
-          </div>
-          <div class="info-row">
-            <span class="info-icon">→</span>
-            <div class="info-text"><strong>Solana, Tron?</strong> Email for address.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">bank wire (aud)</div>
-        <div class="wire-details">
-          <div class="wire-row"><span class="wire-label">Account</span><span class="wire-value">CHARM Holdings Pty Ltd</span></div>
-          <div class="wire-row"><span class="wire-label">BSB</span><span class="wire-value">014-730</span></div>
-          <div class="wire-row"><span class="wire-label">Acct #</span><span class="wire-value">6438-79602</span></div>
-          <div class="wire-row"><span class="wire-label">ABN</span><span class="wire-value">27 656 176 939</span></div>
-          <div class="wire-row"><span class="wire-label">Address</span><span class="wire-value">6/53a Jackson St, St Kilda VIC 3182</span></div>
-        </div>
-        <div class="info-row" style="margin-top:10px;">
-          <span class="info-icon">→</span>
-          <div class="info-text"><strong>USD/EUR wire?</strong> Email for SWIFT details.</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-label">after you send</div>
-        <div class="info-row">
-          <span class="info-icon">→</span>
-          <div class="info-text">Email <strong>stephen.rodan@beyondcoral.com</strong> with tx hash or transfer ref. We confirm + send SAFE.</div>
-        </div>
-        <hr class="divider">
-        <div class="info-row">
-          <span class="info-icon">→</span>
-          <div class="info-text">No middlemen. Crypto → self-custodied wallet. Wire → CHARM Holdings Pty Ltd (ACN 656 176 939).</div>
-        </div>
       </div>
     </div>
   </div>
@@ -1200,6 +1227,33 @@
       document.body.removeChild(ta);
       setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
     }
+
+    // ---- Back CHARM (investment) ----
+    function backCharm() {
+      var backerName = playerName || 'anonymous';
+      var backerId = playerId || 'anon_' + Math.random().toString(36).substr(2, 6);
+      db.ref('backers/' + backerId).set({
+        name: backerName,
+        time: Date.now(),
+        event: eventId
+      });
+      document.getElementById('backPrompt').classList.add('hidden');
+      document.getElementById('backReveal').classList.remove('hidden');
+      showAchievement('> you\'re a reef builder now');
+    }
+
+    // Listen to backer count + fund stats
+    db.ref('backers').on('value', function(snap) {
+      var count = snap.numChildren();
+      document.getElementById('backerCount').textContent = count;
+    });
+    db.ref('fundStats').on('value', function(snap) {
+      var data = snap.val() || {};
+      var raised = data.raised || 0;
+      document.getElementById('fundRaised').textContent = '$' + raised.toLocaleString();
+      var pct = Math.min((raised / 7000000) * 100, 100);
+      document.getElementById('fundFill').style.width = pct + '%';
+    });
 
     function selectTier(el, amount) {
       document.querySelectorAll('.tier').forEach(function(t) { t.classList.remove('selected'); });
