@@ -1010,22 +1010,34 @@
         this.f = RD_PRESET.f;
         this.k = RD_PRESET.k;
         this.totalFill = RD_PRESET.fill;
-        this.resetGrid();
+        this.resetGrid(this.getLevel(feeds));
         this.fastForward(feeds);
       },
 
-      resetGrid: function() {
+      resetGrid: function(seeds) {
+        seeds = seeds || 1;
         this.gA.fill(1.0);
         this.gB.fill(0.0);
-        this.seed(this.W / 2, this.H / 2, 10);
-        this.seed(this.W * 0.3, this.H * 0.3, 5);
-        this.seed(this.W * 0.7, this.H * 0.7, 5);
+        for (var s = 0; s < seeds; s++) {
+          var margin = 30;
+          var sx = margin + Math.floor(Math.random() * (this.W - margin * 2));
+          var sy = margin + Math.floor(Math.random() * (this.H - margin * 2));
+          var sr = 6 + Math.floor(Math.random() * 5);
+          this.seed(sx, sy, sr);
+        }
       },
 
-      newLevel: function() {
+      getLevel: function(feeds) {
+        for (var i = STAGES.length - 1; i >= 0; i--) {
+          if (feeds >= STAGES[i].threshold) return i + 1;
+        }
+        return 1;
+      },
+
+      newLevel: function(feeds) {
         this.colorIdx = Math.floor(Math.random() * RD_COLORS.length);
         this.colors = RD_COLORS[this.colorIdx];
-        this.resetGrid();
+        this.resetGrid(this.getLevel(feeds));
         this.render();
       },
 
@@ -1161,7 +1173,7 @@
       var newStage = getStage(myFeeds);
 
       if (oldStage.name !== newStage.name) {
-        RD.newLevel();
+        RD.newLevel(myFeeds);
         showAchievement('> ' + newStage.name.toLowerCase() + ' unlocked');
       }
 
