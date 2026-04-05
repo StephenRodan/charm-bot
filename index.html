@@ -173,6 +173,10 @@
     .feed-btn:active {
       transform: scale(0.96);
     }
+    .feed-btn {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
     .feed-btn.pop {
       background: var(--coral);
       color: var(--bg);
@@ -1072,8 +1076,23 @@
     }
 
     function submitEngage(action) {
-      var email = document.getElementById('engageEmail').value.trim();
-      if (email) {
+      var emailEl = document.getElementById('engageEmail');
+      var email = emailEl.value.trim();
+
+      if (action === 'email') {
+        if (!email || email.indexOf('@') === -1) {
+          emailEl.style.borderColor = '#ff3333';
+          emailEl.setAttribute('placeholder', 'enter your email to stay in the loop');
+          emailEl.focus();
+          return;
+        }
+        db.ref('emails/' + playerId).set({ email: email, name: playerName, feeds: myFeeds, time: Date.now() });
+        closeEngage();
+        showAchievement('> you\'re in the loop 🪸');
+        return;
+      }
+
+      if (email && email.indexOf('@') !== -1) {
         db.ref('emails/' + playerId).set({ email: email, name: playerName, feeds: myFeeds, time: Date.now() });
       }
       closeEngage();
