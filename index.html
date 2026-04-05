@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHARM Robotics — Save the Reef</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ocean-deep: #0a1628;
+      --ocean-mid: #0f2940;
+      --bg-card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.06);
+      --coral-orange: #FF6B35;
+      --coral-pink: #FF8C61;
+      --reef-teal: #00D4AA;
+      --accent-blue: #38BDF8;
+      --text-white: #F8FAFC;
+      --text-muted: #94A3B8;
+      --btc-orange: #F7931A;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--ocean-deep);
+      color: var(--text-white);
+      margin: 0; padding: 0;
+    }
+
+    /* ==================== SLIDES ==================== */
+    .slides { max-width: 900px; margin: 0 auto; }
+    .slide { width: 100%; display: block; }
+    .slide img { width: 100%; height: auto; display: block; }
+
+    /* ==================== SECTION SHARED ==================== */
+    .section {
+      padding: 56px 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .section-inner {
+      max-width: 540px;
+      width: 100%;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--accent-blue);
+      margin-bottom: 16px;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 24px 0;
+    }
+
+    /* ==================== RALLY SECTION ==================== */
+    .rally {
+      background: linear-gradient(180deg, var(--ocean-deep) 0%, #0c2235 100%);
+      text-align: center;
+      padding: 64px 24px 56px;
+    }
+    .rally h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 32px; font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .rally h2 .coral-emoji { font-size: 36px; }
+    .rally .subtitle {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 32px;
+    }
+    .rally .subtitle strong { color: var(--text-white); }
+
+    /* Big CTA button */
+    .rally-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--coral-orange), var(--coral-pink));
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px; font-weight: 700;
+      padding: 18px 48px;
+      border: none; border-radius: 60px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 30px rgba(255,107,53,0.3);
+      text-decoration: none;
+    }
+    .rally-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 40px rgba(255,107,53,0.45);
+    }
+    .rally-btn:active { transform: scale(0.97); }
+    .rally-btn .btn-emoji { font-size: 28px; }
+
+    /* Counter */
+    .rally-counter {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .rally-counter strong {
+      color: var(--reef-teal);
+      font-weight: 600;
+    }
+
+    /* Post-click state */
+    .rally-success {
+      display: none;
+      animation: fadeUp 0.5s ease;
+    }
+    .rally-success.show { display: block; }
+    .rally-success h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px; font-weight: 700;
+      color: var(--reef-teal);
+      margin-bottom: 8px;
+    }
+    .rally-success p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* Email form */
+    .email-form {
+      display: flex;
+      gap: 8px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .email-form input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.3);
+      color: var(--text-white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .email-form input::placeholder { color: var(--text-muted); }
+    .email-form input:focus { border-color: var(--reef-teal); }
+    .email-form button {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      background: var(--reef-teal);
+      color: var(--ocean-deep);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .email-form button:hover { opacity: 0.85; }
+    .email-thankyou {
+      display: none;
+      color: var(--reef-teal);
+      font-weight: 500;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==================== FEED A CORAL ==================== */
+    .feed-section {
+      background: linear-gradient(180deg, #0c2235 0%, var(--ocean-mid) 100%);
+    }
+    .feed-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .feed-header h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .feed-header p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .feed-header p a {
+      color: var(--reef-teal);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .feed-tiers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .tier {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tier:hover {
+      border-color: var(--coral-orange);
+      background: rgba(255,107,53,0.04);
+    }
+    .tier.selected {
+      border-color: var(--coral-orange);
+      background: rgba(255,107,53,0.08);
+      box-shadow: 0 0 20px rgba(255,107,53,0.1);
+    }
+    .tier-amount {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px; font-weight: 800;
+      color: var(--coral-orange);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tier-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Payment reveal */
+    .payment-reveal {
+      display: none;
+      animation: fadeUp 0.4s ease;
+    }
+    .payment-reveal.show { display: block; }
+    .payment-reveal .note {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .payment-reveal .note strong { color: var(--coral-orange); }
+
+    /* ==================== INVEST SECTION ==================== */
+    .invest-section {
+      background: linear-gradient(180deg, var(--ocean-mid) 0%, var(--ocean-deep) 100%);
+    }
+    .invest-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .invest-header h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px; font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .invest-header p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .ask-badge {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 36px; font-weight: 800;
+      background: linear-gradient(135deg, var(--coral-orange), var(--reef-teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+    .ask-round {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* ==================== SHARED: CARD ==================== */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px 20px;
+      margin-bottom: 14px;
+    }
+    .card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 2px;
+      color: var(--accent-blue);
+      margin-bottom: 14px;
+    }
+
+    /* Wallet */
+    .wallet-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--reef-teal);
+      box-shadow: 0 0 8px rgba(0,212,170,0.4);
+      flex-shrink: 0;
+    }
+    .wallet-box {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .wallet-box:hover { border-color: var(--reef-teal); }
+    .wallet-addr {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 12px;
+      color: var(--text-white);
+      word-break: break-all;
+      flex: 1; line-height: 1.5;
+    }
+    .copy-btn {
+      background: rgba(0,212,170,0.12);
+      border: 1px solid rgba(0,212,170,0.25);
+      color: var(--reef-teal);
+      font-size: 11px; font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .copy-btn:hover { background: rgba(0,212,170,0.2); }
+    .copy-btn.copied { background: rgba(0,212,170,0.25); color: #fff; }
+
+    .networks {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 10px;
+    }
+    .net-tag {
+      font-size: 10px; color: var(--text-muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 5px;
+      padding: 3px 8px; font-weight: 500;
+    }
+
+    .info-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .info-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .info-text {
+      font-size: 13px; color: var(--text-muted); line-height: 1.5;
+    }
+    .info-text strong { color: var(--text-white); font-weight: 500; }
+
+    /* Wire details */
+    .wire-details {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 12px 14px; margin-top: 8px;
+    }
+    .wire-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .wire-row:last-child { border-bottom: none; }
+    .wire-label {
+      font-size: 10px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      font-weight: 500; flex-shrink: 0; margin-right: 12px;
+    }
+    .wire-value {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 12px; color: var(--text-white);
+      text-align: right;
+    }
+
+    /* ==================== FOOTER ==================== */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--ocean-deep);
+    }
+    .footer a {
+      color: var(--reef-teal);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer .contact { margin-top: 6px; }
+
+    /* ==================== MOBILE ==================== */
+    @media (max-width: 480px) {
+      .rally h2 { font-size: 24px; }
+      .rally-btn { font-size: 17px; padding: 16px 36px; }
+      .feed-tiers { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .tier-amount { font-size: 24px; }
+      .email-form { flex-direction: column; }
+      .ask-badge { font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== SLIDES ==================== -->
+  <div class="slides">
+    <div class="slide"><img src="img/slide1.svg" alt="CHARM Robotics — Problem & Solution"></div>
+    <div class="slide"><img src="img/slide2.svg" alt="CHARM — AI-Powered Technology & Traction"></div>
+    <div class="slide"><img src="img/slide3.svg" alt="CHARM — Market Opportunity"></div>
+    <div class="slide"><img src="img/slide4.svg" alt="CHARM — The Ask"></div>
+  </div>
+
+  <!-- ==================== RALLY ==================== -->
+  <div class="rally" id="rally">
+    <div id="rallyDefault">
+      <h2><span class="coral-emoji">🪸</span> Feed a Coral.<br>Save the Reef.</h2>
+      <p class="subtitle">
+        You just heard the pitch.<br>
+        Now <strong>raise your hand</strong> and press the button.
+      </p>
+      <button class="rally-btn" onclick="joinRally()">
+        <span class="btn-emoji">🪸</span> I'm In
+      </button>
+      <div class="rally-counter">
+        <strong id="counter">47</strong> people have joined the mission
+      </div>
+    </div>
+
+    <div class="rally-success" id="rallySuccess">
+      <h3>You're in. Welcome aboard. 🐚</h3>
+      <p>Drop your email so we can keep you in the loop — updates, progress, and how your coral is doing.</p>
+      <div class="email-form" id="emailForm">
+        <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email">
+        <button onclick="submitEmail()">Join</button>
+      </div>
+      <div class="email-thankyou" id="emailThanks">We'll be in touch. The reef thanks you. 🌊</div>
+      <p style="margin-top: 20px; font-size: 13px; color: var(--text-muted);">
+        Want to do more? <a href="#feed" style="color: var(--reef-teal); text-decoration: none; font-weight: 600;">Feed a coral below ↓</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== FEED A CORAL ==================== -->
+  <div class="section feed-section" id="feed">
+    <div class="section-inner">
+      <div class="feed-header">
+        <h3>Feed a Coral 🪸</h3>
+        <p>Pick an amount. Every dollar goes directly to growing baby corals.<br>
+        Learn more at <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
+      </div>
+
+      <div class="feed-tiers">
+        <div class="tier" onclick="selectTier(this, '$5')">
+          <div class="tier-amount">$5</div>
+          <div class="tier-label">Feed one coral<br>for a week</div>
+        </div>
+        <div class="tier" onclick="selectTier(this, '$10')">
+          <div class="tier-amount">$10</div>
+          <div class="tier-label">Feed one coral<br>for a month</div>
+        </div>
+        <div class="tier" onclick="selectTier(this, '$25')">
+          <div class="tier-amount">$25</div>
+          <div class="tier-label">Sponsor a frag<br>from plug to reef</div>
+        </div>
+        <div class="tier" onclick="selectTier(this, '$50')">
+          <div class="tier-amount">$50</div>
+          <div class="tier-label">Name a coral<br>on the reef</div>
+        </div>
+      </div>
+
+      <div class="payment-reveal" id="paymentReveal">
+        <p class="note">Send <strong id="selectedAmount">$10</strong> (or any amount) to either address below:</p>
+
+        <div class="card" style="margin-bottom: 10px;">
+          <div class="wallet-label">
+            <span class="dot"></span>
+            EVM — ETH, USDT, USDC, or any token
+          </div>
+          <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305', 'copyFeedEvm')">
+            <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
+            <button class="copy-btn" id="copyFeedEvm">Copy</button>
+          </div>
+          <div class="networks">
+            <span class="net-tag">Ethereum</span>
+            <span class="net-tag">Polygon</span>
+            <span class="net-tag">BSC</span>
+            <span class="net-tag">Base</span>
+            <span class="net-tag">Arbitrum</span>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 10px;">
+          <div class="wallet-label">
+            <span class="dot" style="background: var(--btc-orange); box-shadow: 0 0 8px rgba(247,147,26,0.4);"></span>
+            Bitcoin
+          </div>
+          <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ', 'copyFeedBtc')">
+            <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
+            <button class="copy-btn" id="copyFeedBtc">Copy</button>
+          </div>
+        </div>
+
+        <p class="note" style="font-size: 12px; margin-top: 16px;">
+          After sending, email <strong style="color: var(--text-white);">stephenrodan@gmail.com</strong> with your tx hash and we'll send you a photo of your coral.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== INVEST ==================== -->
+  <div class="section invest-section" id="invest">
+    <div class="section-inner">
+      <div class="invest-header">
+        <h3>Ready to Go Bigger?</h3>
+        <p>For those who want to build the future of reef restoration with us.</p>
+        <div style="margin-top: 16px;">
+          <div class="ask-badge">$7M</div>
+          <div class="ask-round">Seed Round &nbsp;·&nbsp; SAFE or Equity</div>
+        </div>
+      </div>
+
+      <!-- Crypto -->
+      <div class="card">
+        <div class="card-title">Crypto</div>
+
+        <div class="wallet-label">
+          <span class="dot"></span>
+          EVM wallet — any token, any EVM network
+        </div>
+        <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305', 'copyInvEvm')">
+          <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
+          <button class="copy-btn" id="copyInvEvm">Copy</button>
+        </div>
+        <div class="networks">
+          <span class="net-tag">Ethereum</span>
+          <span class="net-tag">Polygon</span>
+          <span class="net-tag">BSC</span>
+          <span class="net-tag">Arbitrum</span>
+          <span class="net-tag">Base</span>
+          <span class="net-tag">Optimism</span>
+          <span class="net-tag">Avalanche</span>
+        </div>
+
+        <hr class="divider">
+
+        <div class="wallet-label">
+          <span class="dot" style="background: var(--btc-orange); box-shadow: 0 0 8px rgba(247,147,26,0.4);"></span>
+          Bitcoin — native BTC
+        </div>
+        <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ', 'copyInvBtc')">
+          <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
+          <button class="copy-btn" id="copyInvBtc">Copy</button>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-row">
+          <span class="info-icon">🪙</span>
+          <div class="info-text">ETH, BTC, USDT, USDC, DAI, WBTC, wSOL, or any ERC-20 / BEP-20 token.</div>
+        </div>
+        <div class="info-row">
+          <span class="info-icon">💬</span>
+          <div class="info-text"><strong>Other chains (Solana, Tron, etc.)?</strong> Email us for the right address.</div>
+        </div>
+      </div>
+
+      <!-- Bank Wire -->
+      <div class="card">
+        <div class="card-title">Bank Wire (AUD)</div>
+        <div class="wallet-label">
+          <span class="dot" style="background: var(--accent-blue); box-shadow: 0 0 8px rgba(56,189,248,0.4);"></span>
+          Direct transfer to CHARM Holdings
+        </div>
+        <div class="wire-details">
+          <div class="wire-row">
+            <span class="wire-label">Account Name</span>
+            <span class="wire-value">CHARM Holdings Pty Ltd</span>
+          </div>
+          <div class="wire-row">
+            <span class="wire-label">BSB</span>
+            <span class="wire-value">014-730</span>
+          </div>
+          <div class="wire-row">
+            <span class="wire-label">Account</span>
+            <span class="wire-value">6438-79602</span>
+          </div>
+          <div class="wire-row">
+            <span class="wire-label">ABN</span>
+            <span class="wire-value">27 656 176 939</span>
+          </div>
+          <div class="wire-row">
+            <span class="wire-label">Address</span>
+            <span class="wire-value">6/53a Jackson St, St Kilda VIC 3182</span>
+          </div>
+        </div>
+        <div class="info-row" style="margin-top: 12px;">
+          <span class="info-icon">🌐</span>
+          <div class="info-text"><strong>International (USD/EUR)?</strong> Email for SWIFT details.</div>
+        </div>
+      </div>
+
+      <!-- After you send -->
+      <div class="card">
+        <div class="card-title">After You Send</div>
+        <div class="info-row">
+          <span class="info-icon">📧</span>
+          <div class="info-text">Email <strong>stephenrodan@gmail.com</strong> with your tx hash or transfer reference. We'll confirm receipt and send the SAFE agreement.</div>
+        </div>
+        <hr class="divider">
+        <div class="info-row">
+          <span class="info-icon">🔒</span>
+          <div class="info-text">No middlemen. Crypto goes to a self-custodied wallet. Wire goes directly to CHARM Holdings Pty Ltd (ACN 656 176 939).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <div class="footer">
+    <div>CHARM Holdings Pty Ltd &nbsp;|&nbsp; Townsville, Australia</div>
+    <div class="contact">
+      <a href="mailto:stephenrodan@gmail.com">stephenrodan@gmail.com</a> &nbsp;·&nbsp;
+      <a href="https://www.charm.bot">charm.bot</a> &nbsp;·&nbsp;
+      <a href="https://beyondcoral.com">beyondcoral.com</a>
+    </div>
+  </div>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <script>
+    // Rally button
+    var count = 47;
+    function joinRally() {
+      count++;
+      document.getElementById('counter').textContent = count;
+      document.getElementById('rallyDefault').style.display = 'none';
+      var success = document.getElementById('rallySuccess');
+      success.style.display = 'block';
+      success.classList.add('show');
+      // Save to localStorage so revisits see the success state
+      localStorage.setItem('charm_joined', 'true');
+    }
+
+    // Email submit (mailto fallback — no backend needed)
+    function submitEmail() {
+      var email = document.getElementById('emailInput').value;
+      if (!email || !email.includes('@')) return;
+      // Open mailto as a lightweight capture — replace with real endpoint when ready
+      var subject = encodeURIComponent('CHARM — New Rally Signup');
+      var body = encodeURIComponent('New signup from: ' + email);
+      window.open('mailto:stephenrodan@gmail.com?subject=' + subject + '&body=' + body, '_blank');
+      document.getElementById('emailForm').style.display = 'none';
+      document.getElementById('emailThanks').style.display = 'block';
+      localStorage.setItem('charm_email', email);
+    }
+
+    // Copy to clipboard
+    function copyText(text, btnId) {
+      navigator.clipboard.writeText(text).then(function() {
+        var btn = document.getElementById(btnId);
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Feed a coral tier selection
+    function selectTier(el, amount) {
+      document.querySelectorAll('.tier').forEach(function(t) { t.classList.remove('selected'); });
+      el.classList.add('selected');
+      document.getElementById('selectedAmount').textContent = amount;
+      var reveal = document.getElementById('paymentReveal');
+      reveal.style.display = 'block';
+      reveal.classList.add('show');
+      reveal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Restore state if user already joined
+    if (localStorage.getItem('charm_joined')) {
+      document.getElementById('rallyDefault').style.display = 'none';
+      var s = document.getElementById('rallySuccess');
+      s.style.display = 'block';
+      s.classList.add('show');
+      if (localStorage.getItem('charm_email')) {
+        document.getElementById('emailForm').style.display = 'none';
+        document.getElementById('emailThanks').style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
