@@ -974,14 +974,15 @@
     var currentLBTab = 'event';
     var writeTimer = null;
 
-    // ---- Reaction-Diffusion Engine ----
+    // ---- Reaction-Diffusion Engine (feed-driven) ----
     var RD = {
       W: 180, H: 180,
       gA: null, gB: null, nA: null, nB: null,
       canvas: null, ctx: null, imgData: null,
-      running: false,
       dA: 1.0, dB: 0.5,
       f: 0.037, k: 0.06,
+      stepsPerFeed: 20,
+      lastStage: null,
 
       init: function() {
         this.canvas = document.getElementById('coralCanvas');
@@ -994,7 +995,8 @@
         this.gB = new Float32Array(sz).fill(0.0);
         this.nA = new Float32Array(sz);
         this.nB = new Float32Array(sz);
-        this.seed(this.W / 2, this.H / 2, 8);
+        this.seed(this.W / 2, this.H / 2, 6);
+        this.render();
       },
 
       seed: function(cx, cy, r) {
@@ -1055,22 +1057,16 @@
         this.ctx.putImageData(this.imgData, 0, 0);
       },
 
-      loop: function() {
-        if (!this.running) return;
-        for (var i = 0; i < 8; i++) this.step();
-        this.render();
-        requestAnimationFrame(this.loop.bind(this));
-      },
-
-      start: function() { this.running = true; this.loop(); },
-      stop: function() { this.running = false; },
-
-      feedCoral: function() {
-        for (var i = 0; i < 3; i++) {
+      advance: function(feeds) {
+        var stage = getStage(feeds);
+        if (this.lastStage !== null && stage.name !== this.lastStage) {
           var rx = 20 + Math.floor(Math.random() * (this.W - 40));
           var ry = 20 + Math.floor(Math.random() * (this.H - 40));
-          this.seed(rx, ry, 4 + Math.floor(Math.random() * 5));
+          this.seed(rx, ry, 5 + Math.floor(Math.random() * 4));
         }
+        this.lastStage = stage.name;
+        for (var i = 0; i < this.stepsPerFeed; i++) this.step();
+        this.render();
       }
     };
 
@@ -1092,7 +1088,6 @@
       document.getElementById('login').classList.add('hidden');
       document.getElementById('gameArea').classList.remove('hidden');
       RD.init();
-      RD.start();
       updateColonyUI();
       renderLocal();
     }
@@ -1137,7 +1132,7 @@
       var cvs = document.getElementById('coralCanvas');
       cvs.classList.add('flash');
       setTimeout(function() { cvs.classList.remove('flash'); }, 80);
-      RD.feedCoral();
+      RD.advance(myFeeds);
       var btn = document.getElementById('feedBtn');
       btn.classList.add('pop');
       setTimeout(function() { btn.classList.remove('pop'); }, 100);
