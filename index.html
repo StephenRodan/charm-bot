@@ -519,8 +519,24 @@
           </div>
         </div>
 
+        <!-- Colony bar -->
+        <div id="colonyBar" class="hidden" style="text-align:center;margin:10px 0;padding:8px;border:1px solid #1a1a1a;font-size:11px;">
+          <span style="color:var(--muted);">colony:</span> <span id="colonyName" style="color:var(--teal);"></span>
+          <button class="share-btn" onclick="shareColony()" style="margin-left:8px;">invite</button>
+        </div>
+        <div id="noColony" class="hidden" style="text-align:center;margin:10px 0;">
+          <button class="share-btn" onclick="showCreateColony()" style="border-color:var(--teal);color:var(--teal);">+ create colony</button>
+        </div>
+        <div id="createColonyForm" class="hidden" style="text-align:center;margin:10px 0;">
+          <input type="text" class="arcade-input" id="colonyInput" placeholder="colony name" maxlength="20" style="font-size:13px;max-width:180px;padding:8px 12px;margin-bottom:8px;display:inline-block;">
+          <button class="prompt-btn" onclick="createColony()" style="border-color:var(--teal);color:var(--teal);">go</button>
+        </div>
+
         <div class="lb" id="leaderboard">
-          <div class="lb-title">// leaderboard</div>
+          <div style="display:flex;gap:12px;margin-bottom:8px;">
+            <button class="lb-tab active" id="tabEvent" onclick="showLB('event')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">event</button>
+            <button class="lb-tab" id="tabColony" onclick="showLB('colony')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;">colony</button>
+          </div>
           <div id="lbList"></div>
         </div>
 
@@ -675,6 +691,10 @@
       <a href="https://beyondcoral.com">beyondcoral.com</a>
     </div>
   </div>
+
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <!-- ==================== SCRIPT ==================== -->
   <script>
@@ -863,95 +883,223 @@
       { at: 50000, msg: '> DIVINE' }
     ];
 
+    // ---- Firebase ----
+    firebase.initializeApp({
+      apiKey: "AIzaSyCRJfxdNKywJUTJ5NHd0F80IyH8aNRC3fg",
+      authDomain: "charm-coral.firebaseapp.com",
+      databaseURL: "https://charm-coral-default-rtdb.firebaseio.com",
+      projectId: "charm-coral",
+      storageBucket: "charm-coral.firebasestorage.app",
+      messagingSenderId: "637262567454",
+      appId: "1:637262567454:web:232e2ebc777f6f7f7e760f"
+    });
+    var db = firebase.database();
+
+    // ---- URL params ----
+    var params = new URLSearchParams(window.location.search);
+    var eventId = params.get('e') || 'mit2026';
+    var colonyParam = params.get('c') || null;
+
+    // ---- Player ID (persistent across sessions) ----
+    var playerId = localStorage.getItem('charm_pid');
+    if (!playerId) {
+      playerId = 'p_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('charm_pid', playerId);
+    }
+
     // ---- State ----
-    var playerName = '';
-    var myFeeds = 0;
+    var playerName = localStorage.getItem('charm_name') || '';
+    var myFeeds = parseInt(localStorage.getItem('charm_feeds') || '0');
+    var myColony = colonyParam || localStorage.getItem('charm_colony_' + eventId) || null;
     var lastFeedTime = 0;
     var streakCount = 0;
-    var leaderboard = [];
-
-    // Load saved state
-    function loadState() {
-      try {
-        var s = JSON.parse(localStorage.getItem('charm_game') || '{}');
-        if (s.name) {
-          playerName = s.name;
-          myFeeds = s.feeds || 0;
-        }
-        leaderboard = JSON.parse(localStorage.getItem('charm_lb') || '[]');
-      } catch(e) {}
-    }
-
-    function saveState() {
-      localStorage.setItem('charm_game', JSON.stringify({ name: playerName, feeds: myFeeds }));
-      // Update leaderboard
-      var found = false;
-      for (var i = 0; i < leaderboard.length; i++) {
-        if (leaderboard[i].name === playerName) {
-          leaderboard[i].feeds = myFeeds;
-          found = true;
-          break;
-        }
-      }
-      if (!found) leaderboard.push({ name: playerName, feeds: myFeeds });
-      leaderboard.sort(function(a, b) { return b.feeds - a.feeds; });
-      localStorage.setItem('charm_lb', JSON.stringify(leaderboard));
-    }
+    var allPlayers = [];
+    var currentLBTab = 'event';
+    var writeTimer = null;
 
     // ---- Game logic ----
     function startGame() {
       var name = document.getElementById('nameInput').value.trim();
       if (!name) return;
       playerName = name;
-      loadState(); // reload in case they had old data
-      if (!myFeeds) myFeeds = 0;
-      saveState();
+      localStorage.setItem('charm_name', name);
+
+      if (colonyParam) {
+        myColony = colonyParam;
+        localStorage.setItem('charm_colony_' + eventId, myColony);
+      }
+
+      writePlayer();
+      listenToPlayers();
+
       document.getElementById('login').classList.add('hidden');
       document.getElementById('gameArea').classList.remove('hidden');
-      render();
+      updateColonyUI();
+      renderLocal();
     }
 
-    // Handle enter key on name input
     document.getElementById('nameInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') startGame();
+    });
+    document.getElementById('colonyInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') createColony();
     });
 
     function feed() {
       myFeeds++;
+      localStorage.setItem('charm_feeds', myFeeds);
       var now = Date.now();
 
-      // Streak detection
-      if (now - lastFeedTime < 600) {
-        streakCount++;
-      } else {
-        streakCount = 1;
-      }
+      if (now - lastFeedTime < 600) { streakCount++; } else { streakCount = 1; }
       lastFeedTime = now;
 
-      // Visual feedback
       var art = document.getElementById('coralArt');
       art.classList.add('flash');
       setTimeout(function() { art.classList.remove('flash'); }, 80);
-
       var btn = document.getElementById('feedBtn');
       btn.classList.add('pop');
       setTimeout(function() { btn.classList.remove('pop'); }, 100);
-
-      // Haptic
       if (navigator.vibrate) navigator.vibrate(15);
 
-      // Check achievements
       for (var i = 0; i < ACHIEVEMENTS.length; i++) {
-        if (ACHIEVEMENTS[i].at === myFeeds) {
-          showAchievement(ACHIEVEMENTS[i].msg);
-          break;
-        }
+        if (ACHIEVEMENTS[i].at === myFeeds) { showAchievement(ACHIEVEMENTS[i].msg); break; }
       }
 
-      saveState();
-      render();
+      // Debounced write to Firebase (avoid hammering on fast taps)
+      clearTimeout(writeTimer);
+      writeTimer = setTimeout(writePlayer, 300);
+
+      renderLocal();
     }
 
+    function writePlayer() {
+      db.ref('events/' + eventId + '/players/' + playerId).set({
+        name: playerName,
+        feeds: myFeeds,
+        colony: myColony || null
+      });
+    }
+
+    function listenToPlayers() {
+      db.ref('events/' + eventId + '/players').on('value', function(snap) {
+        allPlayers = [];
+        snap.forEach(function(child) {
+          var p = child.val();
+          p.id = child.key;
+          allPlayers.push(p);
+        });
+        allPlayers.sort(function(a, b) { return b.feeds - a.feeds; });
+
+        // Sync own feeds from server (in case of multi-device)
+        for (var i = 0; i < allPlayers.length; i++) {
+          if (allPlayers[i].id === playerId && allPlayers[i].feeds > myFeeds) {
+            myFeeds = allPlayers[i].feeds;
+            localStorage.setItem('charm_feeds', myFeeds);
+          }
+        }
+
+        renderLeaderboard();
+        renderGlobalStats();
+      });
+    }
+
+    // ---- Colony ----
+    function showCreateColony() {
+      document.getElementById('noColony').classList.add('hidden');
+      document.getElementById('createColonyForm').classList.remove('hidden');
+      document.getElementById('colonyInput').focus();
+    }
+
+    function createColony() {
+      var raw = document.getElementById('colonyInput').value.trim();
+      if (!raw) return;
+      var colId = raw.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+      myColony = colId;
+      localStorage.setItem('charm_colony_' + eventId, myColony);
+
+      db.ref('events/' + eventId + '/colonies/' + colId).set({
+        name: raw,
+        creator: playerName
+      });
+      writePlayer();
+      updateColonyUI();
+      showAchievement('> colony "' + raw + '" created');
+    }
+
+    function updateColonyUI() {
+      if (myColony) {
+        document.getElementById('colonyBar').classList.remove('hidden');
+        document.getElementById('noColony').classList.add('hidden');
+        document.getElementById('createColonyForm').classList.add('hidden');
+        // Fetch colony display name
+        db.ref('events/' + eventId + '/colonies/' + myColony + '/name').once('value', function(snap) {
+          document.getElementById('colonyName').textContent = snap.val() || myColony;
+        });
+      } else {
+        document.getElementById('colonyBar').classList.add('hidden');
+        document.getElementById('noColony').classList.remove('hidden');
+      }
+    }
+
+    function shareColony() {
+      var url = 'https://charm.bot?e=' + eventId + '&c=' + myColony;
+      var text = 'Join my coral colony! Feed corals, climb the leaderboard 🪸 ' + url;
+      if (navigator.share) {
+        navigator.share({ text: text, url: url });
+      } else {
+        navigator.clipboard.writeText(url).catch(function(){});
+        showAchievement('> colony link copied');
+      }
+    }
+
+    // ---- Leaderboard tabs ----
+    function showLB(tab) {
+      currentLBTab = tab;
+      document.getElementById('tabEvent').style.color = tab === 'event' ? 'var(--green)' : 'var(--muted)';
+      document.getElementById('tabEvent').style.borderBottom = tab === 'event' ? '1px solid var(--green)' : 'none';
+      document.getElementById('tabColony').style.color = tab === 'colony' ? 'var(--teal)' : 'var(--muted)';
+      document.getElementById('tabColony').style.borderBottom = tab === 'colony' ? '1px solid var(--teal)' : 'none';
+      renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      var list = allPlayers;
+      var accentColor = 'var(--green)';
+
+      if (currentLBTab === 'colony' && myColony) {
+        list = allPlayers.filter(function(p) { return p.colony === myColony; });
+        accentColor = 'var(--teal)';
+      }
+
+      var html = '';
+      var show = Math.min(list.length, 10);
+      for (var i = 0; i < show; i++) {
+        var isYou = list[i].id === playerId;
+        html += '<div class="lb-row' + (isYou ? ' you' : '') + '">' +
+          '<span class="rank">' + (i + 1) + '</span>' +
+          '<span class="name">' + esc(list[i].name) + (isYou ? ' (you)' : '') + '</span>' +
+          '<span class="score">' + list[i].feeds + '</span>' +
+          '</div>';
+      }
+      if (show === 0) {
+        html = '<div style="font-size:10px;color:var(--muted);padding:8px 0;">no players yet</div>';
+      }
+      document.getElementById('lbList').innerHTML = html;
+    }
+
+    function renderGlobalStats() {
+      var global = 0;
+      for (var i = 0; i < allPlayers.length; i++) global += allPlayers[i].feeds;
+      document.getElementById('globalFeeds').textContent = global;
+
+      var rank = '-';
+      for (var i = 0; i < allPlayers.length; i++) {
+        if (allPlayers[i].id === playerId) { rank = '#' + (i + 1); break; }
+      }
+      document.getElementById('myRank').textContent = rank;
+    }
+
+    // ---- Rendering (local, fast) ----
     function getStage(feeds) {
       var stage = STAGES[0];
       for (var i = 0; i < STAGES.length; i++) {
@@ -964,7 +1112,6 @@
       for (var i = 0; i < STAGES.length; i++) {
         if (feeds < STAGES[i].threshold) return STAGES[i].threshold;
       }
-      // Beyond last fixed stage: every 2000 feeds is a new level
       var last = STAGES[STAGES.length - 1].threshold;
       var level = Math.floor((feeds - last) / 2000);
       return last + (level + 1) * 2000;
@@ -976,21 +1123,19 @@
         if (feeds < STAGES[i].threshold) return prev;
         prev = STAGES[i].threshold;
       }
-      // Beyond last fixed stage
       var last = STAGES[STAGES.length - 1].threshold;
       var level = Math.floor((feeds - last) / 2000);
       return last + level * 2000;
     }
 
-    function render() {
+    function renderLocal() {
       var stage = getStage(myFeeds);
       var lastThreshold = STAGES[STAGES.length - 1].threshold;
       if (myFeeds >= lastThreshold) {
-        // Procedural: ever-growing titles
-        var rank = Math.floor((myFeeds - lastThreshold) / 2000) + 1;
+        var rk = Math.floor((myFeeds - lastThreshold) / 2000) + 1;
         var titles = ['IMMORTAL', 'ETERNAL', 'INFINITE', 'COSMIC', 'DIVINE', 'TRANSCENDENT', 'OMNISCIENT', 'SUPREME', 'ABSOLUTE', 'BEYOND'];
-        var title = titles[Math.min(rank - 1, titles.length - 1)];
-        if (rank > titles.length) title = 'BEYOND x' + rank;
+        var title = titles[Math.min(rk - 1, titles.length - 1)];
+        if (rk > titles.length) title = 'BEYOND x' + rk;
         document.getElementById('stageLabel').textContent = title;
         document.getElementById('coralArt').textContent = getProceduralArt(myFeeds);
       } else {
@@ -999,44 +1144,13 @@
       }
       document.getElementById('myFeeds').textContent = myFeeds;
 
-      // Global = sum of leaderboard
-      var global = 0;
-      for (var i = 0; i < leaderboard.length; i++) global += leaderboard[i].feeds;
-      document.getElementById('globalFeeds').textContent = global;
-
-      // Rank
-      var rank = '-';
-      for (var i = 0; i < leaderboard.length; i++) {
-        if (leaderboard[i].name === playerName) { rank = '#' + (i + 1); break; }
-      }
-      document.getElementById('myRank').textContent = rank;
-
-      // Progress bar
       var next = getNextThreshold(myFeeds);
       var prev = getPrevThreshold(myFeeds);
       var pct = next > prev ? ((myFeeds - prev) / (next - prev)) * 100 : 100;
       document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
 
-      // Streak
       var streakEl = document.getElementById('streak');
-      if (streakCount > 2) {
-        streakEl.textContent = 'x' + streakCount + ' streak!';
-      } else {
-        streakEl.textContent = '';
-      }
-
-      // Leaderboard
-      var html = '';
-      var show = Math.min(leaderboard.length, 8);
-      for (var i = 0; i < show; i++) {
-        var isYou = leaderboard[i].name === playerName;
-        html += '<div class="lb-row' + (isYou ? ' you' : '') + '">' +
-          '<span class="rank">' + (i + 1) + '</span>' +
-          '<span class="name">' + esc(leaderboard[i].name) + (isYou ? ' (you)' : '') + '</span>' +
-          '<span class="score">' + leaderboard[i].feeds + '</span>' +
-          '</div>';
-      }
-      document.getElementById('lbList').innerHTML = html;
+      streakEl.textContent = streakCount > 2 ? 'x' + streakCount + ' streak!' : '';
     }
 
     function showAchievement(msg) {
@@ -1048,11 +1162,12 @@
 
     function shareProgress() {
       var stage = getStage(myFeeds);
+      var url = 'https://charm.bot?e=' + eventId + (myColony ? '&c=' + myColony : '');
       var text = 'I fed ' + myFeeds + ' corals and grew a ' + stage.name + ' on charm.bot 🪸';
       if (navigator.share) {
-        navigator.share({ text: text, url: 'https://charm.bot' });
+        navigator.share({ text: text, url: url });
       } else {
-        navigator.clipboard.writeText(text + ' https://charm.bot');
+        navigator.clipboard.writeText(text + ' ' + url).catch(function(){});
         showAchievement('> copied to clipboard');
       }
     }
@@ -1096,11 +1211,17 @@
     }
 
     // ---- Init ----
-    loadState();
     if (playerName) {
       document.getElementById('login').classList.add('hidden');
       document.getElementById('gameArea').classList.remove('hidden');
-      render();
+      if (colonyParam && !myColony) {
+        myColony = colonyParam;
+        localStorage.setItem('charm_colony_' + eventId, myColony);
+      }
+      writePlayer();
+      listenToPlayers();
+      updateColonyUI();
+      renderLocal();
     }
   </script>
 </body>
