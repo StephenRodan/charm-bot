@@ -427,6 +427,10 @@
       gap: 8px;
       margin: 16px 0;
     }
+    a.tier {
+      text-decoration: none;
+      color: inherit;
+    }
     .tier {
       border: 1px solid #1a1a1a;
       padding: 14px 10px;
@@ -633,50 +637,26 @@
     <div class="section-inner">
       <div class="section-title">// feed a real coral</div>
       <h3>Not Ready to Invest? Feed a Coral Instead.</h3>
-      <p>Every dollar goes directly to growing baby corals on the Great Barrier Reef.<br>
+      <p style="color:var(--muted);font-size:13px;">$10 grows and outplants one coral to the Great Barrier Reef. Monthly recurring. 501(c)(3) tax-deductible.<br>
       <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
 
       <div class="feed-tiers">
-        <div class="tier" onclick="selectTier(this,'$5')">
-          <div class="tier-amount">$5</div>
-          <div class="tier-label">feed one coral<br>for a week</div>
-        </div>
-        <div class="tier" onclick="selectTier(this,'$10')">
-          <div class="tier-amount">$10</div>
-          <div class="tier-label">feed one coral<br>for a month</div>
-        </div>
-        <div class="tier" onclick="selectTier(this,'$25')">
-          <div class="tier-amount">$25</div>
-          <div class="tier-label">sponsor a frag<br>plug to reef</div>
-        </div>
-        <div class="tier" onclick="selectTier(this,'$50')">
-          <div class="tier-amount">$50</div>
-          <div class="tier-label">name a coral<br>on the reef</div>
-        </div>
-      </div>
-
-      <div class="payment-reveal" id="paymentReveal">
-        <p class="note">send <strong id="selectedAmount">$10</strong> to either address:</p>
-        <div class="card">
-          <div class="wallet-label"><span class="dot"></span> EVM — ETH, USDT, USDC, any token</div>
-          <a class="wallet-box" href="ethereum:0x1A8B512e50D53aFC4eAb97A944D8f999F118a305">
-            <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
-            <button class="copy-btn" id="cpFeedEvm" onclick="event.preventDefault();copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpFeedEvm')">copy</button>
-          </a>
-          <div class="networks">
-            <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Base</span><span class="net-tag">Arbitrum</span>
-          </div>
-        </div>
-        <div class="card">
-          <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
-          <a class="wallet-box" href="bitcoin:3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ">
-            <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
-            <button class="copy-btn" id="cpFeedBtc" onclick="event.preventDefault();copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpFeedBtc')">copy</button>
-          </a>
-        </div>
-        <p class="note" style="font-size:10px;margin-top:12px;">
-          email <strong style="color:var(--white)">stephen.rodan@beyondcoral.com</strong> with tx hash for a photo of your coral
-        </p>
+        <a class="tier" href="https://buy.stripe.com/3cIcN58e09MO2EXedMeQM00" target="_blank">
+          <div class="tier-amount">$5/mo</div>
+          <div class="tier-label">coral keeper<br><span style="color:var(--muted);font-size:9px;">nursery support</span></div>
+        </a>
+        <a class="tier" href="https://buy.stripe.com/dRm14nfGs8IKgvN4DceQM01" target="_blank">
+          <div class="tier-amount">$10/mo</div>
+          <div class="tier-label">reef grower<br><span style="color:var(--muted);font-size:9px;">1 coral/month</span></div>
+        </a>
+        <a class="tier" href="https://buy.stripe.com/5kQ8wPam8f784N59XweQM02" target="_blank">
+          <div class="tier-amount">$25/mo</div>
+          <div class="tier-label">reef builder<br><span style="color:var(--muted);font-size:9px;">2-3 corals/month</span></div>
+        </a>
+        <a class="tier" href="https://buy.stripe.com/fZu6oHam81gicfxedMeQM03" target="_blank">
+          <div class="tier-amount">$50/mo</div>
+          <div class="tier-label">reef guardian<br><span style="color:var(--muted);font-size:9px;">5 corals/month + name one</span></div>
+        </a>
       </div>
     </div>
   </div>
