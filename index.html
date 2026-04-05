@@ -321,6 +321,7 @@
       transition: border-color 0.2s;
     }
     .wallet-box:hover { border-color: var(--green); }
+    a.wallet-box { text-decoration: none; color: inherit; }
     .wallet-addr {
       font-size: 11px;
       color: var(--white);
@@ -525,20 +526,20 @@
         <p class="note">send <strong id="selectedAmount">$10</strong> to either address:</p>
         <div class="card">
           <div class="wallet-label"><span class="dot"></span> EVM — ETH, USDT, USDC, any token</div>
-          <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpFeedEvm')">
+          <a class="wallet-box" href="ethereum:0x1A8B512e50D53aFC4eAb97A944D8f999F118a305">
             <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
-            <button class="copy-btn" id="cpFeedEvm">copy</button>
-          </div>
+            <button class="copy-btn" id="cpFeedEvm" onclick="event.preventDefault();copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpFeedEvm')">copy</button>
+          </a>
           <div class="networks">
             <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Base</span><span class="net-tag">Arbitrum</span>
           </div>
         </div>
         <div class="card">
           <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
-          <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpFeedBtc')">
+          <a class="wallet-box" href="bitcoin:3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ">
             <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
-            <button class="copy-btn" id="cpFeedBtc">copy</button>
-          </div>
+            <button class="copy-btn" id="cpFeedBtc" onclick="event.preventDefault();copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpFeedBtc')">copy</button>
+          </a>
         </div>
         <p class="note" style="font-size:10px;margin-top:12px;">
           email <strong style="color:var(--white)">stephen.rodan@beyondcoral.com</strong> with tx hash for a photo of your coral
@@ -561,19 +562,19 @@
       <div class="card">
         <div class="card-label">crypto</div>
         <div class="wallet-label"><span class="dot"></span> EVM — any token, any network</div>
-        <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpInvEvm')">
+        <a class="wallet-box" href="ethereum:0x1A8B512e50D53aFC4eAb97A944D8f999F118a305">
           <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
-          <button class="copy-btn" id="cpInvEvm">copy</button>
-        </div>
+          <button class="copy-btn" id="cpInvEvm" onclick="event.preventDefault();copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpInvEvm')">copy</button>
+        </a>
         <div class="networks">
           <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Arbitrum</span><span class="net-tag">Base</span><span class="net-tag">Optimism</span><span class="net-tag">Avalanche</span>
         </div>
         <hr class="divider">
         <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
-        <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpInvBtc')">
+        <a class="wallet-box" href="bitcoin:3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ">
           <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
-          <button class="copy-btn" id="cpInvBtc">copy</button>
-        </div>
+          <button class="copy-btn" id="cpInvBtc" onclick="event.preventDefault();copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpInvBtc')">copy</button>
+        </a>
         <div style="margin-top:12px;">
           <div class="info-row">
             <span class="info-icon">→</span>
@@ -875,12 +876,25 @@
 
     // ---- Donations / Invest ----
     function copyText(text, btnId) {
-      navigator.clipboard.writeText(text).then(function() {
-        var btn = document.getElementById(btnId);
-        btn.textContent = 'copied!';
-        btn.classList.add('copied');
-        setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
-      });
+      var btn = document.getElementById(btnId);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          btn.textContent = 'copied!';
+          btn.classList.add('copied');
+          setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
+        }).catch(function() { fallbackCopy(text, btn); });
+      } else {
+        fallbackCopy(text, btn);
+      }
+    }
+    function fallbackCopy(text, btn) {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); btn.textContent = 'copied!'; btn.classList.add('copied'); }
+      catch(e) { btn.textContent = 'failed'; }
+      document.body.removeChild(ta);
+      setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
     }
 
     function selectTier(el, amount) {
