@@ -966,6 +966,10 @@
     var myColony = colonyParam || localStorage.getItem('charm_colony_' + eventId) || null;
     var lastFeedTime = 0;
     var streakCount = 0;
+    var feedTimestamps = [];
+    var botCooldown = false;
+    var MAX_FEEDS_PER_SEC = 5;
+    var COOLDOWN_MS = 3000;
     var allPlayers = [];
     var currentLBTab = 'event';
     var writeTimer = null;
@@ -999,9 +1003,31 @@
     });
 
     function feed() {
+      var now = Date.now();
+
+      // Anti-bot: cooldown active
+      if (botCooldown) return;
+
+      // Anti-bot: rate limit — max N feeds per second
+      feedTimestamps.push(now);
+      feedTimestamps = feedTimestamps.filter(function(t) { return now - t < 1000; });
+      if (feedTimestamps.length > MAX_FEEDS_PER_SEC) {
+        botCooldown = true;
+        var btn = document.getElementById('feedBtn');
+        btn.textContent = '> slow down...';
+        btn.style.borderColor = '#ff3333';
+        btn.style.color = '#ff3333';
+        setTimeout(function() {
+          botCooldown = false;
+          btn.textContent = '> FEED CORAL';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, COOLDOWN_MS);
+        return;
+      }
+
       myFeeds++;
       localStorage.setItem('charm_feeds', myFeeds);
-      var now = Date.now();
 
       if (now - lastFeedTime < 600) { streakCount++; } else { streakCount = 1; }
       lastFeedTime = now;
@@ -1026,10 +1052,25 @@
     }
 
     function writePlayer() {
-      db.ref('events/' + eventId + '/players/' + playerId).set({
-        name: playerName,
-        feeds: myFeeds,
-        colony: myColony || null
+      db.ref('events/' + eventId + '/players/' + playerId).transaction(function(current) {
+        if (current === null) {
+          return { name: playerName, feeds: myFeeds, colony: myColony || null, lastWrite: firebase.database.ServerValue.TIMESTAMP };
+        }
+        // Only allow feeds to go up, never down
+        if (myFeeds <= current.feeds) {
+          current.name = playerName;
+          current.colony = myColony || null;
+          current.lastWrite = firebase.database.ServerValue.TIMESTAMP;
+          return current;
+        }
+        // Cap increment to prevent massive jumps (max 50 feeds per write)
+        var maxAllowed = (current.feeds || 0) + 50;
+        return {
+          name: playerName,
+          feeds: Math.min(myFeeds, maxAllowed),
+          colony: myColony || null,
+          lastWrite: firebase.database.ServerValue.TIMESTAMP
+        };
       });
     }
 
