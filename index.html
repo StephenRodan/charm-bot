@@ -968,8 +968,8 @@
     var streakCount = 0;
     var feedTimestamps = [];
     var botCooldown = false;
-    var MAX_FEEDS_PER_SEC = 5;
-    var COOLDOWN_MS = 3000;
+    var MAX_FEEDS_PER_SEC = 15;
+    var COOLDOWN_MS = 2000;
     var allPlayers = [];
     var currentLBTab = 'event';
     var writeTimer = null;
@@ -1063,8 +1063,8 @@
           current.lastWrite = firebase.database.ServerValue.TIMESTAMP;
           return current;
         }
-        // Cap increment to prevent massive jumps (max 50 feeds per write)
-        var maxAllowed = (current.feeds || 0) + 50;
+        // Cap increment to prevent massive jumps (max 100 feeds per write)
+        var maxAllowed = (current.feeds || 0) + 100;
         return {
           name: playerName,
           feeds: Math.min(myFeeds, maxAllowed),
