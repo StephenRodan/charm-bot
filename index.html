@@ -144,8 +144,6 @@
       max-width: 360px;
       aspect-ratio: 1;
       border-radius: 8px;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
     }
     #coralCanvas.flash { filter: brightness(2); transition: filter 0.08s; }
     #coralCanvas:not(.flash) { filter: brightness(1); transition: filter 0.3s; }
@@ -974,17 +972,8 @@
     var currentLBTab = 'event';
     var writeTimer = null;
 
-    // ---- Reaction-Diffusion Presets & Colors ----
-    var RD_PRESETS = [
-      { name: 'super-resonant mazes', f: 0.029, k: 0.057, fill: 3000 },
-      { name: 'coral growth',         f: 0.0545, k: 0.062, fill: 2500 },
-      { name: 'mitosis',              f: 0.0367, k: 0.0649, fill: 3000 },
-      { name: 'worms',                f: 0.046, k: 0.063, fill: 2500 },
-      { name: 'solitons',             f: 0.03, k: 0.062, fill: 3000 },
-      { name: 'fingerprints',         f: 0.037, k: 0.06, fill: 3500 },
-      { name: 'ripples',              f: 0.014, k: 0.054, fill: 4000 },
-      { name: 'spots',                f: 0.014, k: 0.039, fill: 3500 }
-    ];
+    // ---- Reaction-Diffusion Colors ----
+    var RD_PRESET = { name: 'super-resonant mazes', f: 0.029, k: 0.057, fill: 3000 };
     var RD_COLORS = [
       [[10,10,10],[0,80,70],[255,107,53],[0,212,170]],
       [[5,5,20],[0,50,130],[56,189,248],[220,240,255]],
@@ -998,14 +987,14 @@
 
     // ---- Reaction-Diffusion Engine (level-driven) ----
     var RD = {
-      W: 180, H: 180,
+      W: 256, H: 256,
       gA: null, gB: null, nA: null, nB: null,
       canvas: null, ctx: null, imgData: null,
       dA: 1.0, dB: 0.5,
       f: 0.029, k: 0.057,
       totalFill: 3000,
       colors: RD_COLORS[0],
-      presetIdx: 0, colorIdx: 0,
+      colorIdx: 0,
 
       init: function(feeds) {
         this.canvas = document.getElementById('coralCanvas');
@@ -1018,6 +1007,9 @@
         this.gB = new Float32Array(sz);
         this.nA = new Float32Array(sz);
         this.nB = new Float32Array(sz);
+        this.f = RD_PRESET.f;
+        this.k = RD_PRESET.k;
+        this.totalFill = RD_PRESET.fill;
         this.resetGrid();
         this.fastForward(feeds);
       },
@@ -1025,23 +1017,14 @@
       resetGrid: function() {
         this.gA.fill(1.0);
         this.gB.fill(0.0);
-        this.seed(this.W / 2, this.H / 2, 6);
-        this.seed(this.W * 0.3, this.H * 0.3, 3);
-        this.seed(this.W * 0.7, this.H * 0.7, 3);
-      },
-
-      pickPreset: function() {
-        this.presetIdx = Math.floor(Math.random() * RD_PRESETS.length);
-        this.colorIdx = Math.floor(Math.random() * RD_COLORS.length);
-        var p = RD_PRESETS[this.presetIdx];
-        this.f = p.f;
-        this.k = p.k;
-        this.totalFill = p.fill;
-        this.colors = RD_COLORS[this.colorIdx];
+        this.seed(this.W / 2, this.H / 2, 10);
+        this.seed(this.W * 0.3, this.H * 0.3, 5);
+        this.seed(this.W * 0.7, this.H * 0.7, 5);
       },
 
       newLevel: function() {
-        this.pickPreset();
+        this.colorIdx = Math.floor(Math.random() * RD_COLORS.length);
+        this.colors = RD_COLORS[this.colorIdx];
         this.resetGrid();
         this.render();
       },
@@ -1076,8 +1059,10 @@
           for (var x = 1; x < w - 1; x++) {
             var i = y * w + x;
             var a = gA[i], b = gB[i];
-            var lA = gA[i-1] + gA[i+1] + gA[i-w] + gA[i+w] - 4*a;
-            var lB = gB[i-1] + gB[i+1] + gB[i-w] + gB[i+w] - 4*b;
+            var lA = gA[i-1]*0.2 + gA[i+1]*0.2 + gA[i-w]*0.2 + gA[i+w]*0.2
+                   + gA[i-w-1]*0.05 + gA[i-w+1]*0.05 + gA[i+w-1]*0.05 + gA[i+w+1]*0.05 - a;
+            var lB = gB[i-1]*0.2 + gB[i+1]*0.2 + gB[i-w]*0.2 + gB[i+w]*0.2
+                   + gB[i-w-1]*0.05 + gB[i-w+1]*0.05 + gB[i+w-1]*0.05 + gB[i+w+1]*0.05 - b;
             var abb = a * b * b;
             nA[i] = Math.min(1, Math.max(0, a + dA*lA - abb + f*(1-a)));
             nB[i] = Math.min(1, Math.max(0, b + dB*lB + abb - (k+f)*b));
@@ -1177,7 +1162,7 @@
 
       if (oldStage.name !== newStage.name) {
         RD.newLevel();
-        showAchievement('> ' + newStage.name.toLowerCase() + ' // ' + RD_PRESETS[RD.presetIdx].name);
+        showAchievement('> ' + newStage.name.toLowerCase() + ' unlocked');
       }
 
       if (now - lastFeedTime < 600) { streakCount++; } else { streakCount = 1; }
