@@ -559,23 +559,8 @@
       <p style="color:var(--muted);font-size:13px;">$7M seed round. Any amount. No minimum. You're early.</p>
 
       <div style="margin:20px 0;padding:16px;border:1px solid #1a1a1a;text-align:center;">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
-          <span style="font-size:11px;color:var(--muted);">raised</span>
-          <span style="font-size:11px;color:var(--muted);">$7,000,000 target</span>
-        </div>
-        <div style="height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden;margin-bottom:12px;">
-          <div id="fundFill" style="height:100%;background:var(--green);border-radius:3px;transition:width 0.5s;width:0%;"></div>
-        </div>
-        <div style="display:flex;justify-content:center;gap:24px;">
-          <div>
-            <div style="color:var(--green);font-size:20px;font-weight:700;" id="backerCount">0</div>
-            <div style="font-size:10px;color:var(--muted);">backers</div>
-          </div>
-          <div>
-            <div style="color:var(--green);font-size:20px;font-weight:700;" id="fundRaised">$0</div>
-            <div style="font-size:10px;color:var(--muted);">raised</div>
-          </div>
-        </div>
+        <div style="color:var(--green);font-size:24px;font-weight:700;" id="backerCount">0</div>
+        <div style="font-size:10px;color:var(--muted);">reef builders and counting</div>
       </div>
 
       <div id="backPrompt">
@@ -1247,14 +1232,6 @@
       var count = snap.numChildren();
       document.getElementById('backerCount').textContent = count;
     });
-    db.ref('fundStats').on('value', function(snap) {
-      var data = snap.val() || {};
-      var raised = data.raised || 0;
-      document.getElementById('fundRaised').textContent = '$' + raised.toLocaleString();
-      var pct = Math.min((raised / 7000000) * 100, 100);
-      document.getElementById('fundFill').style.width = pct + '%';
-    });
-
     function selectTier(el, amount) {
       document.querySelectorAll('.tier').forEach(function(t) { t.classList.remove('selected'); });
       el.classList.add('selected');
