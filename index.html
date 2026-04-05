@@ -1090,10 +1090,9 @@
           emailEl.focus();
           return;
         }
-        saveEmail(email).then(function() {
-          closeEngage();
-          showAchievement('> you\'re in the loop 🪸');
-        });
+        saveEmail(email);
+        closeEngage();
+        showAchievement('> you\'re in the loop 🪸');
         return;
       }
 
