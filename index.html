@@ -5,29 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CHARM Robotics — Save the Reef</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ocean-deep: #0a1628;
-      --ocean-mid: #0f2940;
-      --bg-card: rgba(255,255,255,0.03);
-      --border: rgba(255,255,255,0.06);
-      --coral-orange: #FF6B35;
-      --coral-pink: #FF8C61;
-      --reef-teal: #00D4AA;
-      --accent-blue: #38BDF8;
-      --text-white: #F8FAFC;
-      --text-muted: #94A3B8;
-      --btc-orange: #F7931A;
+      --bg: #0a0a0a;
+      --bg2: #111;
+      --green: #00ff41;
+      --green-dim: #00aa2a;
+      --coral: #FF6B35;
+      --teal: #00D4AA;
+      --blue: #38BDF8;
+      --white: #e0e0e0;
+      --muted: #555;
+      --mono: 'JetBrains Mono', 'Consolas', monospace;
     }
 
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--ocean-deep);
-      color: var(--text-white);
+      font-family: var(--mono);
+      background: var(--bg);
+      color: var(--white);
       margin: 0; padding: 0;
     }
 
@@ -36,388 +35,392 @@
     .slide { width: 100%; display: block; }
     .slide img { width: 100%; height: auto; display: block; }
 
-    /* ==================== SECTION SHARED ==================== */
+    /* ==================== GAME ==================== */
+    .game {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 32px 20px;
+    }
+    .terminal {
+      background: var(--bg);
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 20px;
+      position: relative;
+    }
+    .terminal::before {
+      content: '● ● ●';
+      display: block;
+      font-size: 8px;
+      letter-spacing: 4px;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    /* Login */
+    .prompt { color: var(--green); font-size: 13px; }
+    .prompt-input {
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 14px;
+      padding: 4px 0;
+      outline: none;
+      width: 180px;
+      caret-color: var(--green);
+    }
+    .prompt-btn {
+      background: none;
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 6px 14px;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: all 0.15s;
+    }
+    .prompt-btn:hover {
+      background: var(--green);
+      color: var(--bg);
+    }
+
+    /* Coral art */
+    .coral-art {
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.3;
+      color: var(--coral);
+      padding: 24px 0 16px;
+      min-height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s;
+      white-space: pre;
+    }
+    .coral-art.flash { color: #fff; }
+
+    /* Feed button */
+    .feed-btn {
+      display: block;
+      width: 100%;
+      background: none;
+      border: 2px solid var(--coral);
+      color: var(--coral);
+      font-family: var(--mono);
+      font-size: 18px;
+      font-weight: 700;
+      padding: 16px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      transition: all 0.1s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feed-btn:hover {
+      background: var(--coral);
+      color: var(--bg);
+    }
+    .feed-btn:active {
+      transform: scale(0.96);
+    }
+    .feed-btn.pop {
+      background: var(--coral);
+      color: var(--bg);
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 16px 0;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .stat-val {
+      color: var(--green);
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .stat-label { margin-top: 2px; }
+
+    /* Streak */
+    .streak {
+      text-align: center;
+      font-size: 11px;
+      color: var(--coral);
+      height: 18px;
+      margin-bottom: 8px;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      height: 3px;
+      background: #1a1a1a;
+      margin: 12px 0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--coral);
+      transition: width 0.3s;
+      border-radius: 2px;
+    }
+
+    /* Stage label */
+    .stage-label {
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    /* Leaderboard */
+    .lb {
+      margin-top: 20px;
+      border-top: 1px solid #1a1a1a;
+      padding-top: 16px;
+    }
+    .lb-title {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .lb-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 3px 0;
+      border-bottom: 1px solid #111;
+    }
+    .lb-row .rank { color: var(--muted); width: 24px; }
+    .lb-row .name { color: var(--white); flex: 1; }
+    .lb-row .score { color: var(--green); text-align: right; }
+    .lb-row.you .name { color: var(--coral); }
+    .lb-row.you .score { color: var(--coral); }
+
+    /* Achievement popup */
+    .achievement {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--bg);
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 13px;
+      padding: 12px 24px;
+      z-index: 999;
+      transition: transform 0.3s ease;
+      pointer-events: none;
+    }
+    .achievement.show { transform: translateX(-50%) translateY(0); }
+
+    /* Share */
+    .share-row {
+      text-align: center;
+      margin-top: 12px;
+    }
+    .share-btn {
+      background: none;
+      border: 1px solid var(--muted);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.15s;
+    }
+    .share-btn:hover {
+      border-color: var(--teal);
+      color: var(--teal);
+    }
+
+    /* Hidden state */
+    .hidden { display: none !important; }
+
+    /* ==================== SECTIONS (feed/invest) ==================== */
     .section {
-      padding: 56px 24px;
+      padding: 48px 20px;
       display: flex;
       justify-content: center;
     }
-    .section-inner {
-      max-width: 540px;
-      width: 100%;
-    }
+    .section-inner { max-width: 480px; width: 100%; }
     .section-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 2px;
-      color: var(--accent-blue);
-      margin-bottom: 16px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 12px;
     }
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 24px 0;
-    }
-
-    /* ==================== RALLY SECTION ==================== */
-    .rally {
-      background: linear-gradient(180deg, var(--ocean-deep) 0%, #0c2235 100%);
-      text-align: center;
-      padding: 64px 24px 56px;
-    }
-    .rally h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 32px; font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-    .rally h2 .coral-emoji { font-size: 36px; }
-    .rally .subtitle {
+    .section h3 {
       font-size: 16px;
-      color: var(--text-muted);
-      line-height: 1.5;
-      margin-bottom: 32px;
-    }
-    .rally .subtitle strong { color: var(--text-white); }
-
-    /* Big CTA button */
-    .rally-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: linear-gradient(135deg, var(--coral-orange), var(--coral-pink));
-      color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 20px; font-weight: 700;
-      padding: 18px 48px;
-      border: none; border-radius: 60px;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 30px rgba(255,107,53,0.3);
-      text-decoration: none;
-    }
-    .rally-btn:hover {
-      transform: scale(1.04);
-      box-shadow: 0 6px 40px rgba(255,107,53,0.45);
-    }
-    .rally-btn:active { transform: scale(0.97); }
-    .rally-btn .btn-emoji { font-size: 28px; }
-
-    /* Counter */
-    .rally-counter {
-      margin-top: 20px;
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-    .rally-counter strong {
-      color: var(--reef-teal);
-      font-weight: 600;
-    }
-
-    /* Post-click state */
-    .rally-success {
-      display: none;
-      animation: fadeUp 0.5s ease;
-    }
-    .rally-success.show { display: block; }
-    .rally-success h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 26px; font-weight: 700;
-      color: var(--reef-teal);
-      margin-bottom: 8px;
-    }
-    .rally-success p {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    /* Email form */
-    .email-form {
-      display: flex;
-      gap: 8px;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    .email-form input {
-      flex: 1;
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.3);
-      color: var(--text-white);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .email-form input::placeholder { color: var(--text-muted); }
-    .email-form input:focus { border-color: var(--reef-teal); }
-    .email-form button {
-      padding: 12px 24px;
-      border-radius: 10px;
-      border: none;
-      background: var(--reef-teal);
-      color: var(--ocean-deep);
-      font-family: 'Inter', sans-serif;
-      font-size: 14px; font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-      white-space: nowrap;
-    }
-    .email-form button:hover { opacity: 0.85; }
-    .email-thankyou {
-      display: none;
-      color: var(--reef-teal);
-      font-weight: 500;
-      font-size: 14px;
-      margin-top: 12px;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ==================== FEED A CORAL ==================== */
-    .feed-section {
-      background: linear-gradient(180deg, #0c2235 0%, var(--ocean-mid) 100%);
-    }
-    .feed-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .feed-header h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 22px; font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .feed-header p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-    .feed-header p a {
-      color: var(--reef-teal);
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-    .feed-tiers {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .tier {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .tier:hover {
-      border-color: var(--coral-orange);
-      background: rgba(255,107,53,0.04);
-    }
-    .tier.selected {
-      border-color: var(--coral-orange);
-      background: rgba(255,107,53,0.08);
-      box-shadow: 0 0 20px rgba(255,107,53,0.1);
-    }
-    .tier-amount {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 28px; font-weight: 800;
-      color: var(--coral-orange);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .tier-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    /* Payment reveal */
-    .payment-reveal {
-      display: none;
-      animation: fadeUp 0.4s ease;
-    }
-    .payment-reveal.show { display: block; }
-    .payment-reveal .note {
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-    .payment-reveal .note strong { color: var(--coral-orange); }
-
-    /* ==================== INVEST SECTION ==================== */
-    .invest-section {
-      background: linear-gradient(180deg, var(--ocean-mid) 0%, var(--ocean-deep) 100%);
-    }
-    .invest-header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .invest-header h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 22px; font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .invest-header p {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-    .ask-badge {
-      display: inline-block;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 36px; font-weight: 800;
-      background: linear-gradient(135deg, var(--coral-orange), var(--reef-teal));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-weight: 700;
+      color: var(--white);
       margin-bottom: 4px;
     }
-    .ask-round {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 20px;
+    .section p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .section p a { color: var(--teal); text-decoration: none; }
+    .divider {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      margin: 20px 0;
     }
 
-    /* ==================== SHARED: CARD ==================== */
+    /* Cards */
     .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px 20px;
-      margin-bottom: 14px;
+      background: #0d0d0d;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
     }
-    .card-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 2px;
-      color: var(--accent-blue);
-      margin-bottom: 14px;
+    .card-label {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
     }
 
     /* Wallet */
     .wallet-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
       display: flex; align-items: center; gap: 6px;
     }
     .dot {
-      width: 8px; height: 8px;
+      width: 6px; height: 6px;
       border-radius: 50%;
-      background: var(--reef-teal);
-      box-shadow: 0 0 8px rgba(0,212,170,0.4);
+      background: var(--green);
       flex-shrink: 0;
     }
     .wallet-box {
       display: flex; align-items: center; gap: 8px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 12px 14px;
+      background: #0a0a0a;
+      border: 1px solid #222;
+      padding: 10px 12px;
       cursor: pointer;
       transition: border-color 0.2s;
     }
-    .wallet-box:hover { border-color: var(--reef-teal); }
+    .wallet-box:hover { border-color: var(--green); }
     .wallet-addr {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 12px;
-      color: var(--text-white);
+      font-size: 11px;
+      color: var(--white);
       word-break: break-all;
       flex: 1; line-height: 1.5;
     }
     .copy-btn {
-      background: rgba(0,212,170,0.12);
-      border: 1px solid rgba(0,212,170,0.25);
-      color: var(--reef-teal);
-      font-size: 11px; font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 8px;
+      background: none;
+      border: 1px solid #333;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 4px 10px;
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-      font-family: 'Inter', sans-serif;
+      transition: all 0.15s;
     }
-    .copy-btn:hover { background: rgba(0,212,170,0.2); }
-    .copy-btn.copied { background: rgba(0,212,170,0.25); color: #fff; }
+    .copy-btn:hover { border-color: var(--green); }
+    .copy-btn.copied { border-color: var(--green); color: #fff; }
 
     .networks {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      margin-top: 10px;
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-top: 8px;
     }
     .net-tag {
-      font-size: 10px; color: var(--text-muted);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 5px;
-      padding: 3px 8px; font-weight: 500;
+      font-size: 9px; color: var(--muted);
+      border: 1px solid #1a1a1a;
+      padding: 2px 6px;
     }
 
     .info-row {
-      display: flex; align-items: flex-start; gap: 10px;
-      margin-bottom: 10px;
+      display: flex; align-items: flex-start; gap: 8px;
+      margin-bottom: 8px;
     }
-    .info-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
-    .info-text {
-      font-size: 13px; color: var(--text-muted); line-height: 1.5;
-    }
-    .info-text strong { color: var(--text-white); font-weight: 500; }
+    .info-icon { font-size: 13px; flex-shrink: 0; }
+    .info-text { font-size: 11px; color: var(--muted); line-height: 1.5; }
+    .info-text strong { color: var(--white); }
 
     /* Wire details */
     .wire-details {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      padding: 12px 14px; margin-top: 8px;
+      background: #0a0a0a;
+      border: 1px solid #1a1a1a;
+      padding: 10px 12px; margin-top: 6px;
     }
     .wire-row {
       display: flex; justify-content: space-between; align-items: baseline;
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      padding: 3px 0;
+      border-bottom: 1px solid #111;
     }
     .wire-row:last-child { border-bottom: none; }
-    .wire-label {
-      font-size: 10px; color: var(--text-muted);
-      text-transform: uppercase; letter-spacing: 1px;
-      font-weight: 500; flex-shrink: 0; margin-right: 12px;
-    }
-    .wire-value {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 12px; color: var(--text-white);
-      text-align: right;
-    }
+    .wire-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .wire-value { font-size: 11px; color: var(--white); text-align: right; }
 
-    /* ==================== FOOTER ==================== */
+    /* Feed tiers */
+    .feed-tiers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .tier {
+      border: 1px solid #1a1a1a;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tier:hover { border-color: var(--coral); }
+    .tier.selected { border-color: var(--coral); background: rgba(255,107,53,0.05); }
+    .tier-amount { font-size: 20px; font-weight: 700; color: var(--coral); }
+    .tier-label { font-size: 10px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+
+    .payment-reveal { display: none; }
+    .payment-reveal.show { display: block; }
+    .payment-reveal .note { text-align: center; font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+    .payment-reveal .note strong { color: var(--coral); }
+
+    /* Ask badge */
+    .ask-badge {
+      font-size: 32px; font-weight: 800;
+      color: var(--coral);
+      margin-bottom: 2px;
+    }
+    .ask-round { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+
+    /* Footer */
     .footer {
       text-align: center;
-      padding: 24px;
-      font-size: 11px;
-      color: var(--text-muted);
-      background: var(--ocean-deep);
+      padding: 20px;
+      font-size: 10px;
+      color: #333;
     }
-    .footer a {
-      color: var(--reef-teal);
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .footer .contact { margin-top: 6px; }
+    .footer a { color: var(--muted); text-decoration: none; }
+    .footer .contact { margin-top: 4px; }
 
     /* ==================== MOBILE ==================== */
     @media (max-width: 480px) {
-      .rally h2 { font-size: 24px; }
-      .rally-btn { font-size: 17px; padding: 16px 36px; }
-      .feed-tiers { grid-template-columns: 1fr 1fr; gap: 8px; }
-      .tier-amount { font-size: 24px; }
-      .email-form { flex-direction: column; }
-      .ask-badge { font-size: 30px; }
+      .game { padding: 16px 12px; }
+      .terminal { padding: 14px; }
+      .stat-val { font-size: 15px; }
+      .feed-btn { font-size: 16px; padding: 14px; }
     }
   </style>
 </head>
@@ -425,212 +428,189 @@
 
   <!-- ==================== SLIDES ==================== -->
   <div class="slides">
-    <div class="slide"><img src="img/slide1.svg" alt="CHARM Robotics — Problem & Solution"></div>
-    <div class="slide"><img src="img/slide2.svg" alt="CHARM — AI-Powered Technology & Traction"></div>
-    <div class="slide"><img src="img/slide3.svg" alt="CHARM — Market Opportunity"></div>
-    <div class="slide"><img src="img/slide4.svg" alt="CHARM — The Ask"></div>
+    <div class="slide"><img src="img/slide1.svg" alt="CHARM Robotics"></div>
+    <div class="slide"><img src="img/slide2.svg" alt="CHARM Technology"></div>
+    <div class="slide"><img src="img/slide3.svg" alt="CHARM Market"></div>
+    <div class="slide"><img src="img/slide4.svg" alt="CHARM The Ask"></div>
   </div>
 
-  <!-- ==================== RALLY ==================== -->
-  <div class="rally" id="rally">
-    <div id="rallyDefault">
-      <h2><span class="coral-emoji">🪸</span> Feed a Coral.<br>Save the Reef.</h2>
-      <p class="subtitle">
-        You just heard the pitch.<br>
-        Now <strong>raise your hand</strong> and press the button.
-      </p>
-      <button class="rally-btn" onclick="joinRally()">
-        <span class="btn-emoji">🪸</span> I'm In
-      </button>
-      <div class="rally-counter">
-        <strong id="counter">47</strong> people have joined the mission
-      </div>
-    </div>
+  <!-- ==================== CORAL GAME ==================== -->
+  <div class="game" id="game">
+    <div class="terminal">
 
-    <div class="rally-success" id="rallySuccess">
-      <h3>You're in. Welcome aboard. 🐚</h3>
-      <p>Drop your email so we can keep you in the loop — updates, progress, and how your coral is doing.</p>
-      <div class="email-form" id="emailForm">
-        <input type="email" id="emailInput" placeholder="your@email.com" autocomplete="email">
-        <button onclick="submitEmail()">Join</button>
+      <!-- LOGIN -->
+      <div id="login">
+        <div class="prompt">$ charm --join</div>
+        <div style="margin-top:12px;">
+          <span class="prompt" style="color:var(--muted);">name: </span>
+          <input type="text" class="prompt-input" id="nameInput" placeholder="_" maxlength="20" autofocus>
+          <button class="prompt-btn" onclick="startGame()">enter</button>
+        </div>
       </div>
-      <div class="email-thankyou" id="emailThanks">We'll be in touch. The reef thanks you. 🌊</div>
-      <p style="margin-top: 20px; font-size: 13px; color: var(--text-muted);">
-        Want to do more? <a href="#feed" style="color: var(--reef-teal); text-decoration: none; font-weight: 600;">Feed a coral below ↓</a>
-      </p>
+
+      <!-- GAME AREA -->
+      <div id="gameArea" class="hidden">
+        <div class="stage-label" id="stageLabel">SEED</div>
+        <div class="coral-art" id="coralArt"></div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+
+        <div class="streak" id="streak"></div>
+
+        <button class="feed-btn" id="feedBtn" onclick="feed()">
+          > FEED
+        </button>
+
+        <div class="stats">
+          <div>
+            <div class="stat-val" id="myFeeds">0</div>
+            <div class="stat-label">your feeds</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="stat-val" id="globalFeeds">0</div>
+            <div class="stat-label">total feeds</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="stat-val" id="myRank">#-</div>
+            <div class="stat-label">your rank</div>
+          </div>
+        </div>
+
+        <div class="lb" id="leaderboard">
+          <div class="lb-title">// leaderboard</div>
+          <div id="lbList"></div>
+        </div>
+
+        <div class="share-row">
+          <button class="share-btn" onclick="shareProgress()">[ share ]</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- ==================== FEED A CORAL ==================== -->
-  <div class="section feed-section" id="feed">
+  <!-- Achievement popup -->
+  <div class="achievement" id="ach"></div>
+
+  <!-- ==================== FEED A CORAL (donations) ==================== -->
+  <div class="section" id="feed-section" style="background:#0a0a0a;">
     <div class="section-inner">
-      <div class="feed-header">
-        <h3>Feed a Coral 🪸</h3>
-        <p>Pick an amount. Every dollar goes directly to growing baby corals.<br>
-        Learn more at <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
-      </div>
+      <div class="section-title">// donate</div>
+      <h3>Feed a Real Coral</h3>
+      <p>Every dollar goes directly to growing baby corals.<br>
+      Learn more at <a href="https://beyondcoral.com" target="_blank">beyondcoral.com</a></p>
 
       <div class="feed-tiers">
-        <div class="tier" onclick="selectTier(this, '$5')">
+        <div class="tier" onclick="selectTier(this,'$5')">
           <div class="tier-amount">$5</div>
-          <div class="tier-label">Feed one coral<br>for a week</div>
+          <div class="tier-label">feed one coral<br>for a week</div>
         </div>
-        <div class="tier" onclick="selectTier(this, '$10')">
+        <div class="tier" onclick="selectTier(this,'$10')">
           <div class="tier-amount">$10</div>
-          <div class="tier-label">Feed one coral<br>for a month</div>
+          <div class="tier-label">feed one coral<br>for a month</div>
         </div>
-        <div class="tier" onclick="selectTier(this, '$25')">
+        <div class="tier" onclick="selectTier(this,'$25')">
           <div class="tier-amount">$25</div>
-          <div class="tier-label">Sponsor a frag<br>from plug to reef</div>
+          <div class="tier-label">sponsor a frag<br>plug to reef</div>
         </div>
-        <div class="tier" onclick="selectTier(this, '$50')">
+        <div class="tier" onclick="selectTier(this,'$50')">
           <div class="tier-amount">$50</div>
-          <div class="tier-label">Name a coral<br>on the reef</div>
+          <div class="tier-label">name a coral<br>on the reef</div>
         </div>
       </div>
 
       <div class="payment-reveal" id="paymentReveal">
-        <p class="note">Send <strong id="selectedAmount">$10</strong> (or any amount) to either address below:</p>
-
-        <div class="card" style="margin-bottom: 10px;">
-          <div class="wallet-label">
-            <span class="dot"></span>
-            EVM — ETH, USDT, USDC, or any token
-          </div>
-          <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305', 'copyFeedEvm')">
+        <p class="note">send <strong id="selectedAmount">$10</strong> to either address:</p>
+        <div class="card">
+          <div class="wallet-label"><span class="dot"></span> EVM — ETH, USDT, USDC, any token</div>
+          <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpFeedEvm')">
             <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
-            <button class="copy-btn" id="copyFeedEvm">Copy</button>
+            <button class="copy-btn" id="cpFeedEvm">copy</button>
           </div>
           <div class="networks">
-            <span class="net-tag">Ethereum</span>
-            <span class="net-tag">Polygon</span>
-            <span class="net-tag">BSC</span>
-            <span class="net-tag">Base</span>
-            <span class="net-tag">Arbitrum</span>
+            <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Base</span><span class="net-tag">Arbitrum</span>
           </div>
         </div>
-
-        <div class="card" style="margin-bottom: 10px;">
-          <div class="wallet-label">
-            <span class="dot" style="background: var(--btc-orange); box-shadow: 0 0 8px rgba(247,147,26,0.4);"></span>
-            Bitcoin
-          </div>
-          <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ', 'copyFeedBtc')">
+        <div class="card">
+          <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
+          <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpFeedBtc')">
             <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
-            <button class="copy-btn" id="copyFeedBtc">Copy</button>
+            <button class="copy-btn" id="cpFeedBtc">copy</button>
           </div>
         </div>
-
-        <p class="note" style="font-size: 12px; margin-top: 16px;">
-          After sending, email <strong style="color: var(--text-white);">stephen.rodan@beyondcoral.com</strong> with your tx hash and we'll send you a photo of your coral.
+        <p class="note" style="font-size:10px;margin-top:12px;">
+          email <strong style="color:var(--white)">stephen.rodan@beyondcoral.com</strong> with tx hash for a photo of your coral
         </p>
       </div>
     </div>
   </div>
 
   <!-- ==================== INVEST ==================== -->
-  <div class="section invest-section" id="invest">
+  <div class="section" id="invest" style="background:#080808;">
     <div class="section-inner">
-      <div class="invest-header">
-        <h3>Ready to Go Bigger?</h3>
-        <p>For those who want to build the future of reef restoration with us.</p>
-        <div style="margin-top: 16px;">
-          <div class="ask-badge">$7M</div>
-          <div class="ask-round">Seed Round &nbsp;·&nbsp; SAFE or Equity</div>
-        </div>
+      <div class="section-title">// invest</div>
+      <h3>Ready to Go Bigger?</h3>
+      <p>Build the future of reef restoration with us.</p>
+      <div style="text-align:center;margin:16px 0;">
+        <div class="ask-badge">$7M</div>
+        <div class="ask-round">Seed Round · SAFE or Equity</div>
       </div>
 
-      <!-- Crypto -->
       <div class="card">
-        <div class="card-title">Crypto</div>
-
-        <div class="wallet-label">
-          <span class="dot"></span>
-          EVM wallet — any token, any EVM network
-        </div>
-        <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305', 'copyInvEvm')">
+        <div class="card-label">crypto</div>
+        <div class="wallet-label"><span class="dot"></span> EVM — any token, any network</div>
+        <div class="wallet-box" onclick="copyText('0x1A8B512e50D53aFC4eAb97A944D8f999F118a305','cpInvEvm')">
           <span class="wallet-addr">0x1A8B512e50D53aFC4eAb97A944D8f999F118a305</span>
-          <button class="copy-btn" id="copyInvEvm">Copy</button>
+          <button class="copy-btn" id="cpInvEvm">copy</button>
         </div>
         <div class="networks">
-          <span class="net-tag">Ethereum</span>
-          <span class="net-tag">Polygon</span>
-          <span class="net-tag">BSC</span>
-          <span class="net-tag">Arbitrum</span>
-          <span class="net-tag">Base</span>
-          <span class="net-tag">Optimism</span>
-          <span class="net-tag">Avalanche</span>
+          <span class="net-tag">Ethereum</span><span class="net-tag">Polygon</span><span class="net-tag">BSC</span><span class="net-tag">Arbitrum</span><span class="net-tag">Base</span><span class="net-tag">Optimism</span><span class="net-tag">Avalanche</span>
         </div>
-
         <hr class="divider">
-
-        <div class="wallet-label">
-          <span class="dot" style="background: var(--btc-orange); box-shadow: 0 0 8px rgba(247,147,26,0.4);"></span>
-          Bitcoin — native BTC
-        </div>
-        <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ', 'copyInvBtc')">
+        <div class="wallet-label"><span class="dot" style="background:var(--coral)"></span> Bitcoin</div>
+        <div class="wallet-box" onclick="copyText('3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ','cpInvBtc')">
           <span class="wallet-addr">3Bwv7S8UAfpNVVYSJA1FMyEQYbp6BAaxiJ</span>
-          <button class="copy-btn" id="copyInvBtc">Copy</button>
+          <button class="copy-btn" id="cpInvBtc">copy</button>
         </div>
-
-        <hr class="divider">
-
-        <div class="info-row">
-          <span class="info-icon">🪙</span>
-          <div class="info-text">ETH, BTC, USDT, USDC, DAI, WBTC, wSOL, or any ERC-20 / BEP-20 token.</div>
-        </div>
-        <div class="info-row">
-          <span class="info-icon">💬</span>
-          <div class="info-text"><strong>Other chains (Solana, Tron, etc.)?</strong> Email us for the right address.</div>
+        <div style="margin-top:12px;">
+          <div class="info-row">
+            <span class="info-icon">→</span>
+            <div class="info-text">ETH, BTC, USDT, USDC, DAI, WBTC, wSOL, any ERC-20 / BEP-20</div>
+          </div>
+          <div class="info-row">
+            <span class="info-icon">→</span>
+            <div class="info-text"><strong>Solana, Tron?</strong> Email for address.</div>
+          </div>
         </div>
       </div>
 
-      <!-- Bank Wire -->
       <div class="card">
-        <div class="card-title">Bank Wire (AUD)</div>
-        <div class="wallet-label">
-          <span class="dot" style="background: var(--accent-blue); box-shadow: 0 0 8px rgba(56,189,248,0.4);"></span>
-          Direct transfer to CHARM Holdings
-        </div>
+        <div class="card-label">bank wire (aud)</div>
         <div class="wire-details">
-          <div class="wire-row">
-            <span class="wire-label">Account Name</span>
-            <span class="wire-value">CHARM Holdings Pty Ltd</span>
-          </div>
-          <div class="wire-row">
-            <span class="wire-label">BSB</span>
-            <span class="wire-value">014-730</span>
-          </div>
-          <div class="wire-row">
-            <span class="wire-label">Account</span>
-            <span class="wire-value">6438-79602</span>
-          </div>
-          <div class="wire-row">
-            <span class="wire-label">ABN</span>
-            <span class="wire-value">27 656 176 939</span>
-          </div>
-          <div class="wire-row">
-            <span class="wire-label">Address</span>
-            <span class="wire-value">6/53a Jackson St, St Kilda VIC 3182</span>
-          </div>
+          <div class="wire-row"><span class="wire-label">Account</span><span class="wire-value">CHARM Holdings Pty Ltd</span></div>
+          <div class="wire-row"><span class="wire-label">BSB</span><span class="wire-value">014-730</span></div>
+          <div class="wire-row"><span class="wire-label">Acct #</span><span class="wire-value">6438-79602</span></div>
+          <div class="wire-row"><span class="wire-label">ABN</span><span class="wire-value">27 656 176 939</span></div>
+          <div class="wire-row"><span class="wire-label">Address</span><span class="wire-value">6/53a Jackson St, St Kilda VIC 3182</span></div>
         </div>
-        <div class="info-row" style="margin-top: 12px;">
-          <span class="info-icon">🌐</span>
-          <div class="info-text"><strong>International (USD/EUR)?</strong> Email for SWIFT details.</div>
+        <div class="info-row" style="margin-top:10px;">
+          <span class="info-icon">→</span>
+          <div class="info-text"><strong>USD/EUR wire?</strong> Email for SWIFT details.</div>
         </div>
       </div>
 
-      <!-- After you send -->
       <div class="card">
-        <div class="card-title">After You Send</div>
+        <div class="card-label">after you send</div>
         <div class="info-row">
-          <span class="info-icon">📧</span>
-          <div class="info-text">Email <strong>stephen.rodan@beyondcoral.com</strong> with your tx hash or transfer reference. We'll confirm receipt and send the SAFE agreement.</div>
+          <span class="info-icon">→</span>
+          <div class="info-text">Email <strong>stephen.rodan@beyondcoral.com</strong> with tx hash or transfer ref. We confirm + send SAFE.</div>
         </div>
         <hr class="divider">
         <div class="info-row">
-          <span class="info-icon">🔒</span>
-          <div class="info-text">No middlemen. Crypto goes to a self-custodied wallet. Wire goes directly to CHARM Holdings Pty Ltd (ACN 656 176 939).</div>
+          <span class="info-icon">→</span>
+          <div class="info-text">No middlemen. Crypto → self-custodied wallet. Wire → CHARM Holdings Pty Ltd (ACN 656 176 939).</div>
         </div>
       </div>
     </div>
@@ -638,56 +618,271 @@
 
   <!-- ==================== FOOTER ==================== -->
   <div class="footer">
-    <div>CHARM Holdings Pty Ltd &nbsp;|&nbsp; Townsville, Australia</div>
+    <div>CHARM Holdings Pty Ltd · Townsville, Australia</div>
     <div class="contact">
-      <a href="mailto:stephen.rodan@beyondcoral.com">stephen.rodan@beyondcoral.com</a> &nbsp;·&nbsp;
-      <a href="https://www.charm.bot">charm.bot</a> &nbsp;·&nbsp;
+      <a href="mailto:stephen.rodan@beyondcoral.com">stephen.rodan@beyondcoral.com</a> ·
+      <a href="https://www.charm.bot">charm.bot</a> ·
       <a href="https://beyondcoral.com">beyondcoral.com</a>
     </div>
   </div>
 
   <!-- ==================== SCRIPT ==================== -->
   <script>
-    // Rally button
-    var count = 47;
-    function joinRally() {
-      count++;
-      document.getElementById('counter').textContent = count;
-      document.getElementById('rallyDefault').style.display = 'none';
-      var success = document.getElementById('rallySuccess');
-      success.style.display = 'block';
-      success.classList.add('show');
-      // Save to localStorage so revisits see the success state
-      localStorage.setItem('charm_joined', 'true');
+    // ---- ASCII coral stages ----
+    var STAGES = [
+      { name: 'SEED', threshold: 0, art:
+        '       .\n' +
+        '      _|_\n' +
+        '    ~~   ~~'
+      },
+      { name: 'POLYP', threshold: 10, art:
+        '       o\n' +
+        '      /|\\\n' +
+        '     / | \\\n' +
+        '    ~~~|~~~'
+      },
+      { name: 'BRANCH', threshold: 30, art:
+        '     \\o/\n' +
+        '    \\ | /\n' +
+        '     \\|/\n' +
+        '      |\n' +
+        '    ~~|||~~'
+      },
+      { name: 'COLONY', threshold: 75, art:
+        '    \\\\|o|//\n' +
+        '   --\\|/|/--\n' +
+        '    \\ ||| /\n' +
+        '     \\||/\n' +
+        '    ~~||||~~\n' +
+        '   ~~~~~~~~'
+      },
+      { name: 'REEF', threshold: 150, art:
+        '  ** \\\\|o|// **\n' +
+        '  *--\\\\|/|//--*\n' +
+        '   ---\\|||/---\n' +
+        '    \\\\||||//\n' +
+        '   ~~||||||~~\n' +
+        '  ~~~~~~~~~~~~\n' +
+        '  ~ ~ ~ ~ ~ ~ ~'
+      },
+      { name: 'ECOSYSTEM', threshold: 300, art:
+        ' .o*  \\\\\\|o|///  *o.\n' +
+        '  **--\\\\\\|/|///--**\n' +
+        '   ----\\\\|||//----\n' +
+        '    \\\\\\||||||///\n' +
+        '   ~~||||||||||||~~\n' +
+        '  ~~~~~~~~~~~~~~~~~~\n' +
+        '  ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '    REEF RESTORED'
+      }
+    ];
+
+    var ACHIEVEMENTS = [
+      { at: 1, msg: '> first feed!' },
+      { at: 10, msg: '> polyp unlocked' },
+      { at: 30, msg: '> branch unlocked' },
+      { at: 50, msg: '> halfway to colony' },
+      { at: 75, msg: '> colony unlocked' },
+      { at: 100, msg: '> centurion' },
+      { at: 150, msg: '> reef unlocked' },
+      { at: 200, msg: '> reef guardian' },
+      { at: 300, msg: '> ecosystem unlocked' },
+      { at: 500, msg: '> legend' }
+    ];
+
+    // ---- State ----
+    var playerName = '';
+    var myFeeds = 0;
+    var lastFeedTime = 0;
+    var streakCount = 0;
+    var leaderboard = [];
+
+    // Load saved state
+    function loadState() {
+      try {
+        var s = JSON.parse(localStorage.getItem('charm_game') || '{}');
+        if (s.name) {
+          playerName = s.name;
+          myFeeds = s.feeds || 0;
+        }
+        leaderboard = JSON.parse(localStorage.getItem('charm_lb') || '[]');
+      } catch(e) {}
     }
 
-    // Email submit (mailto fallback — no backend needed)
-    function submitEmail() {
-      var email = document.getElementById('emailInput').value;
-      if (!email || !email.includes('@')) return;
-      // Open mailto as a lightweight capture — replace with real endpoint when ready
-      var subject = encodeURIComponent('CHARM — New Rally Signup');
-      var body = encodeURIComponent('New signup from: ' + email);
-      window.open('mailto:stephen.rodan@beyondcoral.com?subject=' + subject + '&body=' + body, '_blank');
-      document.getElementById('emailForm').style.display = 'none';
-      document.getElementById('emailThanks').style.display = 'block';
-      localStorage.setItem('charm_email', email);
+    function saveState() {
+      localStorage.setItem('charm_game', JSON.stringify({ name: playerName, feeds: myFeeds }));
+      // Update leaderboard
+      var found = false;
+      for (var i = 0; i < leaderboard.length; i++) {
+        if (leaderboard[i].name === playerName) {
+          leaderboard[i].feeds = myFeeds;
+          found = true;
+          break;
+        }
+      }
+      if (!found) leaderboard.push({ name: playerName, feeds: myFeeds });
+      leaderboard.sort(function(a, b) { return b.feeds - a.feeds; });
+      localStorage.setItem('charm_lb', JSON.stringify(leaderboard));
     }
 
-    // Copy to clipboard
+    // ---- Game logic ----
+    function startGame() {
+      var name = document.getElementById('nameInput').value.trim();
+      if (!name) return;
+      playerName = name;
+      loadState(); // reload in case they had old data
+      if (!myFeeds) myFeeds = 0;
+      saveState();
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('gameArea').classList.remove('hidden');
+      render();
+    }
+
+    // Handle enter key on name input
+    document.getElementById('nameInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') startGame();
+    });
+
+    function feed() {
+      myFeeds++;
+      var now = Date.now();
+
+      // Streak detection
+      if (now - lastFeedTime < 600) {
+        streakCount++;
+      } else {
+        streakCount = 1;
+      }
+      lastFeedTime = now;
+
+      // Visual feedback
+      var art = document.getElementById('coralArt');
+      art.classList.add('flash');
+      setTimeout(function() { art.classList.remove('flash'); }, 80);
+
+      var btn = document.getElementById('feedBtn');
+      btn.classList.add('pop');
+      setTimeout(function() { btn.classList.remove('pop'); }, 100);
+
+      // Haptic
+      if (navigator.vibrate) navigator.vibrate(15);
+
+      // Check achievements
+      for (var i = 0; i < ACHIEVEMENTS.length; i++) {
+        if (ACHIEVEMENTS[i].at === myFeeds) {
+          showAchievement(ACHIEVEMENTS[i].msg);
+          break;
+        }
+      }
+
+      saveState();
+      render();
+    }
+
+    function getStage(feeds) {
+      var stage = STAGES[0];
+      for (var i = 0; i < STAGES.length; i++) {
+        if (feeds >= STAGES[i].threshold) stage = STAGES[i];
+      }
+      return stage;
+    }
+
+    function getNextThreshold(feeds) {
+      for (var i = 0; i < STAGES.length; i++) {
+        if (feeds < STAGES[i].threshold) return STAGES[i].threshold;
+      }
+      return STAGES[STAGES.length - 1].threshold;
+    }
+
+    function getPrevThreshold(feeds) {
+      var prev = 0;
+      for (var i = 0; i < STAGES.length; i++) {
+        if (feeds < STAGES[i].threshold) return prev;
+        prev = STAGES[i].threshold;
+      }
+      return prev;
+    }
+
+    function render() {
+      var stage = getStage(myFeeds);
+      document.getElementById('stageLabel').textContent = stage.name;
+      document.getElementById('coralArt').textContent = stage.art;
+      document.getElementById('myFeeds').textContent = myFeeds;
+
+      // Global = sum of leaderboard
+      var global = 0;
+      for (var i = 0; i < leaderboard.length; i++) global += leaderboard[i].feeds;
+      document.getElementById('globalFeeds').textContent = global;
+
+      // Rank
+      var rank = '-';
+      for (var i = 0; i < leaderboard.length; i++) {
+        if (leaderboard[i].name === playerName) { rank = '#' + (i + 1); break; }
+      }
+      document.getElementById('myRank').textContent = rank;
+
+      // Progress bar
+      var next = getNextThreshold(myFeeds);
+      var prev = getPrevThreshold(myFeeds);
+      var pct = next > prev ? ((myFeeds - prev) / (next - prev)) * 100 : 100;
+      document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
+
+      // Streak
+      var streakEl = document.getElementById('streak');
+      if (streakCount > 2) {
+        streakEl.textContent = 'x' + streakCount + ' streak!';
+      } else {
+        streakEl.textContent = '';
+      }
+
+      // Leaderboard
+      var html = '';
+      var show = Math.min(leaderboard.length, 8);
+      for (var i = 0; i < show; i++) {
+        var isYou = leaderboard[i].name === playerName;
+        html += '<div class="lb-row' + (isYou ? ' you' : '') + '">' +
+          '<span class="rank">' + (i + 1) + '</span>' +
+          '<span class="name">' + esc(leaderboard[i].name) + (isYou ? ' (you)' : '') + '</span>' +
+          '<span class="score">' + leaderboard[i].feeds + '</span>' +
+          '</div>';
+      }
+      document.getElementById('lbList').innerHTML = html;
+    }
+
+    function showAchievement(msg) {
+      var el = document.getElementById('ach');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(function() { el.classList.remove('show'); }, 2500);
+    }
+
+    function shareProgress() {
+      var stage = getStage(myFeeds);
+      var text = 'I fed ' + myFeeds + ' corals and grew a ' + stage.name + ' on charm.bot 🪸';
+      if (navigator.share) {
+        navigator.share({ text: text, url: 'https://charm.bot' });
+      } else {
+        navigator.clipboard.writeText(text + ' https://charm.bot');
+        showAchievement('> copied to clipboard');
+      }
+    }
+
+    function esc(s) {
+      var d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // ---- Donations / Invest ----
     function copyText(text, btnId) {
       navigator.clipboard.writeText(text).then(function() {
         var btn = document.getElementById(btnId);
-        btn.textContent = 'Copied!';
+        btn.textContent = 'copied!';
         btn.classList.add('copied');
-        setTimeout(function() {
-          btn.textContent = 'Copy';
-          btn.classList.remove('copied');
-        }, 2000);
+        setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
       });
     }
 
-    // Feed a coral tier selection
     function selectTier(el, amount) {
       document.querySelectorAll('.tier').forEach(function(t) { t.classList.remove('selected'); });
       el.classList.add('selected');
@@ -695,19 +890,14 @@
       var reveal = document.getElementById('paymentReveal');
       reveal.style.display = 'block';
       reveal.classList.add('show');
-      reveal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // Restore state if user already joined
-    if (localStorage.getItem('charm_joined')) {
-      document.getElementById('rallyDefault').style.display = 'none';
-      var s = document.getElementById('rallySuccess');
-      s.style.display = 'block';
-      s.classList.add('show');
-      if (localStorage.getItem('charm_email')) {
-        document.getElementById('emailForm').style.display = 'none';
-        document.getElementById('emailThanks').style.display = 'block';
-      }
+    // ---- Init ----
+    loadState();
+    if (playerName) {
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('gameArea').classList.remove('hidden');
+      render();
     }
   </script>
 </body>
