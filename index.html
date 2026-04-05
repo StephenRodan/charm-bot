@@ -724,8 +724,119 @@
         '  ~~~~~~~~~~~~~~~~~~\n' +
         '  ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
         '    REEF RESTORED'
+      },
+      { name: 'DEEP REEF', threshold: 500, art:
+        '  o   .o*\\\\\\|o|///*o.   o\n' +
+        '  *--**--\\\\\\|/|///--**--*\n' +
+        '   *----\\\\\\\\|||////----*\n' +
+        '    \\\\\\\\\\||||||/////\n' +
+        '   ~~||||||||||||||||||~~\n' +
+        '  ~~~~~~~~~~~~~~~~~~~~~~\n' +
+        '  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        ' ~  ~  ~  ~  ~  ~  ~  ~\n' +
+        '      DEEP REEF'
+      },
+      { name: 'OCEAN', threshold: 1000, art:
+        ' <>< o  .o*\\\\\\|o|///*o.  o ><>\n' +
+        '  *--**---\\\\\\|/|///---**--*\n' +
+        '   *-----\\\\\\\\|||////-----*\n' +
+        '  --\\\\\\\\\\\\||||||//////--\n' +
+        '   ~~||||||||||||||||||||~~\n' +
+        '  ~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
+        ' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '~  ~  ~  ~  ~  ~  ~  ~  ~ ~\n' +
+        '~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '        THE OCEAN'
+      },
+      { name: 'BLUE PLANET', threshold: 2000, art:
+        '        . * .  *  . * .\n' +
+        '     *    <>< .o.  ><>   *\n' +
+        '  <>< o  .o*\\\\\\|o|///*o.  o ><>\n' +
+        '   *--**---\\\\\\|/|///---**--*\n' +
+        '    *-----\\\\\\\\|||////-----*\n' +
+        '   --\\\\\\\\\\\\||||||//////--\n' +
+        '    ~~||||||||||||||||||||~~\n' +
+        '   ~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
+        '  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        ' ~  ~  ~  ~  ~  ~  ~  ~  ~ ~\n' +
+        ' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '~  ~  ~  ~  ~  ~  ~  ~  ~  ~\n' +
+        '       BLUE PLANET'
+      },
+      { name: 'GENESIS', threshold: 5000, art:
+        '     *  .  *  . *  .  *  . *\n' +
+        '   .   *   .   *   .   *   .\n' +
+        '     *    <>< .o.  ><>   *\n' +
+        '  <>< o  .o*\\\\\\|o|///*o.  o ><>\n' +
+        '   *--**---\\\\\\|/|///---**--*\n' +
+        '    *-----\\\\\\\\|||////-----*\n' +
+        '   --\\\\\\\\\\\\||||||//////--\n' +
+        '    ~~||||||||||||||||||||~~\n' +
+        '   ~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
+        '  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        ' ~  ~  ~  ~  ~  ~  ~  ~  ~ ~\n' +
+        ' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '~  ~  ~  ~  ~  ~  ~  ~  ~  ~\n' +
+        '~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '         G E N E S I S'
+      },
+      { name: 'IMMORTAL', threshold: 10000, art:
+        '   *  .  *  . *  .  *  . *  .\n' +
+        '  . *  .  *  . *  .  *  . *  \n' +
+        '   *  .  *  . *  .  *  . *  .\n' +
+        '     *    <>< .o.  ><>   *\n' +
+        '  <>< o  .o*\\\\\\|o|///*o.  o ><>\n' +
+        '   *--**---\\\\\\|/|///---**--*\n' +
+        '    *-----\\\\\\\\|||////-----*\n' +
+        '   --\\\\\\\\\\\\||||||//////--\n' +
+        '    ~~||||||||||||||||||||~~\n' +
+        '   ~~~~~~~~~~~~~~~~~~~~~~~~~~\n' +
+        '  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        ' ~  ~  ~  ~  ~  ~  ~  ~  ~ ~\n' +
+        ' ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '~  ~  ~  ~  ~  ~  ~  ~  ~  ~\n' +
+        '~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
+        '~  ~  ~  ~  ~  ~  ~  ~  ~  ~ ~\n' +
+        '      I M M O R T A L'
       }
     ];
+
+    // Beyond IMMORTAL, coral keeps growing procedurally
+    function getProceduralArt(feeds) {
+      var layers = Math.floor((feeds - 10000) / 2000) + 1;
+      var maxW = Math.min(18 + layers * 2, 40);
+      var lines = [];
+      // Stars
+      for (var s = 0; s < Math.min(layers, 4); s++) {
+        var starLine = '';
+        for (var j = 0; j < maxW; j++) starLine += (Math.random() > 0.7) ? (Math.random() > 0.5 ? '*' : '.') : ' ';
+        lines.push(starLine);
+      }
+      // Fish
+      lines.push('     *    <>< .o.  ><>   *');
+      // Core
+      lines.push('  <>< o  .o*\\\\\\|o|///*o.  o ><>');
+      lines.push('   *--**---\\\\\\|/|///---**--*');
+      lines.push('    *-----\\\\\\\\|||////-----*');
+      lines.push('   --\\\\\\\\\\\\||||||//////--');
+      lines.push('    ~~||||||||||||||||||||~~');
+      lines.push('   ~~~~~~~~~~~~~~~~~~~~~~~~~~');
+      // Water layers grow with feeds
+      var waterLayers = Math.min(4 + layers, 12);
+      for (var w = 0; w < waterLayers; w++) {
+        var wl = '';
+        var pad = Math.max(0, Math.floor((maxW - (16 + w * 2)) / 2));
+        for (var p = 0; p < pad; p++) wl += ' ';
+        for (var j = 0; j < 16 + w * 2; j++) wl += (j % 2 === w % 2) ? '~' : ' ';
+        lines.push(wl);
+      }
+      // Title
+      var rank = Math.floor((feeds - 10000) / 2000) + 1;
+      var titles = ['IMMORTAL', 'ETERNAL', 'INFINITE', 'COSMIC', 'DIVINE', 'TRANSCENDENT', 'OMNISCIENT', 'SUPREME', 'ABSOLUTE', 'BEYOND'];
+      var title = titles[Math.min(rank, titles.length - 1)];
+      lines.push('      ' + title + ' x' + rank);
+      return lines.join('\n');
+    }
 
     var ACHIEVEMENTS = [
       { at: 1, msg: '> first feed!' },
@@ -737,7 +848,19 @@
       { at: 150, msg: '> reef unlocked' },
       { at: 200, msg: '> reef guardian' },
       { at: 300, msg: '> ecosystem unlocked' },
-      { at: 500, msg: '> legend' }
+      { at: 500, msg: '> deep reef unlocked' },
+      { at: 750, msg: '> unstoppable' },
+      { at: 1000, msg: '> ocean unlocked' },
+      { at: 1500, msg: '> relentless' },
+      { at: 2000, msg: '> blue planet unlocked' },
+      { at: 3000, msg: '> force of nature' },
+      { at: 5000, msg: '> genesis unlocked' },
+      { at: 7500, msg: '> mythical' },
+      { at: 10000, msg: '> IMMORTAL' },
+      { at: 15000, msg: '> ETERNAL' },
+      { at: 20000, msg: '> INFINITE' },
+      { at: 30000, msg: '> COSMIC' },
+      { at: 50000, msg: '> DIVINE' }
     ];
 
     // ---- State ----
@@ -841,7 +964,10 @@
       for (var i = 0; i < STAGES.length; i++) {
         if (feeds < STAGES[i].threshold) return STAGES[i].threshold;
       }
-      return STAGES[STAGES.length - 1].threshold;
+      // Beyond last fixed stage: every 2000 feeds is a new level
+      var last = STAGES[STAGES.length - 1].threshold;
+      var level = Math.floor((feeds - last) / 2000);
+      return last + (level + 1) * 2000;
     }
 
     function getPrevThreshold(feeds) {
@@ -850,13 +976,27 @@
         if (feeds < STAGES[i].threshold) return prev;
         prev = STAGES[i].threshold;
       }
-      return prev;
+      // Beyond last fixed stage
+      var last = STAGES[STAGES.length - 1].threshold;
+      var level = Math.floor((feeds - last) / 2000);
+      return last + level * 2000;
     }
 
     function render() {
       var stage = getStage(myFeeds);
-      document.getElementById('stageLabel').textContent = stage.name;
-      document.getElementById('coralArt').textContent = stage.art;
+      var lastThreshold = STAGES[STAGES.length - 1].threshold;
+      if (myFeeds >= lastThreshold) {
+        // Procedural: ever-growing titles
+        var rank = Math.floor((myFeeds - lastThreshold) / 2000) + 1;
+        var titles = ['IMMORTAL', 'ETERNAL', 'INFINITE', 'COSMIC', 'DIVINE', 'TRANSCENDENT', 'OMNISCIENT', 'SUPREME', 'ABSOLUTE', 'BEYOND'];
+        var title = titles[Math.min(rank - 1, titles.length - 1)];
+        if (rank > titles.length) title = 'BEYOND x' + rank;
+        document.getElementById('stageLabel').textContent = title;
+        document.getElementById('coralArt').textContent = getProceduralArt(myFeeds);
+      } else {
+        document.getElementById('stageLabel').textContent = stage.name;
+        document.getElementById('coralArt').textContent = stage.art;
+      }
       document.getElementById('myFeeds').textContent = myFeeds;
 
       // Global = sum of leaderboard
