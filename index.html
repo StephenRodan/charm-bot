@@ -1075,6 +1075,13 @@
       }
     }
 
+    function saveEmail(email) {
+      var data = { email: email, name: playerName, feeds: myFeeds, time: Date.now(), event: eventId };
+      return db.ref('emails/' + playerId).set(data).catch(function() {
+        db.ref('players/' + eventId + '/' + playerId + '/email').set(email);
+      });
+    }
+
     function submitEngage(action) {
       var emailEl = document.getElementById('engageEmail');
       var email = emailEl.value.trim();
@@ -1086,14 +1093,15 @@
           emailEl.focus();
           return;
         }
-        db.ref('emails/' + playerId).set({ email: email, name: playerName, feeds: myFeeds, time: Date.now() });
-        closeEngage();
-        showAchievement('> you\'re in the loop 🪸');
+        saveEmail(email).then(function() {
+          closeEngage();
+          showAchievement('> you\'re in the loop 🪸');
+        });
         return;
       }
 
       if (email && email.indexOf('@') !== -1) {
-        db.ref('emails/' + playerId).set({ email: email, name: playerName, feeds: myFeeds, time: Date.now() });
+        saveEmail(email);
       }
       closeEngage();
       if (action === 'invest') {
