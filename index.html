@@ -1266,7 +1266,7 @@
       updateColonyUI();
       renderLocal();
       setTimeout(function() {
-        document.getElementById('game').scrollIntoView({behavior:'smooth', block:'start'});
+        window.scrollTo({top: 0, behavior:'smooth'});
       }, 100);
     }
 
@@ -1321,6 +1321,7 @@
       setTimeout(function() { cvs.classList.remove('flash'); }, 80);
       RD.advance(myFeeds);
       var btn = document.getElementById('feedBtn');
+      btn.blur();
       btn.classList.add('pop');
       setTimeout(function() { btn.classList.remove('pop'); }, 100);
       if (navigator.vibrate) navigator.vibrate(15);
