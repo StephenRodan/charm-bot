@@ -1076,10 +1076,7 @@
     }
 
     function saveEmail(email) {
-      var data = { email: email, name: playerName, feeds: myFeeds, time: Date.now(), event: eventId };
-      return db.ref('emails/' + playerId).set(data).catch(function() {
-        db.ref('players/' + eventId + '/' + playerId + '/email').set(email);
-      });
+      return db.ref('players/' + eventId + '/' + playerId + '/email').set(email);
     }
 
     function submitEngage(action) {
