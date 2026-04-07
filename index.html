@@ -110,7 +110,44 @@
       transition: border-color 0.2s;
     }
     .arcade-input:focus { border-color: var(--coral); }
-    .arcade-input::placeholder { color: #333; }
+    .arcade-input::placeholder { color: #444; font-style: italic; }
+    .arcade-input:focus::placeholder { color: transparent; }
+
+    /* Cookie consent */
+    .consent-wrap {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #1a1a1a;
+      text-align: center;
+    }
+    .consent-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .consent-sub {
+      font-size: 9px;
+      color: #444;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .consent-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .consent-btn {
+      background: none;
+      border: 1px solid #333;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .consent-btn:hover { border-color: var(--green); color: var(--green); }
+    .consent-btn.selected { border-color: var(--green); color: var(--green); }
     .arcade-start {
       display: block;
       width: 100%;
@@ -141,9 +178,11 @@
     }
     #coralCanvas {
       width: 100%;
-      max-width: 360px;
+      max-width: 420px;
       aspect-ratio: 1;
       border-radius: 8px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
     }
     #coralCanvas.flash { filter: brightness(2); transition: filter 0.08s; }
     #coralCanvas:not(.flash) { filter: brightness(1); transition: filter 0.3s; }
@@ -362,6 +401,324 @@
     }
     .engage-skip:hover { color: var(--white); }
 
+    /* Welcome-back overlay */
+    .wb-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      flex-direction: column;
+    }
+    .wb-overlay.show { display: flex; }
+    .wb-msg {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--green);
+      text-align: center;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .wb-bonus {
+      font-size: 13px;
+      color: var(--coral);
+      margin-bottom: 6px;
+    }
+    .wb-continue {
+      background: none;
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 14px;
+      padding: 12px 32px;
+      cursor: pointer;
+      margin-top: 16px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.15s;
+    }
+    .wb-continue:hover { background: var(--green); color: var(--bg); }
+
+    /* Multiplier bar */
+    .mult-bar {
+      display: none;
+      margin: 8px 0;
+      padding: 8px 12px;
+      border: 1px solid var(--coral);
+      text-align: center;
+      font-size: 11px;
+      color: var(--coral);
+      position: relative;
+      overflow: hidden;
+    }
+    .mult-bar.active { display: block; }
+    .mult-bar .mult-fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      background: rgba(255,107,53,0.1);
+      transition: width 1s linear;
+    }
+    .mult-bar .mult-text {
+      position: relative;
+      z-index: 1;
+    }
+    .mult-bar.pulse { animation: multPulse 0.5s ease; }
+    @keyframes multPulse { 0%,100% { border-color: var(--coral); } 50% { border-color: #ff3333; } }
+
+    .pulse-glow {
+      animation: pulseGlow 1.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,107,53,0.3); }
+      50% { box-shadow: 0 0 24px rgba(255,107,53,0.7); }
+    }
+
+    /* Multiplier shop */
+    .mult-shop {
+      display: none;
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #1a1a1a;
+    }
+    .mult-shop.show { display: block; }
+    .mult-shop-title {
+      font-size: 9px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .mult-shop-row {
+      display: flex;
+      gap: 6px;
+    }
+    .mult-item {
+      flex: 1;
+      background: none;
+      border: 1px solid #222;
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 8px 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .mult-item:hover { border-color: var(--coral); }
+    .mult-item .mult-name { color: var(--coral); font-weight: 700; font-size: 11px; }
+    .mult-item .mult-cost { color: var(--muted); font-size: 9px; margin-top: 2px; }
+    .mult-item:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* Fullscreen coral viewer */
+    .coral-viewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .coral-viewer.show { display: flex; }
+    .coral-viewer canvas {
+      max-width: 90vw;
+      max-height: 70vh;
+      border-radius: 8px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+    .coral-viewer-info {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .coral-viewer-info .cv-stage {
+      color: var(--coral);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .coral-viewer-info .cv-owner {
+      color: var(--teal);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    .coral-viewer-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: none;
+      border: 1px solid #333;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 14px;
+      padding: 8px 16px;
+      cursor: pointer;
+      z-index: 10000;
+      transition: all 0.15s;
+    }
+    .coral-viewer-close:hover { border-color: var(--green); color: var(--green); }
+
+    /* Traction info popup */
+    .info-popup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 9998;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .info-popup-overlay.show { display: flex; }
+    .info-popup {
+      max-width: 380px;
+      width: 100%;
+      background: #0a0a0a;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 24px;
+      position: relative;
+    }
+    .info-popup h4 {
+      font-family: var(--mono);
+      font-size: 13px;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .info-popup p {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0 0 10px;
+    }
+    .info-popup .ip-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 11px;
+    }
+    .info-popup .ip-stat .ip-label { color: var(--muted); }
+    .info-popup .ip-stat .ip-val { font-weight: 700; }
+    .info-popup-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .info-popup-close:hover { color: var(--green); }
+
+    /* Traction grid */
+    .traction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .traction-box {
+      padding: 16px 12px;
+      border: 1px solid #1a1a1a;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .traction-box:hover { border-color: #333; }
+    .traction-val { font-size: 22px; font-weight: 700; }
+    .traction-label { font-size: 9px; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .traction-sub { font-size: 8px; margin-top: 3px; }
+
+    /* Coral Farm */
+    .farm-section {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px;
+      border-top: 1px solid #1a1a1a;
+    }
+    .farm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .farm-title {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .farm-count {
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .farm-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .farm-cell {
+      aspect-ratio: 1;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      transition: border-color 0.15s;
+    }
+    .farm-cell.filled {
+      cursor: pointer;
+    }
+    .farm-cell.filled:hover {
+      border-color: var(--coral);
+    }
+    .farm-thumb {
+      width: 70%;
+      aspect-ratio: 1;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .farm-label {
+      font-size: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .save-coral-btn {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      background: none;
+      border: 1px solid var(--teal);
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 10px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.15s;
+    }
+    .save-coral-btn:hover {
+      background: var(--teal);
+      color: var(--bg);
+    }
+
     /* Hidden state */
     .hidden { display: none !important; }
 
@@ -541,12 +898,32 @@
       .stat-val { font-size: 15px; }
       .feed-btn { font-size: 16px; padding: 14px; }
     }
+
+    /* ==================== DESKTOP ==================== */
+    @media (min-width: 768px) {
+      .game { max-width: 600px; }
+      .terminal { padding: 28px; }
+      .section-inner { max-width: 600px; }
+      .farm-section { max-width: 600px; }
+      .farm-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+      .stats { gap: 24px; }
+      .feed-btn { font-size: 20px; padding: 18px; }
+      .slides { max-width: 1000px; }
+      .coral-art-wrap canvas { max-width: 480px; }
+    }
+    @media (min-width: 1200px) {
+      .game { max-width: 700px; }
+      .section-inner { max-width: 700px; }
+      .farm-section { max-width: 700px; }
+      .farm-grid { grid-template-columns: repeat(5, 1fr); gap: 10px; }
+      .slides { max-width: 1100px; }
+    }
   </style>
 </head>
 <body>
 
   <!-- ==================== HEADER ==================== -->
-  <div style="text-align:center;padding:32px 16px 0;max-width:480px;margin:0 auto;">
+  <div style="text-align:center;padding:32px 16px 0;max-width:700px;margin:0 auto;">
     <div style="font-size:28px;font-weight:700;letter-spacing:6px;color:var(--green);font-family:var(--mono);text-transform:uppercase;">C.H.A.R.M.</div>
     <div style="font-size:9px;letter-spacing:3px;color:var(--muted);margin-top:6px;text-transform:uppercase;">Coral Husbandry Automated Raceway Machine</div>
   </div>
@@ -567,9 +944,18 @@
             <span style="color:var(--coral);">→</span> <strong style="color:var(--white);">Invest</strong> — join our $7M seed round<br>
             <span style="color:var(--teal);">→</span> <strong style="color:var(--white);">Donate</strong> — support Beyond Coral Foundation
           </div>
-          <div class="arcade-label">enter gamer tag</div>
-          <input type="text" class="arcade-input" id="nameInput" placeholder="your name" maxlength="20" autofocus>
+          <div class="arcade-label">> enter gamer tag:</div>
+          <input type="text" class="arcade-input" id="nameInput" placeholder="CoralDaddy" maxlength="20" autofocus autocomplete="off" spellcheck="false">
           <button class="arcade-start" onclick="startGame()">start</button>
+
+          <div class="consent-wrap">
+            <div class="consent-label">🍪 save my coral?</div>
+            <div class="consent-sub">stores your game on this device<br>so you can come back to it</div>
+            <div class="consent-btns">
+              <button class="consent-btn selected" id="consentYes" onclick="setConsent(true)">yes :)</button>
+              <button class="consent-btn" id="consentNo" onclick="setConsent(false)">no :(</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -584,24 +970,57 @@
 
         <div class="streak" id="streak"></div>
 
+        <!-- Multiplier bar -->
+        <div class="mult-bar" id="multBar">
+          <div class="mult-fill" id="multFill"></div>
+          <span class="mult-text" id="multText"></span>
+        </div>
+
         <button class="feed-btn" id="feedBtn" onclick="feed()">
           > Feed Your Brain Coral
         </button>
 
+        <!-- Multiplier shop -->
+        <div class="mult-shop" id="multShop">
+          <div class="mult-shop-title">// auto-feed boost</div>
+          <div class="mult-shop-row">
+            <button class="mult-item" onclick="buyMultiplier(2, 100, 60)">
+              <div class="mult-name">2x</div>
+              <div>60s auto</div>
+              <div class="mult-cost">100 BCRL</div>
+            </button>
+            <button class="mult-item" onclick="buyMultiplier(5, 400, 120)">
+              <div class="mult-name">5x</div>
+              <div>2min auto</div>
+              <div class="mult-cost">400 BCRL</div>
+            </button>
+            <button class="mult-item" onclick="buyMultiplier(10, 1500, 300)">
+              <div class="mult-name">10x</div>
+              <div>5min auto</div>
+              <div class="mult-cost">1500 BCRL</div>
+            </button>
+          </div>
+        </div>
+
         <div class="stats">
           <div>
             <div class="stat-val" id="myFeeds">0</div>
-            <div class="stat-label">your feeds</div>
+            <div class="stat-label">feeds</div>
+          </div>
+          <div style="text-align:center;">
+            <div class="stat-val" id="myBcrl" style="color:var(--coral);">0</div>
+            <div class="stat-label">BCRL</div>
           </div>
           <div style="text-align:center;">
             <div class="stat-val" id="globalFeeds">0</div>
-            <div class="stat-label">total feeds</div>
+            <div class="stat-label">total</div>
           </div>
           <div style="text-align:right;">
             <div class="stat-val" id="myRank">#-</div>
-            <div class="stat-label">your rank</div>
+            <div class="stat-label">rank</div>
           </div>
         </div>
+        <div style="text-align:center;font-size:8px;color:#333;margin-top:-12px;margin-bottom:8px;">BCRL is an in-game currency — no real-world value</div>
 
         <!-- Colony bar -->
         <div id="colonyBar" class="hidden" style="text-align:center;margin:10px 0;padding:8px;border:1px solid #1a1a1a;font-size:11px;">
@@ -618,17 +1037,52 @@
 
         <div class="lb" id="leaderboard">
           <div style="display:flex;gap:12px;margin-bottom:8px;">
-            <button class="lb-tab active" id="tabEvent" onclick="showLB('event')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">event</button>
-            <button class="lb-tab" id="tabColony" onclick="showLB('colony')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;">colony</button>
+            <button class="lb-tab active" id="tabEvent" onclick="showLB('event')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">all</button>
+            <button class="lb-tab" id="tabColony" onclick="showLB('colony')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;"><span id="tabColonyText">colony</span></button>
           </div>
           <div id="lbList"></div>
         </div>
+
+        <button class="save-coral-btn" onclick="saveCoral()">
+          > save coral (25 BCRL)
+        </button>
 
         <div class="share-row">
           <button class="share-btn" onclick="shareProgress()">[ share ]</button>
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ==================== CORAL FARM ==================== -->
+  <div class="farm-section" id="coralFarm">
+    <div class="farm-header">
+      <div style="display:flex;gap:12px;">
+        <button class="lb-tab active" id="farmTabMine" onclick="showFarmTab('mine')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">your farm</button>
+        <button class="lb-tab" id="farmTabColony" onclick="showFarmTab('colony')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;"><span id="farmTabColonyText">colony farm</span></button>
+      </div>
+      <div class="farm-count" id="farmCount">0 corals</div>
+    </div>
+    <div class="farm-grid" id="farmGrid"></div>
+  </div>
+
+  <!-- Fullscreen coral viewer -->
+  <div class="coral-viewer" id="coralViewer">
+    <button class="coral-viewer-close" onclick="closeCoralViewer()">✕ close</button>
+    <canvas id="viewerCanvas"></canvas>
+    <div class="coral-viewer-info">
+      <div class="cv-stage" id="cvStage"></div>
+      <div id="cvFeeds"></div>
+      <div class="cv-owner" id="cvOwner"></div>
+    </div>
+  </div>
+
+  <!-- Traction info popup -->
+  <div class="info-popup-overlay" id="infoPopupOverlay" onclick="if(event.target===this)closeInfoPopup()">
+    <div class="info-popup">
+      <button class="info-popup-close" onclick="closeInfoPopup()">✕</button>
+      <div id="infoPopupContent"></div>
     </div>
   </div>
 
@@ -654,6 +1108,14 @@
     </div>
   </div>
 
+  <!-- Welcome-back overlay -->
+  <div class="wb-overlay" id="wbOverlay">
+    <div class="wb-msg" id="wbMsg"></div>
+    <div class="wb-bonus" id="wbBonus"></div>
+    <div class="wb-bonus" id="wbMult"></div>
+    <button class="wb-continue" onclick="closeWelcomeBack()">continue</button>
+  </div>
+
   <!-- ==================== BACK CHARM ==================== -->
   <div class="section" id="back-charm" style="background:#080808;">
     <div class="section-inner">
@@ -661,9 +1123,31 @@
       <h3>Invest in the CHARM Business Today</h3>
       <p style="color:var(--muted);font-size:13px;">$7M seed round. Any amount. No minimum. You're early.</p>
 
-      <div style="margin:20px 0;padding:16px;border:1px solid #1a1a1a;text-align:center;">
-        <div style="color:var(--green);font-size:24px;font-weight:700;" id="backerCount">0</div>
-        <div style="font-size:10px;color:var(--muted);">reef builders and counting</div>
+      <div class="traction-grid">
+        <div class="traction-box" onclick="showInfoPopup('bcrl')">
+          <div class="traction-val" style="color:var(--coral);" id="bcrlMinedVal">0</div>
+          <div class="traction-label">BitCoral (BCRL) mined</div>
+          <div class="traction-sub" style="color:#333;">tap to learn more</div>
+        </div>
+        <div class="traction-box" onclick="showInfoPopup('digital')">
+          <div class="traction-val" style="color:var(--green);" id="digitalCoralsVal">0</div>
+          <div class="traction-label">Digital Corals grown</div>
+          <div class="traction-sub" style="color:#333;">tap to learn more</div>
+        </div>
+        <div class="traction-box" onclick="showInfoPopup('real')">
+          <div class="traction-val" style="color:var(--teal);" id="realCoralsVal">2,500+</div>
+          <div class="traction-label">🪸 Real Corals grown</div>
+          <div class="traction-sub" style="color:var(--teal);">via Beyond Coral</div>
+        </div>
+        <div class="traction-box" onclick="showInfoPopup('users')">
+          <div class="traction-val" style="color:var(--white);" id="backerCount">0</div>
+          <div class="traction-label">Reef Builders</div>
+          <div class="traction-sub" style="color:#333;">tap to learn more</div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:9px;color:#444;line-height:1.6;margin-bottom:16px;">
+        BitCoral (BCRL) is an in-game currency with no real-world value.<br>
+        To invest real capital in CHARM, use the wallets and wire details below.
       </div>
 
       <div style="margin:0 0 20px;padding:12px;border:1px solid #1a1a1a;font-size:11px;color:var(--muted);line-height:1.8;">
@@ -690,8 +1174,8 @@
       </div>
 
       <div id="backPrompt">
-        <button class="feed-btn" onclick="document.getElementById('game').scrollIntoView({behavior:'smooth'})" style="border-color:var(--green);color:var(--green);margin-bottom:12px;">
-          > ./play
+        <button class="feed-btn" onclick="document.getElementById('backPrompt').style.display='none';document.getElementById('backReveal').style.display='block';" style="border-color:var(--green);color:var(--green);margin-bottom:12px;">
+          > show investment details
         </button>
       </div>
 
@@ -727,7 +1211,7 @@
           </div>
           <div class="info-row" style="margin-top:10px;">
             <span class="info-icon">→</span>
-            <div class="info-text"><strong>USD/EUR wire?</strong> Email for SWIFT details.</div>
+            <div class="info-text"><strong>USD/EUR wire?</strong> <a href="mailto:stephen.rodan@beyondcoral.com?cc=coral@charm.bot&subject=SWIFT%20Details" style="color:var(--green);">Email for SWIFT details.</a></div>
           </div>
         </div>
 
@@ -735,7 +1219,7 @@
           <div class="card-label">after you send</div>
           <div class="info-row">
             <span class="info-icon">→</span>
-            <div class="info-text">Email <strong>stephen.rodan@beyondcoral.com</strong> with tx hash or transfer ref. We confirm + send SAFE.</div>
+            <div class="info-text">Email <a href="mailto:stephen.rodan@beyondcoral.com?cc=coral@charm.bot&subject=CHARM%20Investment" style="color:var(--green);"><strong>stephen.rodan@beyondcoral.com</strong></a> with tx hash or transfer ref. We confirm + send SAFE.</div>
           </div>
           <hr class="divider">
           <div class="info-row">
@@ -790,11 +1274,17 @@
     <div class="slide"><img src="img/slide4.svg" alt="CHARM The Ask"></div>
   </div>
 
+  <!-- Contact below slides -->
+  <div style="text-align:center;padding:20px;max-width:600px;margin:0 auto;">
+    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">// get in touch</div>
+    <a href="mailto:stephen.rodan@beyondcoral.com?cc=coral@charm.bot" style="color:var(--green);font-size:14px;text-decoration:none;font-family:var(--mono);">stephen.rodan@beyondcoral.com</a>
+  </div>
+
   <!-- ==================== FOOTER ==================== -->
   <div class="footer">
     <div>CHARM Holdings Pty Ltd · Magnetic Island, Great Barrier Reef</div>
     <div class="contact">
-      <a href="mailto:stephen.rodan@beyondcoral.com">stephen.rodan@beyondcoral.com</a> ·
+      <a href="mailto:stephen.rodan@beyondcoral.com?cc=coral@charm.bot">stephen.rodan@beyondcoral.com</a> ·
       <a href="https://www.charm.bot">charm.bot</a> ·
       <a href="https://beyondcoral.com">beyondcoral.com</a>
     </div>
@@ -1052,10 +1542,37 @@
       localStorage.setItem('charm_pid', playerId);
     }
 
+    // ---- Consent ----
+    // Default to true for new users (yes is pre-selected in UI).
+    // Only false if they explicitly set 'no' previously.
+    var hasConsent = localStorage.getItem('charm_consent') !== 'false';
+    function setConsent(val) {
+      hasConsent = val;
+      document.getElementById('consentYes').classList.toggle('selected', val);
+      document.getElementById('consentNo').classList.toggle('selected', !val);
+      if (val) {
+        localStorage.setItem('charm_consent', 'true');
+      } else {
+        localStorage.setItem('charm_consent', 'false');
+      }
+    }
+
+    // ---- Cycling placeholder gamer tags ----
+    var PLACEHOLDER_TAGS = ['CoralDaddy', 'ReefBuilder99', 'OceanLord', 'TidalWave', 'PolyPrincess', 'CoralCrusader', 'SeaTurtle42', 'ReefWhisperer'];
+    var placeholderIdx = 0;
+    var placeholderInterval = setInterval(function() {
+      var inp = document.getElementById('nameInput');
+      if (inp && document.activeElement !== inp && !inp.value) {
+        placeholderIdx = (placeholderIdx + 1) % PLACEHOLDER_TAGS.length;
+        inp.setAttribute('placeholder', PLACEHOLDER_TAGS[placeholderIdx]);
+      }
+    }, 2000);
+
     // ---- State ----
-    var playerName = localStorage.getItem('charm_name') || '';
-    var myFeeds = parseInt(localStorage.getItem('charm_feeds') || '0');
-    var myColony = colonyParam || localStorage.getItem('charm_colony_' + eventId) || null;
+    var playerName = hasConsent ? (localStorage.getItem('charm_name') || '') : '';
+    var myFeeds = hasConsent ? parseInt(localStorage.getItem('charm_feeds') || '0') : 0;
+    var myColony = colonyParam || (hasConsent ? localStorage.getItem('charm_colony_' + eventId) : null) || null;
+    var myBitcoral = hasConsent ? parseInt(localStorage.getItem('charm_bcrl') || '0') : 0;
     var lastFeedTime = 0;
     var streakCount = 0;
     var feedTimestamps = [];
@@ -1065,6 +1582,7 @@
     var allPlayers = [];
     var currentLBTab = 'event';
     var writeTimer = null;
+    var colonyDisplayName = '';
 
     // ---- Engagement popup ----
     var ENGAGE_AT = [50, 200, 500];
@@ -1141,7 +1659,8 @@
 
     // ---- Reaction-Diffusion Engine (level-driven) ----
     var RD = {
-      W: 256, H: 256,
+      W: window.innerWidth > 600 ? 512 : 384,
+      H: window.innerWidth > 600 ? 512 : 384,
       gA: null, gB: null, nA: null, nB: null,
       canvas: null, ctx: null, imgData: null,
       dA: 1.0, dB: 0.5,
@@ -1177,7 +1696,7 @@
           var margin = 30;
           var sx = margin + Math.floor(Math.random() * (this.W - margin * 2));
           var sy = margin + Math.floor(Math.random() * (this.H - margin * 2));
-          var sr = 6 + Math.floor(Math.random() * 5);
+          var sr = 10 + Math.floor(Math.random() * 7);
           this.seed(sx, sy, sr);
         }
       },
@@ -1208,6 +1727,7 @@
         var feedsIn = feeds - prev;
         var steps = Math.floor(this.totalFill * feedsIn / levelFeeds);
         steps = Math.min(steps, this.totalFill);
+        if (this.W >= 512) steps = Math.min(steps, 2000);
         for (var i = 0; i < steps; i++) this.step();
         this.render();
       },
@@ -1269,6 +1789,9 @@
         var next = getNextThreshold(feeds);
         var levelFeeds = Math.max(1, next - prev);
         var steps = Math.max(1, Math.ceil(this.totalFill / levelFeeds));
+        // Higher cap for early stages (small level gaps), lower for later stages
+        var cap = levelFeeds < 20 ? 80 : (levelFeeds < 50 ? 50 : 30);
+        steps = Math.min(steps, cap);
         for (var i = 0; i < steps; i++) this.step();
         this.render();
       }
@@ -1279,12 +1802,22 @@
       var name = document.getElementById('nameInput').value.trim();
       if (!name) return;
       playerName = name;
-      localStorage.setItem('charm_name', name);
+      clearInterval(placeholderInterval);
+
+      if (hasConsent) {
+        localStorage.setItem('charm_name', name);
+        localStorage.setItem('charm_last_active', Date.now());
+      }
 
       if (colonyParam) {
         myColony = colonyParam;
-        localStorage.setItem('charm_colony_' + eventId, myColony);
+        if (hasConsent) localStorage.setItem('charm_colony_' + eventId, myColony);
       }
+
+      // Every login counts as a reef builder
+      db.ref('meta/backerCount').transaction(function(current) {
+        return (current || 0) + 1;
+      });
 
       writePlayer();
       listenToPlayers();
@@ -1297,6 +1830,12 @@
       setTimeout(function() {
         window.scrollTo({top: 0, behavior:'smooth'});
       }, 100);
+
+      if (!hasConsent) {
+        showAchievement('> playing incognito... coral won\'t remember you :(');
+      } else {
+        showAchievement('> welcome, ' + name + '. your coral awaits.');
+      }
     }
 
     document.getElementById('nameInput').addEventListener('keydown', function(e) {
@@ -1332,15 +1871,24 @@
 
       var oldStage = getStage(myFeeds);
       myFeeds++;
-      localStorage.setItem('charm_feeds', myFeeds);
+      var bcrlEarn = Math.max(1, Math.floor(activeMultiplier * (1 + getStreakBonus())));
+      myBitcoral += bcrlEarn;
+      addToBcrlMined(bcrlEarn);
+      if (hasConsent) {
+        localStorage.setItem('charm_feeds', myFeeds);
+        localStorage.setItem('charm_bcrl', myBitcoral);
+        localStorage.setItem('charm_last_active', Date.now());
+      }
       var newStage = getStage(myFeeds);
 
       if (oldStage.name !== newStage.name) {
         RD.newLevel(myFeeds);
         showAchievement('> ' + newStage.name.toLowerCase() + ' // ' + RD_PRESETS[rdPresetIdx].name);
+        autoSaveCoral();
       }
 
       maybeShowEngage(myFeeds);
+      updateMultShop();
 
       if (now - lastFeedTime < 600) { streakCount++; } else { streakCount = 1; }
       lastFeedTime = now;
@@ -1410,6 +1958,106 @@
         renderLeaderboard();
         renderGlobalStats();
       });
+
+    }
+
+    // Traction counters — listen on page load (visible before login)
+    db.ref('meta/bcrlMined').on('value', function(snap) {
+      var val = snap.val() || 0;
+      var el = document.getElementById('bcrlMinedVal');
+      if (el) el.textContent = val.toLocaleString();
+      window._bcrlMined = val;
+    });
+    db.ref('meta/digitalCorals').on('value', function(snap) {
+      var val = snap.val() || 0;
+      var el = document.getElementById('digitalCoralsVal');
+      if (el) el.textContent = val.toLocaleString();
+      window._digitalCorals = val;
+    });
+    db.ref('meta/treasuryPool').on('value', function(snap) {
+      window._treasuryPool = snap.val() || 0;
+    });
+    db.ref('meta/backerCount').on('value', function(snap) {
+      var val = snap.val() || 0;
+      var el = document.getElementById('backerCount');
+      if (el) el.textContent = val.toLocaleString();
+      window._backerCount = val;
+    });
+
+    // Batched BCRL mined counter
+    var bcrlMinedBatch = 0;
+    function addToBcrlMined(amount) {
+      bcrlMinedBatch += amount;
+      if (bcrlMinedBatch >= 5) {
+        var batch = bcrlMinedBatch;
+        bcrlMinedBatch = 0;
+        db.ref('meta/bcrlMined').transaction(function(c) { return (c || 0) + batch; });
+      }
+    }
+
+    // Treasury pool — BCRL spent on boosts
+    function addToTreasuryPool(amount) {
+      db.ref('meta/treasuryPool').transaction(function(c) { return (c || 0) + amount; });
+    }
+
+    // Digital corals counter
+    function incrementDigitalCorals() {
+      db.ref('meta/digitalCorals').transaction(function(c) { return (c || 0) + 1; });
+    }
+
+    // ---- Info Popups ----
+    function showInfoPopup(type) {
+      var html = '';
+      if (type === 'bcrl') {
+        var mined = (window._bcrlMined || 0).toLocaleString();
+        var pool = (window._treasuryPool || 0).toLocaleString();
+        html = '<h4 style="color:var(--coral);">BitCoral (BCRL)</h4>' +
+          '<p>BCRL is the in-game currency of the CHARM coral brain game. It is mined by feeding your coral — each tap earns BCRL.</p>' +
+          '<div class="ip-stat"><span class="ip-label">Total BCRL mined</span><span class="ip-val" style="color:var(--coral);">' + mined + '</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">BCRL in treasury</span><span class="ip-val" style="color:var(--teal);">' + pool + '</span></div>' +
+          '<p style="margin-top:12px;">The <strong style="color:var(--teal);">treasury</strong> grows when players spend BCRL on auto-feed boosts. Think of it as the community pool — BCRL flows from miners to the treasury through gameplay.</p>' +
+          '<p><strong>How BCRL is earned:</strong></p>' +
+          '<div class="ip-stat"><span class="ip-label">Per tap</span><span class="ip-val">1 BCRL</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Streak bonus</span><span class="ip-val">+1-3 BCRL</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Welcome-back bonus</span><span class="ip-val">50-1,000 BCRL</span></div>' +
+          '<p style="margin-top:12px;color:#444;">BCRL has no real-world monetary value. To invest real capital, see the wallets and wire details below.</p>';
+      } else if (type === 'digital') {
+        var digi = (window._digitalCorals || 0).toLocaleString();
+        html = '<h4 style="color:var(--green);">Digital Corals</h4>' +
+          '<p>Every time a player saves a coral snapshot — manually or at a stage evolution — a unique digital coral is born.</p>' +
+          '<div class="ip-stat"><span class="ip-label">Total digital corals</span><span class="ip-val" style="color:var(--green);">' + digi + '</span></div>' +
+          '<p style="margin-top:12px;">Each coral is grown using a <strong>reaction-diffusion simulation</strong> — the same math that creates patterns in nature. No two corals are identical.</p>' +
+          '<p><strong>How corals are saved:</strong></p>' +
+          '<div class="ip-stat"><span class="ip-label">Manual save</span><span class="ip-val">25 BCRL</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Auto-save</span><span class="ip-val">at each stage evolution</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Auto-feed boost</span><span class="ip-val">generates many corals</span></div>' +
+          '<p style="margin-top:12px;">Saved corals appear in your farm and can be viewed as live simulations.</p>';
+      } else if (type === 'real') {
+        html = '<h4 style="color:var(--teal);">🪸 Real Corals Grown</h4>' +
+          '<p><strong>Beyond Coral Foundation</strong> has grown over 2,500 real corals on the Great Barrier Reef.</p>' +
+          '<p>$10 grows and outplants one coral. Monthly recurring. 501(c)(3) tax-deductible.</p>' +
+          '<div class="ip-stat"><span class="ip-label">Cost per coral</span><span class="ip-val" style="color:var(--teal);">$10</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Corals outplanted</span><span class="ip-val" style="color:var(--teal);">2,500+</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Organisation</span><span class="ip-val">Beyond Coral</span></div>' +
+          '<p style="margin-top:12px;"><a href="https://beyondcoral.com" target="_blank" style="color:var(--teal);">beyondcoral.com</a></p>' +
+          '<button onclick="closeInfoPopup();document.getElementById(\'feed-section\').scrollIntoView({behavior:\'smooth\'})" style="width:100%;margin-top:12px;padding:12px;background:none;border:1px solid var(--teal);color:var(--teal);font-family:var(--mono);font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">> donate to grow a real coral</button>';
+      } else if (type === 'users') {
+        var users = (window._backerCount || 0).toLocaleString();
+        html = '<h4 style="color:var(--white);">Reef Builders</h4>' +
+          '<p>Every player who enters a gamer tag and starts the game counts as a reef builder.</p>' +
+          '<div class="ip-stat"><span class="ip-label">Total reef builders</span><span class="ip-val">' + users + '</span></div>' +
+          '<p style="margin-top:12px;">Each reef builder contributes to the global leaderboard, grows digital corals, and mines BCRL. Colonies allow groups of builders to compete together.</p>' +
+          '<p><strong>Ways to contribute:</strong></p>' +
+          '<div class="ip-stat"><span class="ip-label">Play the game</span><span class="ip-val">free</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Invest in CHARM</span><span class="ip-val">any amount</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Donate to Beyond Coral</span><span class="ip-val">from $5/mo</span></div>';
+      }
+      document.getElementById('infoPopupContent').innerHTML = html;
+      document.getElementById('infoPopupOverlay').classList.add('show');
+    }
+
+    function closeInfoPopup() {
+      document.getElementById('infoPopupOverlay').classList.remove('show');
     }
 
     // ---- Colony ----
@@ -1440,13 +2088,15 @@
         document.getElementById('colonyBar').classList.remove('hidden');
         document.getElementById('noColony').classList.add('hidden');
         document.getElementById('createColonyForm').classList.add('hidden');
-        // Fetch colony display name
         db.ref('events/' + eventId + '/colonies/' + myColony + '/name').once('value', function(snap) {
-          document.getElementById('colonyName').textContent = snap.val() || myColony;
+          colonyDisplayName = snap.val() || myColony;
+          document.getElementById('colonyName').textContent = colonyDisplayName;
+          document.getElementById('tabColonyText').textContent = colonyDisplayName;
         });
       } else {
         document.getElementById('colonyBar').classList.add('hidden');
         document.getElementById('noColony').classList.remove('hidden');
+        document.getElementById('tabColonyText').textContent = 'join colony';
       }
     }
 
@@ -1550,6 +2200,7 @@
         document.getElementById('stageLabel').textContent = stage.name;
       }
       document.getElementById('myFeeds').textContent = myFeeds;
+      document.getElementById('myBcrl').textContent = myBitcoral;
 
       var next = getNextThreshold(myFeeds);
       var prev = getPrevThreshold(myFeeds);
@@ -1557,7 +2208,10 @@
       document.getElementById('progressFill').style.width = Math.min(pct, 100) + '%';
 
       var streakEl = document.getElementById('streak');
-      streakEl.textContent = streakCount > 2 ? 'x' + streakCount + ' streak!' : '';
+      var streakParts = [];
+      if (streakCount > 2) streakParts.push('x' + streakCount + ' streak!');
+      if (returnStreak > 1) streakParts.push('\ud83d\udd25' + returnStreak);
+      streakEl.textContent = streakParts.join('  ');
     }
 
     function showAchievement(msg) {
@@ -1617,15 +2271,17 @@
         time: Date.now(),
         event: eventId
       });
+      db.ref('meta/backerCount').transaction(function(current) {
+        return (current || 0) + 1;
+      });
       document.getElementById('backPrompt').classList.add('hidden');
       document.getElementById('backReveal').classList.remove('hidden');
       showAchievement('> you\'re a reef builder now');
     }
 
-    // Listen to backer count + fund stats
-    db.ref('backers').on('value', function(snap) {
-      var count = snap.numChildren();
-      document.getElementById('backerCount').textContent = count;
+    // Listen to backer count (atomic counter)
+    db.ref('meta/backerCount').on('value', function(snap) {
+      document.getElementById('backerCount').textContent = snap.val() || 0;
     });
     function selectTier(el, amount) {
       document.querySelectorAll('.tier').forEach(function(t) { t.classList.remove('selected'); });
@@ -1636,18 +2292,600 @@
       reveal.classList.add('show');
     }
 
+    // ---- Multiplier System (auto-feed) ----
+    var activeMultiplier = 1;
+    var multExpires = 0;
+    var multTimer = null;
+    var autoFeedInterval = null;
+    var autoAnimId = null;
+    var autoFeedActive = false;
+
+    function buyMultiplier(mult, cost, durationSec) {
+      if (myBitcoral < cost) {
+        showAchievement('> not enough BCRL (' + myBitcoral + '/' + cost + ')');
+        return;
+      }
+      myBitcoral -= cost;
+      if (hasConsent) localStorage.setItem('charm_bcrl', myBitcoral);
+      addToTreasuryPool(cost);
+      activeMultiplier = mult;
+      multExpires = Date.now() + durationSec * 1000;
+      showAchievement('> ' + mult + 'x auto-feed activated!');
+      startMultTimer(durationSec);
+      startAutoFeed();
+      renderLocal();
+    }
+
+    function startAutoFeed() {
+      stopAutoFeed();
+      autoFeedActive = true;
+
+      var btn = document.getElementById('feedBtn');
+      btn.textContent = '> AUTO-FEEDING... ' + activeMultiplier + 'x';
+      btn.style.borderColor = 'var(--coral)';
+      btn.style.color = 'var(--coral)';
+      btn.classList.add('pulse-glow');
+
+      // Live RD animation on main canvas
+      function animLoop() {
+        if (!autoFeedActive) return;
+        for (var i = 0; i < 3; i++) RD.step();
+        RD.render();
+        autoAnimId = requestAnimationFrame(animLoop);
+      }
+      animLoop();
+
+      // Auto-feed: generate feeds + BCRL every 200ms
+      // Multiplier boosts both BCRL AND feeds per tick
+      var autoWriteCounter = 0;
+      autoFeedInterval = setInterval(function() {
+        if (!autoFeedActive || Date.now() > multExpires) {
+          stopAutoFeed();
+          return;
+        }
+        var feedsPerTick = activeMultiplier; // 2x = 2 feeds/tick, 10x = 10 feeds/tick
+        for (var f = 0; f < feedsPerTick; f++) {
+          var oldStage = getStage(myFeeds);
+          myFeeds++;
+          var bcrlEarn = Math.max(1, Math.floor(1 + getStreakBonus()));
+          myBitcoral += bcrlEarn;
+          addToBcrlMined(bcrlEarn);
+
+          var newStage = getStage(myFeeds);
+          if (oldStage.name !== newStage.name) {
+            RD.newLevel(myFeeds);
+            showAchievement('> ' + newStage.name.toLowerCase() + ' // ' + RD_PRESETS[rdPresetIdx].name);
+            autoSaveCoral();
+          }
+        }
+
+        if (hasConsent) {
+          localStorage.setItem('charm_feeds', myFeeds);
+          localStorage.setItem('charm_bcrl', myBitcoral);
+        }
+
+        // Batch Firebase writes every 10 auto-feed ticks
+        autoWriteCounter++;
+        if (autoWriteCounter >= 10) {
+          autoWriteCounter = 0;
+          writePlayer();
+        }
+
+        renderLocal();
+        updateMultShop();
+      }, 200);
+    }
+
+    function stopAutoFeed() {
+      autoFeedActive = false;
+      if (autoFeedInterval) { clearInterval(autoFeedInterval); autoFeedInterval = null; }
+      if (autoAnimId) { cancelAnimationFrame(autoAnimId); autoAnimId = null; }
+
+      var btn = document.getElementById('feedBtn');
+      if (btn) {
+        btn.textContent = '> Feed Your Brain Coral';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        btn.classList.remove('pulse-glow');
+      }
+      // Final write
+      writePlayer();
+    }
+
+    function startMultTimer(totalSec) {
+      var bar = document.getElementById('multBar');
+      var fill = document.getElementById('multFill');
+      var text = document.getElementById('multText');
+      bar.classList.add('active');
+
+      clearInterval(multTimer);
+      multTimer = setInterval(function() {
+        var remaining = Math.max(0, Math.ceil((multExpires - Date.now()) / 1000));
+        var pct = totalSec > 0 ? (remaining / totalSec) * 100 : 0;
+        fill.style.width = pct + '%';
+        var m = Math.floor(remaining / 60);
+        var s = remaining % 60;
+        text.textContent = activeMultiplier + 'x AUTO — ' + m + ':' + (s < 10 ? '0' : '') + s;
+        if (remaining <= 10) bar.classList.add('pulse');
+        if (remaining <= 0) {
+          clearInterval(multTimer);
+          activeMultiplier = 1;
+          bar.classList.remove('active', 'pulse');
+          stopAutoFeed();
+          showAchievement('> boost expired — auto-feed stopped');
+        }
+      }, 500);
+    }
+
+    // Show multiplier shop after 50 feeds
+    function updateMultShop() {
+      var shop = document.getElementById('multShop');
+      if (myFeeds >= 50) {
+        shop.classList.add('show');
+      }
+    }
+
+    // ---- Welcome-Back System ----
+    var WELCOME_BACK = [
+      'YOUR CORAL MISSED YOU',
+      'the reef remembers you',
+      'a wild coral keeper appears',
+      'the ocean called. you answered.',
+      'your coral grew a little smile',
+      'polyps have been gossiping about you',
+      'the tide brought you back',
+      'somewhere, a fish cheered',
+      'reef radar detected: you',
+      'the jellyfish saved your seat',
+      'coral dispatch: legend has returned',
+      'your coral had separation anxiety',
+      'a crab pinched itself to check you\'re real',
+      'plot twist: you came back',
+      'the anemone waved hello',
+      'mission control: coral keeper online',
+      'your coral dreamt of this moment',
+      'sea turtles delivered the news: you\'re back',
+      'the octopus has 8 thumbs up',
+      'welcome back, reef whisperer'
+    ];
+
+    function checkWelcomeBack() {
+      if (!hasConsent) return;
+      var lastActive = parseInt(localStorage.getItem('charm_last_active') || '0');
+      if (!lastActive || !playerName) return;
+      var hoursAway = (Date.now() - lastActive) / (1000 * 60 * 60);
+      if (hoursAway < 4) return;
+
+      var bonus = 0, mult = 1, multDur = 0;
+      if (hoursAway >= 72) { bonus = 1000; mult = 5; multDur = 90; }
+      else if (hoursAway >= 24) { bonus = 500; mult = 5; multDur = 60; }
+      else if (hoursAway >= 8) { bonus = 150; mult = 3; multDur = 45; }
+      else { bonus = 50; mult = 2; multDur = 30; }
+
+      myBitcoral += bonus;
+      if (hasConsent) localStorage.setItem('charm_bcrl', myBitcoral);
+
+      var msg = WELCOME_BACK[Math.floor(Math.random() * WELCOME_BACK.length)];
+      document.getElementById('wbMsg').textContent = msg;
+      document.getElementById('wbBonus').textContent = '+' + bonus + ' BCRL welcome bonus';
+      document.getElementById('wbMult').textContent = mult + 'x auto-feed for ' + multDur + 's';
+      document.getElementById('wbOverlay').classList.add('show');
+
+      // Store boost params — auto-feed starts when overlay is dismissed
+      window._wbMult = mult;
+      window._wbMultDur = multDur;
+    }
+
+    function closeWelcomeBack() {
+      document.getElementById('wbOverlay').classList.remove('show');
+      if (window._wbMult) {
+        activeMultiplier = window._wbMult;
+        multExpires = Date.now() + window._wbMultDur * 1000;
+        startMultTimer(window._wbMultDur);
+        startAutoFeed();
+        window._wbMult = null;
+        window._wbMultDur = null;
+      }
+    }
+
+    // ---- 4-Hour Streak System ----
+    var STREAK_INTERVAL = 4 * 60 * 60 * 1000; // 4 hours
+    var returnStreak = hasConsent ? parseInt(localStorage.getItem('charm_return_streak') || '0') : 0;
+    var lastReturnTime = hasConsent ? parseInt(localStorage.getItem('charm_last_return') || '0') : 0;
+
+    function checkReturnStreak() {
+      if (!hasConsent || !playerName) return;
+      var now = Date.now();
+      var elapsed = now - lastReturnTime;
+      if (lastReturnTime === 0) {
+        returnStreak = 1;
+      } else if (elapsed > STREAK_INTERVAL * 2) {
+        returnStreak = 1;
+      } else if (elapsed >= STREAK_INTERVAL) {
+        returnStreak++;
+      }
+      lastReturnTime = now;
+      if (hasConsent) {
+        localStorage.setItem('charm_return_streak', returnStreak);
+        localStorage.setItem('charm_last_return', now);
+      }
+    }
+
+    function getStreakBonus() {
+      if (returnStreak <= 1) return 0;
+      if (returnStreak === 2) return 0.10;
+      if (returnStreak === 3) return 0.20;
+      if (returnStreak === 4) return 0.30;
+      return 0.50;
+    }
+
+    // ---- Save Coral ----
+    var SAVE_COST = 25;
+    var myCorals = hasConsent ? JSON.parse(localStorage.getItem('charm_corals') || '[]') : [];
+    var currentFarmTab = 'mine';
+    var colonyCorals = [];
+
+    function pushCoralToFirebase(coral) {
+      db.ref('events/' + eventId + '/players/' + playerId + '/corals/' + coral.id).set(coral);
+    }
+
+    // Capture a 32x32 low-bit snapshot of the main RD canvas
+    function captureCoralThumb() {
+      var src = document.getElementById('coralCanvas');
+      if (!src) return null;
+      var sz = 32;
+      var tmp = document.createElement('canvas');
+      tmp.width = sz;
+      tmp.height = sz;
+      var ctx = tmp.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(src, 0, 0, sz, sz);
+      return tmp.toDataURL('image/png');
+    }
+
+    function saveCoral() {
+      if (myBitcoral < SAVE_COST) {
+        showAchievement('> not enough BCRL (' + myBitcoral + '/' + SAVE_COST + ')');
+        return;
+      }
+      myBitcoral -= SAVE_COST;
+      if (hasConsent) localStorage.setItem('charm_bcrl', myBitcoral);
+
+      var thumb = captureCoralThumb();
+      var coral = {
+        presetIdx: rdPresetIdx,
+        colorIdx: RD.colorIdx,
+        feedsAtSave: myFeeds,
+        stageName: getStage(myFeeds).name,
+        timestamp: Date.now(),
+        manual: true,
+        grownBy: playerId,
+        grownByName: playerName,
+        thumb: thumb,
+        id: 'c_' + Math.random().toString(36).substr(2, 8)
+      };
+      myCorals.push(coral);
+      if (hasConsent) localStorage.setItem('charm_corals', JSON.stringify(myCorals));
+      pushCoralToFirebase(coral);
+      incrementDigitalCorals();
+
+      var cvs = document.getElementById('coralCanvas');
+      cvs.classList.add('flash');
+      setTimeout(function() { cvs.classList.remove('flash'); }, 200);
+      showAchievement('> coral saved to farm (-' + SAVE_COST + ' BCRL)');
+      renderCoralFarm();
+      renderLocal();
+    }
+
+    var hasSeenFirstCoral = hasConsent ? localStorage.getItem('charm_first_coral_seen') === 'true' : false;
+
+    function autoSaveCoral() {
+      var thumb = captureCoralThumb();
+      var coral = {
+        presetIdx: rdPresetIdx,
+        colorIdx: RD.colorIdx,
+        feedsAtSave: myFeeds,
+        stageName: getStage(myFeeds).name,
+        timestamp: Date.now(),
+        manual: false,
+        grownBy: playerId,
+        grownByName: playerName,
+        thumb: thumb,
+        id: 'c_' + Math.random().toString(36).substr(2, 8)
+      };
+      myCorals.push(coral);
+      if (hasConsent) localStorage.setItem('charm_corals', JSON.stringify(myCorals));
+      pushCoralToFirebase(coral);
+      incrementDigitalCorals();
+      renderCoralFarm();
+
+      // First coral celebration — show fullscreen viewer
+      if (!hasSeenFirstCoral) {
+        hasSeenFirstCoral = true;
+        if (hasConsent) localStorage.setItem('charm_first_coral_seen', 'true');
+        showFirstCoralCelebration(coral);
+      }
+    }
+
+    function showFirstCoralCelebration(coral) {
+      document.getElementById('cvStage').textContent = '🎉 your first coral!';
+      document.getElementById('cvFeeds').textContent = coral.stageName + ' — ' + coral.feedsAtSave + ' feeds';
+      document.getElementById('cvOwner').textContent = 'saved to your farm';
+
+      document.getElementById('coralViewer').classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      ViewerRD.init(coral.presetIdx || 0, coral.colorIdx || 0, coral.feedsAtSave || 50);
+      ViewerRD.play();
+
+      // Auto-close after 6 seconds, scroll to top
+      setTimeout(function() {
+        if (document.getElementById('coralViewer').classList.contains('show')) {
+          closeCoralViewer();
+          window.scrollTo({top: 0, behavior: 'smooth'});
+          showAchievement('> first coral saved to your farm! 🪸');
+        }
+      }, 6000);
+    }
+
+    // ---- Farm Tabs ----
+    function showFarmTab(tab) {
+      currentFarmTab = tab;
+      var tabMine = document.getElementById('farmTabMine');
+      var tabCol = document.getElementById('farmTabColony');
+      tabMine.style.color = tab === 'mine' ? 'var(--green)' : 'var(--muted)';
+      tabMine.style.borderBottom = tab === 'mine' ? '1px solid var(--green)' : 'none';
+      tabCol.style.color = tab === 'colony' ? 'var(--teal)' : 'var(--muted)';
+      tabCol.style.borderBottom = tab === 'colony' ? '1px solid var(--teal)' : 'none';
+      if (tab === 'colony') {
+        fetchColonyCorals();
+      } else {
+        renderCoralFarm();
+      }
+    }
+
+    function fetchColonyCorals() {
+      if (!myColony) {
+        colonyCorals = [];
+        renderCoralFarm();
+        return;
+      }
+      var playersRef = db.ref('events/' + eventId + '/players');
+      playersRef.orderByChild('colony').equalTo(myColony).once('value', function(snap) {
+        colonyCorals = [];
+        snap.forEach(function(playerSnap) {
+          var pData = playerSnap.val();
+          var pName = pData.name || 'unknown';
+          var pId = playerSnap.key;
+          if (pData.corals) {
+            var coralKeys = Object.keys(pData.corals);
+            for (var i = 0; i < coralKeys.length; i++) {
+              var c = pData.corals[coralKeys[i]];
+              c.grownByName = pName;
+              c.grownBy = pId;
+              colonyCorals.push(c);
+            }
+          }
+        });
+        colonyCorals.sort(function(a, b) { return b.timestamp - a.timestamp; });
+        renderCoralFarm();
+      });
+    }
+
+    // ---- Coral Farm Rendering (4x5 grid) ----
+    function renderCoralFarm() {
+      var grid = document.getElementById('farmGrid');
+      if (!grid) return;
+      var corals = currentFarmTab === 'colony' ? colonyCorals : myCorals;
+      var farmEl = document.getElementById('coralFarm');
+
+      // Hide entire farm if no corals to show
+      if (corals.length === 0 && currentFarmTab === 'mine') {
+        farmEl.style.display = 'none';
+        return;
+      }
+      farmEl.style.display = '';
+
+      var html = '';
+      for (var i = 0; i < corals.length; i++) {
+        var c = corals[i];
+        var thumbStyle;
+        if (c.thumb) {
+          thumbStyle = 'background-image:url(' + c.thumb + ');background-size:cover;image-rendering:pixelated;';
+        } else {
+          var cIdx = (c.colorIdx || 0) % RD_COLORS.length;
+          var pal = RD_COLORS[cIdx];
+          var c0 = 'rgb(' + pal[1][0] + ',' + pal[1][1] + ',' + pal[1][2] + ')';
+          var c1 = 'rgb(' + pal[2][0] + ',' + pal[2][1] + ',' + pal[2][2] + ')';
+          var c2 = 'rgb(' + pal[3][0] + ',' + pal[3][1] + ',' + pal[3][2] + ')';
+          thumbStyle = 'background:radial-gradient(circle at 30% 30%, ' + c2 + ', ' + c1 + ' 50%, ' + c0 + ');';
+        }
+        var label = c.stageName ? c.stageName.substr(0, 4).toUpperCase() : '????';
+        var owner = currentFarmTab === 'colony' && c.grownByName ? c.grownByName : '';
+        var titleText = c.stageName + ' \u2014 ' + c.feedsAtSave + ' feeds' + (owner ? ' \u2014 by ' + owner : '');
+        html += '<div class="farm-cell filled" onclick="viewCoral(' + i + ')" title="' + esc(titleText) + '">' +
+          '<div class="farm-thumb" style="' + thumbStyle + '"></div>' +
+          '<div class="farm-label">' + label + '</div>' +
+          (owner ? '<div class="farm-label" style="color:var(--teal);font-size:7px;">' + esc(owner.substr(0, 8)) + '</div>' : '') +
+          '</div>';
+      }
+
+      if (corals.length === 0 && currentFarmTab === 'colony') {
+        html = '<div style="grid-column:1/-1;text-align:center;font-size:10px;color:var(--muted);padding:16px 0;">no corals saved in this colony yet</div>';
+      }
+
+      grid.innerHTML = html;
+      var countEl = document.getElementById('farmCount');
+      if (countEl) countEl.textContent = corals.length + ' coral' + (corals.length !== 1 ? 's' : '');
+
+      // Update colony tab text
+      if (colonyDisplayName) {
+        document.getElementById('farmTabColonyText').textContent = colonyDisplayName + ' farm';
+      }
+      // Hide colony tab if no colony
+      var colTab = document.getElementById('farmTabColony');
+      colTab.style.display = myColony ? '' : 'none';
+    }
+
+    // ---- Fullscreen Coral Viewer (second RD engine) ----
+    var ViewerRD = {
+      W: 256, H: 256,
+      gA: null, gB: null, nA: null, nB: null,
+      canvas: null, ctx: null, imgData: null,
+      dA: 1.0, dB: 0.5, f: 0.029, k: 0.057,
+      colors: RD_COLORS[0],
+      running: false, animId: null,
+
+      init: function(preset, colorIdx, feeds) {
+        this.canvas = document.getElementById('viewerCanvas');
+        this.canvas.width = this.W;
+        this.canvas.height = this.H;
+        this.ctx = this.canvas.getContext('2d');
+        this.imgData = this.ctx.createImageData(this.W, this.H);
+        var sz = this.W * this.H;
+        this.gA = new Float32Array(sz);
+        this.gB = new Float32Array(sz);
+        this.nA = new Float32Array(sz);
+        this.nB = new Float32Array(sz);
+        var p = RD_PRESETS[preset % RD_PRESETS.length];
+        this.f = p.f;
+        this.k = p.k;
+        this.colors = RD_COLORS[colorIdx % RD_COLORS.length];
+        var seeds = Math.max(1, Math.floor(feeds / 30));
+        this.gA.fill(1.0);
+        this.gB.fill(0.0);
+        for (var s = 0; s < Math.min(seeds, 12); s++) {
+          var margin = 20;
+          var sx = margin + Math.floor(Math.random() * (this.W - margin * 2));
+          var sy = margin + Math.floor(Math.random() * (this.H - margin * 2));
+          for (var dy = -4; dy <= 4; dy++) {
+            for (var dx = -4; dx <= 4; dx++) {
+              if (dx*dx + dy*dy > 16) continue;
+              var px = sx + dx, py = sy + dy;
+              if (px >= 0 && px < this.W && py >= 0 && py < this.H)
+                this.gB[py * this.W + px] = 1.0;
+            }
+          }
+        }
+        // Fast-forward to make it look grown
+        var steps = Math.min(Math.max(feeds * 3, 200), 2000);
+        for (var i = 0; i < steps; i++) this.step();
+        this.render();
+      },
+
+      step: function() {
+        var w = this.W, h = this.H;
+        var gA = this.gA, gB = this.gB, nA = this.nA, nB = this.nB;
+        var dA = this.dA, dB = this.dB, f = this.f, k = this.k;
+        for (var y = 1; y < h - 1; y++) {
+          for (var x = 1; x < w - 1; x++) {
+            var i = y * w + x;
+            var a = gA[i], b = gB[i];
+            var lA = gA[i-1]*0.2 + gA[i+1]*0.2 + gA[i-w]*0.2 + gA[i+w]*0.2
+                   + gA[i-w-1]*0.05 + gA[i-w+1]*0.05 + gA[i+w-1]*0.05 + gA[i+w+1]*0.05 - a;
+            var lB = gB[i-1]*0.2 + gB[i+1]*0.2 + gB[i-w]*0.2 + gB[i+w]*0.2
+                   + gB[i-w-1]*0.05 + gB[i-w+1]*0.05 + gB[i+w-1]*0.05 + gB[i+w+1]*0.05 - b;
+            var abb = a * b * b;
+            nA[i] = Math.min(1, Math.max(0, a + dA*lA - abb + f*(1-a)));
+            nB[i] = Math.min(1, Math.max(0, b + dB*lB + abb - (k+f)*b));
+          }
+        }
+        var t = this.gA; this.gA = this.nA; this.nA = t;
+        t = this.gB; this.gB = this.nB; this.nB = t;
+      },
+
+      render: function() {
+        var d = this.imgData.data, gB = this.gB, sz = this.W * this.H;
+        var c = this.colors;
+        for (var i = 0; i < sz; i++) {
+          var b = gB[i], p = i * 4, t2, c0, c1;
+          if (b < 0.1) {
+            t2 = b / 0.1; c0 = c[0]; c1 = c[1];
+          } else if (b < 0.4) {
+            t2 = (b - 0.1) / 0.3; c0 = c[1]; c1 = c[2];
+          } else {
+            t2 = Math.min((b - 0.4) / 0.6, 1); c0 = c[2]; c1 = c[3];
+          }
+          d[p]   = Math.floor(c0[0] + t2 * (c1[0] - c0[0]));
+          d[p+1] = Math.floor(c0[1] + t2 * (c1[1] - c0[1]));
+          d[p+2] = Math.floor(c0[2] + t2 * (c1[2] - c0[2]));
+          d[p+3] = 255;
+        }
+        this.ctx.putImageData(this.imgData, 0, 0);
+      },
+
+      play: function() {
+        this.running = true;
+        var self = this;
+        function loop() {
+          if (!self.running) return;
+          for (var i = 0; i < 4; i++) self.step();
+          self.render();
+          self.animId = requestAnimationFrame(loop);
+        }
+        loop();
+      },
+
+      stop: function() {
+        this.running = false;
+        if (this.animId) cancelAnimationFrame(this.animId);
+        this.animId = null;
+      }
+    };
+
+    function viewCoral(idx) {
+      var corals = currentFarmTab === 'colony' ? colonyCorals : myCorals;
+      if (idx >= corals.length) return;
+      var c = corals[idx];
+
+      document.getElementById('cvStage').textContent = c.stageName;
+      document.getElementById('cvFeeds').textContent = c.feedsAtSave + ' feeds';
+      var ownerText = '';
+      if (c.grownByName && currentFarmTab === 'colony') ownerText = 'grown by ' + c.grownByName;
+      document.getElementById('cvOwner').textContent = ownerText;
+
+      document.getElementById('coralViewer').classList.add('show');
+      document.body.style.overflow = 'hidden';
+
+      ViewerRD.init(c.presetIdx || 0, c.colorIdx || 0, c.feedsAtSave || 50);
+      ViewerRD.play();
+    }
+
+    function closeCoralViewer() {
+      ViewerRD.stop();
+      document.getElementById('coralViewer').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    // ESC key closes coral viewer and info popup
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        if (document.getElementById('coralViewer').classList.contains('show')) closeCoralViewer();
+        if (document.getElementById('infoPopupOverlay').classList.contains('show')) closeInfoPopup();
+      }
+    });
+    // Click outside canvas closes coral viewer
+    document.getElementById('coralViewer').addEventListener('click', function(e) {
+      if (e.target === this) closeCoralViewer();
+    });
+
     // ---- Init ----
     if (playerName) {
       document.getElementById('login').classList.add('hidden');
       document.getElementById('gameArea').classList.remove('hidden');
       if (colonyParam && !myColony) {
         myColony = colonyParam;
-        localStorage.setItem('charm_colony_' + eventId, myColony);
+        if (hasConsent) localStorage.setItem('charm_colony_' + eventId, myColony);
       }
+      RD.init(myFeeds);
       writePlayer();
       listenToPlayers();
       updateColonyUI();
       renderLocal();
+      updateMultShop();
+      renderCoralFarm();
+      checkReturnStreak();
+      checkWelcomeBack();
     }
   </script>
 </body>
