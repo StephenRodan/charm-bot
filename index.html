@@ -1035,15 +1035,18 @@
           <button class="prompt-btn" onclick="createColony()" style="border-color:var(--teal);color:var(--teal);">go</button>
         </div>
 
+        <div style="text-align:center;margin:12px 0 8px;font-size:11px;color:var(--muted);">playing as <span id="playerTag" style="color:var(--green);font-weight:700;"></span></div>
+
         <div class="lb" id="leaderboard">
           <div style="display:flex;gap:12px;margin-bottom:8px;">
             <button class="lb-tab active" id="tabEvent" onclick="showLB('event')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">all</button>
-            <button class="lb-tab" id="tabColony" onclick="showLB('colony')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;"><span id="tabColonyText">colony</span></button>
+            <button class="lb-tab" id="tabColony" onclick="showLB('colony')" style="display:none;background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;"><span id="tabColonyText">colony</span></button>
           </div>
           <div id="lbList"></div>
         </div>
 
-        <button class="save-coral-btn" onclick="saveCoral()">
+        <!-- Save/Trade Coral — hidden for now, re-enable later -->
+        <button class="save-coral-btn hidden" id="saveCoralBtn" onclick="saveCoral()">
           > save coral (25 BCRL)
         </button>
 
@@ -1120,13 +1123,13 @@
   <div class="section" id="back-charm" style="background:#080808;">
     <div class="section-inner">
       <div class="section-title">// back charm</div>
-      <h3>Invest in the CHARM Business Today</h3>
+      <h3>Join the Coral Growing Community</h3>
       <p style="color:var(--muted);font-size:13px;">$7M seed round. Any amount. No minimum. You're early.</p>
 
       <div class="traction-grid">
         <div class="traction-box" onclick="showInfoPopup('bcrl')">
           <div class="traction-val" style="color:var(--coral);" id="bcrlMinedVal">0</div>
-          <div class="traction-label">BitCoral (BCRL) mined</div>
+          <div class="traction-label">BitCoral (BCRL) click-mined</div>
           <div class="traction-sub" style="color:#333;">tap to learn more</div>
         </div>
         <div class="traction-box" onclick="showInfoPopup('digital')">
@@ -1790,7 +1793,7 @@
         var levelFeeds = Math.max(1, next - prev);
         var steps = Math.max(1, Math.ceil(this.totalFill / levelFeeds));
         // Higher cap for early stages (small level gaps), lower for later stages
-        var cap = levelFeeds < 20 ? 80 : (levelFeeds < 50 ? 50 : 30);
+        var cap = levelFeeds < 20 ? 150 : (levelFeeds < 50 ? 80 : 50);
         steps = Math.min(steps, cap);
         for (var i = 0; i < steps; i++) this.step();
         this.render();
@@ -1961,6 +1964,16 @@
 
     }
 
+    // One-time migration: copy old meta/treasury → meta/bcrlMined if needed
+    db.ref('meta/bcrlMined').once('value', function(snap) {
+      if (!snap.val()) {
+        db.ref('meta/treasury').once('value', function(tSnap) {
+          var old = tSnap.val();
+          if (old) db.ref('meta/bcrlMined').set(old);
+        });
+      }
+    });
+
     // Traction counters — listen on page load (visible before login)
     db.ref('meta/bcrlMined').on('value', function(snap) {
       var val = snap.val() || 0;
@@ -1984,15 +1997,19 @@
       window._backerCount = val;
     });
 
-    // Batched BCRL mined counter
+    // BCRL mined counter — batch small, flush often for live feel
     var bcrlMinedBatch = 0;
     function addToBcrlMined(amount) {
       bcrlMinedBatch += amount;
-      if (bcrlMinedBatch >= 5) {
-        var batch = bcrlMinedBatch;
-        bcrlMinedBatch = 0;
-        db.ref('meta/bcrlMined').transaction(function(c) { return (c || 0) + batch; });
+      if (bcrlMinedBatch >= 2) {
+        flushBcrlMined();
       }
+    }
+    function flushBcrlMined() {
+      if (bcrlMinedBatch <= 0) return;
+      var batch = bcrlMinedBatch;
+      bcrlMinedBatch = 0;
+      db.ref('meta/bcrlMined').transaction(function(c) { return (c || 0) + batch; });
     }
 
     // Treasury pool — BCRL spent on boosts
@@ -2013,7 +2030,7 @@
         var pool = (window._treasuryPool || 0).toLocaleString();
         html = '<h4 style="color:var(--coral);">BitCoral (BCRL)</h4>' +
           '<p>BCRL is the in-game currency of the CHARM coral brain game. It is mined by feeding your coral — each tap earns BCRL.</p>' +
-          '<div class="ip-stat"><span class="ip-label">Total BCRL mined</span><span class="ip-val" style="color:var(--coral);">' + mined + '</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Total BCRL click-mined</span><span class="ip-val" style="color:var(--coral);">' + mined + '</span></div>' +
           '<div class="ip-stat"><span class="ip-label">BCRL in treasury</span><span class="ip-val" style="color:var(--teal);">' + pool + '</span></div>' +
           '<p style="margin-top:12px;">The <strong style="color:var(--teal);">treasury</strong> grows when players spend BCRL on auto-feed boosts. Think of it as the community pool — BCRL flows from miners to the treasury through gameplay.</p>' +
           '<p><strong>How BCRL is earned:</strong></p>' +
@@ -2087,6 +2104,7 @@
       if (myColony) {
         document.getElementById('colonyBar').classList.remove('hidden');
         document.getElementById('noColony').classList.add('hidden');
+        document.getElementById('tabColony').style.display = '';
         document.getElementById('createColonyForm').classList.add('hidden');
         db.ref('events/' + eventId + '/colonies/' + myColony + '/name').once('value', function(snap) {
           colonyDisplayName = snap.val() || myColony;
@@ -2201,6 +2219,8 @@
       }
       document.getElementById('myFeeds').textContent = myFeeds;
       document.getElementById('myBcrl').textContent = myBitcoral;
+      var ptEl = document.getElementById('playerTag');
+      if (ptEl && playerName) ptEl.textContent = playerName;
 
       var next = getNextThreshold(myFeeds);
       var prev = getPrevThreshold(myFeeds);
@@ -2329,7 +2349,7 @@
       // Live RD animation on main canvas
       function animLoop() {
         if (!autoFeedActive) return;
-        for (var i = 0; i < 3; i++) RD.step();
+        for (var i = 0; i < 8; i++) RD.step();
         RD.render();
         autoAnimId = requestAnimationFrame(animLoop);
       }
@@ -2607,6 +2627,8 @@
       }
     }
 
+    var coralViewerLocked = false; // debounce lock
+
     function showFirstCoralCelebration(coral) {
       document.getElementById('cvStage').textContent = '🎉 your first coral!';
       document.getElementById('cvFeeds').textContent = coral.stageName + ' — ' + coral.feedsAtSave + ' feeds';
@@ -2615,7 +2637,11 @@
       document.getElementById('coralViewer').classList.add('show');
       document.body.style.overflow = 'hidden';
 
-      ViewerRD.init(coral.presetIdx || 0, coral.colorIdx || 0, coral.feedsAtSave || 50);
+      // Lock viewer from being dismissed for 2 seconds (debounce against button mashing)
+      coralViewerLocked = true;
+      setTimeout(function() { coralViewerLocked = false; }, 2000);
+
+      ViewerRD.init(coral.presetIdx || 0, coral.colorIdx || 0, Math.max(coral.feedsAtSave, 80));
       ViewerRD.play();
 
       // Auto-close after 6 seconds, scroll to top
@@ -2819,7 +2845,7 @@
         var self = this;
         function loop() {
           if (!self.running) return;
-          for (var i = 0; i < 4; i++) self.step();
+          for (var i = 0; i < 10; i++) self.step();
           self.render();
           self.animId = requestAnimationFrame(loop);
         }
@@ -2851,7 +2877,8 @@
       ViewerRD.play();
     }
 
-    function closeCoralViewer() {
+    function closeCoralViewer(force) {
+      if (coralViewerLocked && !force) return; // debounce active
       ViewerRD.stop();
       document.getElementById('coralViewer').classList.remove('show');
       document.body.style.overflow = '';
