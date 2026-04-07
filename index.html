@@ -1532,6 +1532,30 @@
       return lines.join('\n');
     }
 
+    // ---- Coral Name Generator (fairytale × coral × pet names) ----
+    var CORAL_ADJ = [
+      'Princess', 'Captain', 'Little', 'Sir', 'Lady', 'Baby', 'Tiny', 'Sparkle',
+      'Moonbeam', 'Starlight', 'Golden', 'Crystal', 'Enchanted', 'Mystic', 'Dreamy',
+      'Fairy', 'Lucky', 'Sweet', 'Fuzzy', 'Sunny', 'Neon', 'Cosmic', 'Velvet',
+      'Midnight', 'Blossom', 'Pearly', 'Royal', 'Whispering', 'Dancing', 'Sleepy',
+      'Brave', 'Bubbly', 'Twinkle', 'Glowing', 'Rosy', 'Misty', 'Dainty', 'Jolly',
+      'Wild', 'Shadow', 'Coral', 'Pocket', 'Stormy', 'Frosty', 'Sugar', 'Ember'
+    ];
+    var CORAL_NOUN = [
+      'Bubbles', 'Staghorn', 'Pebble', 'Nemo', 'Sprout', 'Button', 'Pickle',
+      'Biscuit', 'Mochi', 'Dumpling', 'Nugget', 'Waffles', 'Pancake', 'Muffin',
+      'Acropora', 'Anemone', 'Dendro', 'Favia', 'Montipora', 'Pocillopora',
+      'Whiskers', 'Snickers', 'Pudding', 'Cupcake', 'Cookie', 'Jellybean',
+      'Pixie', 'Nimbus', 'Neptune', 'Triton', 'Ariel', 'Coral', 'Pearl',
+      'Cinnamon', 'Guppy', 'Barnacle', 'Finnegan', 'Squish', 'Tofu', 'Pip',
+      'Clover', 'Pebbles', 'Stardust', 'Shimmer', 'Dory', 'Noodle', 'Tango'
+    ];
+    function generateCoralName() {
+      var adj = CORAL_ADJ[Math.floor(Math.random() * CORAL_ADJ.length)];
+      var noun = CORAL_NOUN[Math.floor(Math.random() * CORAL_NOUN.length)];
+      return adj + ' ' + noun;
+    }
+
     var ACHIEVEMENTS = [
       { at: 1, msg: '> first feed!' },
       { at: 10, msg: '> polyp unlocked' },
@@ -1926,9 +1950,19 @@
       var newStage = getStage(myFeeds);
 
       if (oldStage.name !== newStage.name) {
+        // Snapshot the COMPLETED coral before resetting
+        var completedCoral = {
+          thumb: captureCoralThumb(),
+          presetIdx: rdPresetIdx,
+          colorIdx: RD.colorIdx,
+          seeds: RD.lastSeeds.slice(),
+          stageName: oldStage.name,
+          coralName: generateCoralName(),
+          feedsAtSave: myFeeds - 1
+        };
         RD.newLevel(myFeeds);
-        showAchievement('> ' + newStage.name.toLowerCase() + ' // ' + RD_PRESETS[rdPresetIdx].name);
-        autoSaveCoral();
+        autoSaveCoral(completedCoral);
+        showAchievement('> ' + completedCoral.coralName + ' saved! // ' + newStage.name.toLowerCase() + ' unlocked');
       }
 
       maybeShowEngage(myFeeds);
@@ -2005,56 +2039,12 @@
 
     }
 
-    // Traction counters — use events path so Firebase rules allow writes
-    var metaPath = 'events/' + eventId + '/meta';
-
-    // Listen on page load (visible before login)
-    db.ref(metaPath + '/bcrlMined').on('value', function(snap) {
-      var val = snap.val() || 0;
-      var el = document.getElementById('bcrlMinedVal');
-      if (el) el.textContent = val.toLocaleString();
-      window._bcrlMined = val;
-    });
-    db.ref(metaPath + '/digitalCorals').on('value', function(snap) {
-      var val = snap.val() || 0;
-      var el = document.getElementById('digitalCoralsVal');
-      if (el) el.textContent = val.toLocaleString();
-      window._digitalCorals = val;
-    });
-    db.ref(metaPath + '/treasuryPool').on('value', function(snap) {
-      window._treasuryPool = snap.val() || 0;
-    });
-    db.ref(metaPath + '/backerCount').on('value', function(snap) {
-      var val = snap.val() || 0;
-      var el = document.getElementById('backerCount');
-      if (el) el.textContent = val.toLocaleString();
-      window._backerCount = val;
-    });
-
-    // BCRL mined counter — batch small, flush often for live feel
-    var bcrlMinedBatch = 0;
-    function addToBcrlMined(amount) {
-      bcrlMinedBatch += amount;
-      if (bcrlMinedBatch >= 2) {
-        flushBcrlMined();
-      }
-    }
-    function flushBcrlMined() {
-      if (bcrlMinedBatch <= 0) return;
-      var batch = bcrlMinedBatch;
-      bcrlMinedBatch = 0;
-      db.ref(metaPath + '/bcrlMined').transaction(function(c) { return (c || 0) + batch; });
-    }
-
-    // Treasury pool — BCRL spent on boosts
-    function addToTreasuryPool(amount) {
-      db.ref(metaPath + '/treasuryPool').transaction(function(c) { return (c || 0) + amount; });
-    }
-
-    // Digital corals counter
-    function incrementDigitalCorals() {
-      db.ref(metaPath + '/digitalCorals').transaction(function(c) { return (c || 0) + 1; });
-    }
+    // Traction counters are computed from allPlayers in renderGlobalStats()
+    // These write functions are best-effort for analytics only
+    function addToBcrlMined(amount) { /* computed from player feeds */ }
+    function flushBcrlMined() { /* no-op */ }
+    function addToTreasuryPool(amount) { /* no-op */ }
+    function incrementDigitalCorals() { /* no-op */ }
 
     // ---- Info Popups ----
     function showInfoPopup(type) {
@@ -2200,8 +2190,28 @@
 
     function renderGlobalStats() {
       var global = 0;
-      for (var i = 0; i < allPlayers.length; i++) global += allPlayers[i].feeds;
+      var totalCorals = 0;
+      for (var i = 0; i < allPlayers.length; i++) {
+        global += allPlayers[i].feeds;
+        // Count corals stored under each player
+        if (allPlayers[i].corals) {
+          totalCorals += Object.keys(allPlayers[i].corals).length;
+        }
+      }
       document.getElementById('globalFeeds').textContent = global;
+
+      // Update traction counters from real player data
+      var bcrlEl = document.getElementById('bcrlMinedVal');
+      if (bcrlEl) bcrlEl.textContent = global.toLocaleString();
+      window._bcrlMined = global;
+
+      var digiEl = document.getElementById('digitalCoralsVal');
+      if (digiEl) digiEl.textContent = totalCorals.toLocaleString();
+      window._digitalCorals = totalCorals;
+
+      var backerEl = document.getElementById('backerCount');
+      if (backerEl) backerEl.textContent = allPlayers.length.toLocaleString();
+      window._backerCount = allPlayers.length;
 
       var rank = '-';
       for (var i = 0; i < allPlayers.length; i++) {
@@ -2591,6 +2601,7 @@
         colorIdx: RD.colorIdx,
         feedsAtSave: myFeeds,
         stageName: getStage(myFeeds).name,
+        coralName: generateCoralName(),
         timestamp: Date.now(),
         manual: true,
         grownBy: playerId,
@@ -2614,19 +2625,19 @@
 
     var hasSeenFirstCoral = hasConsent ? localStorage.getItem('charm_first_coral_seen') === 'true' : false;
 
-    function autoSaveCoral() {
-      var thumb = captureCoralThumb();
+    function autoSaveCoral(snapshot) {
       var coral = {
-        presetIdx: rdPresetIdx,
-        colorIdx: RD.colorIdx,
-        feedsAtSave: myFeeds,
-        stageName: getStage(myFeeds).name,
+        presetIdx: snapshot.presetIdx,
+        colorIdx: snapshot.colorIdx,
+        feedsAtSave: snapshot.feedsAtSave,
+        stageName: snapshot.stageName,
+        coralName: snapshot.coralName || generateCoralName(),
         timestamp: Date.now(),
         manual: false,
         grownBy: playerId,
         grownByName: playerName,
-        thumb: thumb,
-        seeds: RD.lastSeeds.slice(),
+        thumb: snapshot.thumb,
+        seeds: snapshot.seeds,
         id: 'c_' + Math.random().toString(36).substr(2, 8)
       };
       myCorals.push(coral);
@@ -2646,7 +2657,7 @@
     var coralViewerLocked = false; // debounce lock
 
     function showFirstCoralCelebration(coral) {
-      document.getElementById('cvStage').textContent = '🎉 your first coral!';
+      document.getElementById('cvStage').textContent = '🎉 ' + (coral.coralName || 'your first coral!');
       document.getElementById('cvFeeds').textContent = coral.stageName + ' — ' + coral.feedsAtSave + ' feeds';
       document.getElementById('cvOwner').textContent = 'saved to your farm';
 
@@ -2742,12 +2753,12 @@
           var c2 = 'rgb(' + pal[3][0] + ',' + pal[3][1] + ',' + pal[3][2] + ')';
           thumbStyle = 'background:radial-gradient(circle at 30% 30%, ' + c2 + ', ' + c1 + ' 50%, ' + c0 + ');';
         }
-        var label = c.stageName ? c.stageName.substr(0, 4).toUpperCase() : '????';
+        var label = c.coralName || (c.stageName ? c.stageName.substr(0, 4).toUpperCase() : '????');
         var owner = currentFarmTab === 'colony' && c.grownByName ? c.grownByName : '';
-        var titleText = c.stageName + ' \u2014 ' + c.feedsAtSave + ' feeds' + (owner ? ' \u2014 by ' + owner : '');
+        var titleText = (c.coralName || c.stageName) + ' \u2014 ' + c.feedsAtSave + ' feeds' + (owner ? ' \u2014 by ' + owner : '');
         html += '<div class="farm-cell filled" onclick="viewCoral(' + i + ')" title="' + esc(titleText) + '">' +
           '<div class="farm-thumb" style="' + thumbStyle + '"></div>' +
-          '<div class="farm-label">' + label + '</div>' +
+          '<div class="farm-label" style="font-size:7px;line-height:1.2;">' + esc(label) + '</div>' +
           (owner ? '<div class="farm-label" style="color:var(--teal);font-size:7px;">' + esc(owner.substr(0, 8)) + '</div>' : '') +
           '</div>';
       }
@@ -2901,8 +2912,8 @@
       if (idx >= corals.length) return;
       var c = corals[idx];
 
-      document.getElementById('cvStage').textContent = c.stageName;
-      document.getElementById('cvFeeds').textContent = c.feedsAtSave + ' feeds';
+      document.getElementById('cvStage').textContent = c.coralName || c.stageName;
+      document.getElementById('cvFeeds').textContent = c.stageName + ' — ' + c.feedsAtSave + ' feeds';
       var ownerText = '';
       if (c.grownByName && currentFarmTab === 'colony') ownerText = 'grown by ' + c.grownByName;
       document.getElementById('cvOwner').textContent = ownerText;
