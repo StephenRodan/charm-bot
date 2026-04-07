@@ -485,7 +485,20 @@
       padding: 10px;
       border: 1px solid #1a1a1a;
     }
-    .mult-shop.show { display: block; }
+    .mult-shop.show { display: block; animation: shopGlow 1.5s ease-in-out infinite; }
+    @keyframes shopGlow {
+      0%, 100% { border-color: #1a1a1a; box-shadow: none; }
+      50% { border-color: var(--coral); box-shadow: 0 0 12px rgba(255,107,53,0.3); }
+    }
+    .mult-shop.show .mult-item {
+      animation: itemPulse 2s ease-in-out infinite;
+    }
+    .mult-shop.show .mult-item:nth-child(2) { animation-delay: 0.3s; }
+    .mult-shop.show .mult-item:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes itemPulse {
+      0%, 100% { border-color: #222; transform: scale(1); }
+      50% { border-color: var(--coral); transform: scale(1.03); }
+    }
     .mult-shop-title {
       font-size: 9px;
       color: var(--muted);
@@ -1138,9 +1151,9 @@
           <div class="traction-sub" style="color:#333;">tap to learn more</div>
         </div>
         <div class="traction-box" onclick="showInfoPopup('real')">
-          <div class="traction-val" style="color:var(--teal);" id="realCoralsVal">2,500+</div>
-          <div class="traction-label">🪸 Real Corals grown</div>
-          <div class="traction-sub" style="color:var(--teal);">via Beyond Coral</div>
+          <div class="traction-val" style="color:var(--teal);">🪸</div>
+          <div class="traction-label">Real Corals Restored</div>
+          <div class="traction-sub" style="color:var(--teal);">via Beyond Coral Foundation</div>
         </div>
         <div class="traction-box" onclick="showInfoPopup('users')">
           <div class="traction-val" style="color:var(--white);" id="backerCount">0</div>
@@ -1182,8 +1195,31 @@
         </button>
       </div>
 
-      <div id="backReveal">
-        <div style="text-align:center;padding:12px 0;color:var(--green);font-size:13px;font-weight:700;">you're a reef builder now</div>
+      <div id="backReveal" style="display:none;">
+        <div style="text-align:center;padding:12px 0;">
+          <div style="color:var(--green);font-size:13px;font-weight:700;">want to be a reef builder?</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;">reach out directly — <a href="mailto:stephen.rodan@beyondcoral.com?subject=CHARM%20Investment%20Inquiry" style="color:var(--green);font-weight:700;">stephen.rodan@beyondcoral.com</a></div>
+        </div>
+
+        <div class="card" style="margin-bottom:12px;">
+          <div class="card-label">I. Financials & Investment</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+            <div><span style="color:var(--coral);">→</span> <strong style="color:var(--white);">$7M seed round</strong> — any amount, no minimum</div>
+            <div><span style="color:var(--coral);">→</span> <strong style="color:var(--white);">SAFE note</strong> — simple agreement for future equity</div>
+            <div><span style="color:var(--coral);">→</span> <strong style="color:var(--white);">CHARM Holdings Pty Ltd</strong> — ACN 656 176 939</div>
+            <div><span style="color:var(--coral);">→</span> Patent granted + published via WIPO</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:12px;">
+          <div class="card-label">II. Beyond Coral Foundation</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+            <div><span style="color:var(--teal);">→</span> Registered <strong style="color:var(--white);">501(c)(3)</strong> tax-deductible not-for-profit</div>
+            <div><span style="color:var(--teal);">→</span> Grows and restores real corals on the Great Barrier Reef</div>
+            <div><span style="color:var(--teal);">→</span> <strong style="color:var(--white);">$10/month</strong> grows one coral</div>
+            <div><span style="color:var(--teal);">→</span> <a href="https://beyondcoral.com" target="_blank" style="color:var(--teal);">beyondcoral.com</a></div>
+          </div>
+        </div>
 
         <div class="card">
           <div class="card-label">preferred: BTC or USDT</div>
@@ -1691,16 +1727,21 @@
         this.fastForward(feeds);
       },
 
+      lastSeeds: [],
+
       resetGrid: function(seeds) {
         seeds = seeds || 1;
         this.gA.fill(1.0);
         this.gB.fill(0.0);
+        this.lastSeeds = [];
         for (var s = 0; s < seeds; s++) {
           var margin = 30;
           var sx = margin + Math.floor(Math.random() * (this.W - margin * 2));
           var sy = margin + Math.floor(Math.random() * (this.H - margin * 2));
           var sr = 10 + Math.floor(Math.random() * 7);
           this.seed(sx, sy, sr);
+          // Store normalized (0-1) so viewer can scale to its own resolution
+          this.lastSeeds.push({ nx: sx / this.W, ny: sy / this.H, nr: sr / this.W });
         }
       },
 
@@ -1791,7 +1832,7 @@
         var prev = getPrevThreshold(feeds);
         var next = getNextThreshold(feeds);
         var levelFeeds = Math.max(1, next - prev);
-        var steps = Math.max(1, Math.ceil(this.totalFill / levelFeeds));
+        var steps = Math.max(10, Math.ceil(this.totalFill / levelFeeds));
         // Higher cap for early stages (small level gaps), lower for later stages
         var cap = levelFeeds < 20 ? 150 : (levelFeeds < 50 ? 80 : 50);
         steps = Math.min(steps, cap);
@@ -1818,7 +1859,7 @@
       }
 
       // Every login counts as a reef builder
-      db.ref('meta/backerCount').transaction(function(current) {
+      db.ref('events/' + eventId + '/meta/backerCount').transaction(function(current) {
         return (current || 0) + 1;
       });
 
@@ -1964,33 +2005,26 @@
 
     }
 
-    // One-time migration: copy old meta/treasury → meta/bcrlMined if needed
-    db.ref('meta/bcrlMined').once('value', function(snap) {
-      if (!snap.val()) {
-        db.ref('meta/treasury').once('value', function(tSnap) {
-          var old = tSnap.val();
-          if (old) db.ref('meta/bcrlMined').set(old);
-        });
-      }
-    });
+    // Traction counters — use events path so Firebase rules allow writes
+    var metaPath = 'events/' + eventId + '/meta';
 
-    // Traction counters — listen on page load (visible before login)
-    db.ref('meta/bcrlMined').on('value', function(snap) {
+    // Listen on page load (visible before login)
+    db.ref(metaPath + '/bcrlMined').on('value', function(snap) {
       var val = snap.val() || 0;
       var el = document.getElementById('bcrlMinedVal');
       if (el) el.textContent = val.toLocaleString();
       window._bcrlMined = val;
     });
-    db.ref('meta/digitalCorals').on('value', function(snap) {
+    db.ref(metaPath + '/digitalCorals').on('value', function(snap) {
       var val = snap.val() || 0;
       var el = document.getElementById('digitalCoralsVal');
       if (el) el.textContent = val.toLocaleString();
       window._digitalCorals = val;
     });
-    db.ref('meta/treasuryPool').on('value', function(snap) {
+    db.ref(metaPath + '/treasuryPool').on('value', function(snap) {
       window._treasuryPool = snap.val() || 0;
     });
-    db.ref('meta/backerCount').on('value', function(snap) {
+    db.ref(metaPath + '/backerCount').on('value', function(snap) {
       var val = snap.val() || 0;
       var el = document.getElementById('backerCount');
       if (el) el.textContent = val.toLocaleString();
@@ -2009,17 +2043,17 @@
       if (bcrlMinedBatch <= 0) return;
       var batch = bcrlMinedBatch;
       bcrlMinedBatch = 0;
-      db.ref('meta/bcrlMined').transaction(function(c) { return (c || 0) + batch; });
+      db.ref(metaPath + '/bcrlMined').transaction(function(c) { return (c || 0) + batch; });
     }
 
     // Treasury pool — BCRL spent on boosts
     function addToTreasuryPool(amount) {
-      db.ref('meta/treasuryPool').transaction(function(c) { return (c || 0) + amount; });
+      db.ref(metaPath + '/treasuryPool').transaction(function(c) { return (c || 0) + amount; });
     }
 
     // Digital corals counter
     function incrementDigitalCorals() {
-      db.ref('meta/digitalCorals').transaction(function(c) { return (c || 0) + 1; });
+      db.ref(metaPath + '/digitalCorals').transaction(function(c) { return (c || 0) + 1; });
     }
 
     // ---- Info Popups ----
@@ -2050,12 +2084,12 @@
           '<div class="ip-stat"><span class="ip-label">Auto-feed boost</span><span class="ip-val">generates many corals</span></div>' +
           '<p style="margin-top:12px;">Saved corals appear in your farm and can be viewed as live simulations.</p>';
       } else if (type === 'real') {
-        html = '<h4 style="color:var(--teal);">🪸 Real Corals Grown</h4>' +
-          '<p><strong>Beyond Coral Foundation</strong> has grown over 2,500 real corals on the Great Barrier Reef.</p>' +
-          '<p>$10 grows and outplants one coral. Monthly recurring. 501(c)(3) tax-deductible.</p>' +
-          '<div class="ip-stat"><span class="ip-label">Cost per coral</span><span class="ip-val" style="color:var(--teal);">$10</span></div>' +
-          '<div class="ip-stat"><span class="ip-label">Corals outplanted</span><span class="ip-val" style="color:var(--teal);">2,500+</span></div>' +
-          '<div class="ip-stat"><span class="ip-label">Organisation</span><span class="ip-val">Beyond Coral</span></div>' +
+        html = '<h4 style="color:var(--teal);">🪸 Real Corals Restored</h4>' +
+          '<p><strong>Beyond Coral Foundation</strong> grows and restores real corals on the Great Barrier Reef.</p>' +
+          '<p>$10/month grows one coral. 501(c)(3) tax-deductible.</p>' +
+          '<div class="ip-stat"><span class="ip-label">Cost per coral</span><span class="ip-val" style="color:var(--teal);">$10/mo</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Organisation</span><span class="ip-val">Beyond Coral Foundation</span></div>' +
+          '<div class="ip-stat"><span class="ip-label">Status</span><span class="ip-val">501(c)(3) registered</span></div>' +
           '<p style="margin-top:12px;"><a href="https://beyondcoral.com" target="_blank" style="color:var(--teal);">beyondcoral.com</a></p>' +
           '<button onclick="closeInfoPopup();document.getElementById(\'feed-section\').scrollIntoView({behavior:\'smooth\'})" style="width:100%;margin-top:12px;padding:12px;background:none;border:1px solid var(--teal);color:var(--teal);font-family:var(--mono);font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">> donate to grow a real coral</button>';
       } else if (type === 'users') {
@@ -2282,27 +2316,7 @@
       setTimeout(function() { btn.textContent = 'copy'; btn.classList.remove('copied'); }, 2000);
     }
 
-    // ---- Back CHARM (investment) ----
-    function backCharm() {
-      var backerName = playerName || 'anonymous';
-      var backerId = playerId || 'anon_' + Math.random().toString(36).substr(2, 6);
-      db.ref('backers/' + backerId).set({
-        name: backerName,
-        time: Date.now(),
-        event: eventId
-      });
-      db.ref('meta/backerCount').transaction(function(current) {
-        return (current || 0) + 1;
-      });
-      document.getElementById('backPrompt').classList.add('hidden');
-      document.getElementById('backReveal').classList.remove('hidden');
-      showAchievement('> you\'re a reef builder now');
-    }
-
-    // Listen to backer count (atomic counter)
-    db.ref('meta/backerCount').on('value', function(snap) {
-      document.getElementById('backerCount').textContent = snap.val() || 0;
-    });
+    // (backer count listener is now under events/{eventId}/meta path above)
     function selectTier(el, amount) {
       document.querySelectorAll('.tier').forEach(function(t) { t.classList.remove('selected'); });
       el.classList.add('selected');
@@ -2582,6 +2596,7 @@
         grownBy: playerId,
         grownByName: playerName,
         thumb: thumb,
+        seeds: RD.lastSeeds.slice(),
         id: 'c_' + Math.random().toString(36).substr(2, 8)
       };
       myCorals.push(coral);
@@ -2611,6 +2626,7 @@
         grownBy: playerId,
         grownByName: playerName,
         thumb: thumb,
+        seeds: RD.lastSeeds.slice(),
         id: 'c_' + Math.random().toString(36).substr(2, 8)
       };
       myCorals.push(coral);
@@ -2641,7 +2657,7 @@
       coralViewerLocked = true;
       setTimeout(function() { coralViewerLocked = false; }, 2000);
 
-      ViewerRD.init(coral.presetIdx || 0, coral.colorIdx || 0, Math.max(coral.feedsAtSave, 80));
+      ViewerRD.init(coral.presetIdx || 0, coral.colorIdx || 0, Math.max(coral.feedsAtSave, 80), coral.seeds || null);
       ViewerRD.play();
 
       // Auto-close after 6 seconds, scroll to top
@@ -2762,7 +2778,7 @@
       colors: RD_COLORS[0],
       running: false, animId: null,
 
-      init: function(preset, colorIdx, feeds) {
+      init: function(preset, colorIdx, feeds, savedSeeds) {
         this.canvas = document.getElementById('viewerCanvas');
         this.canvas.width = this.W;
         this.canvas.height = this.H;
@@ -2777,19 +2793,40 @@
         this.f = p.f;
         this.k = p.k;
         this.colors = RD_COLORS[colorIdx % RD_COLORS.length];
-        var seeds = Math.max(1, Math.floor(feeds / 30));
         this.gA.fill(1.0);
         this.gB.fill(0.0);
-        for (var s = 0; s < Math.min(seeds, 12); s++) {
-          var margin = 20;
-          var sx = margin + Math.floor(Math.random() * (this.W - margin * 2));
-          var sy = margin + Math.floor(Math.random() * (this.H - margin * 2));
-          for (var dy = -4; dy <= 4; dy++) {
-            for (var dx = -4; dx <= 4; dx++) {
-              if (dx*dx + dy*dy > 16) continue;
-              var px = sx + dx, py = sy + dy;
-              if (px >= 0 && px < this.W && py >= 0 && py < this.H)
-                this.gB[py * this.W + px] = 1.0;
+        var W = this.W, H = this.H;
+        if (savedSeeds && savedSeeds.length) {
+          // Replay exact seed positions scaled to viewer resolution
+          for (var s = 0; s < savedSeeds.length; s++) {
+            var sd = savedSeeds[s];
+            var sx = Math.floor(sd.nx * W);
+            var sy = Math.floor(sd.ny * H);
+            var sr = Math.max(4, Math.floor(sd.nr * W));
+            for (var dy = -sr; dy <= sr; dy++) {
+              for (var dx = -sr; dx <= sr; dx++) {
+                if (dx*dx + dy*dy > sr*sr) continue;
+                var px = sx + dx, py = sy + dy;
+                if (px >= 0 && px < W && py >= 0 && py < H)
+                  this.gB[py * W + px] = 1.0;
+              }
+            }
+          }
+        } else {
+          // Fallback for older corals without saved seeds
+          var numSeeds = Math.max(1, Math.floor(feeds / 30));
+          for (var s = 0; s < Math.min(numSeeds, 12); s++) {
+            var margin = 20;
+            var sx = margin + Math.floor(Math.random() * (W - margin * 2));
+            var sy = margin + Math.floor(Math.random() * (H - margin * 2));
+            var sr = 5;
+            for (var dy = -sr; dy <= sr; dy++) {
+              for (var dx = -sr; dx <= sr; dx++) {
+                if (dx*dx + dy*dy > sr*sr) continue;
+                var px = sx + dx, py = sy + dy;
+                if (px >= 0 && px < W && py >= 0 && py < H)
+                  this.gB[py * W + px] = 1.0;
+              }
             }
           }
         }
@@ -2873,7 +2910,7 @@
       document.getElementById('coralViewer').classList.add('show');
       document.body.style.overflow = 'hidden';
 
-      ViewerRD.init(c.presetIdx || 0, c.colorIdx || 0, c.feedsAtSave || 50);
+      ViewerRD.init(c.presetIdx || 0, c.colorIdx || 0, c.feedsAtSave || 50, c.seeds || null);
       ViewerRD.play();
     }
 
