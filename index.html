@@ -1105,7 +1105,7 @@
   <div class="farm-section" id="coralFarm">
     <div class="farm-header">
       <div style="display:flex;gap:12px;">
-        <button class="lb-tab active" id="farmTabMine" onclick="showFarmTab('mine')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">your farm</button>
+        <button class="lb-tab active" id="farmTabMine" onclick="showFarmTab('mine')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--green);cursor:pointer;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--green);padding:2px 0;">Your coral farm</button>
         <button class="lb-tab" id="farmTabColony" onclick="showFarmTab('colony')" style="background:none;border:none;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:1px;padding:2px 0;"><span id="farmTabColonyText">colony farm</span></button>
       </div>
       <div class="farm-count" id="farmCount">0 corals</div>
@@ -1219,13 +1219,8 @@
         <a href="https://reefbites.com/2021/02/06/science-saturday-beyond-coral-foundation/amp/" target="_blank" style="color:#555;">ReefBites</a>
       </div>
 
-      <div id="backPrompt">
-        <button class="feed-btn" onclick="document.getElementById('backPrompt').style.display='none';document.getElementById('backReveal').style.display='block';" style="border-color:var(--green);color:var(--green);margin-bottom:12px;">
-          > show investment details
-        </button>
-      </div>
-
-      <div id="backReveal" style="display:none;">
+      <div id="backPrompt" style="display:none;"></div>
+      <div id="backReveal">
         <div style="text-align:center;padding:12px 0;">
           <div style="color:var(--green);font-size:13px;font-weight:700;">want to be a reef builder?</div>
           <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;">reach out directly — <a href="mailto:stephen.rodan@beyondcoral.com?subject=CHARM%20Investment%20Inquiry" style="color:var(--green);font-weight:700;">stephen.rodan@beyondcoral.com</a></div>
@@ -1239,16 +1234,101 @@
             <div><span style="color:var(--coral);">→</span> <strong style="color:var(--white);">CHARM Holdings Pty Ltd</strong> — ACN 656 176 939</div>
             <div><span style="color:var(--coral);">→</span> Patent granted + published via WIPO</div>
           </div>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">Seed Round</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr><td style="padding:3px 0;">Seed Ask</td><td style="text-align:right;color:var(--white);font-weight:700;">$7,000,000</td></tr>
+            <tr><td style="padding:3px 0;">Target Dilution</td><td style="text-align:right;color:var(--white);">10–20%</td></tr>
+            <tr><td style="padding:3px 0;">Pre-Money (at 10%)</td><td style="text-align:right;">$63,000,000</td></tr>
+            <tr><td style="padding:3px 0;">Pre-Money (at 20%)</td><td style="text-align:right;">$28,000,000</td></tr>
+            <tr><td style="padding:3px 0;">Post-Money (at 10%)</td><td style="text-align:right;">$70,000,000</td></tr>
+            <tr><td style="padding:3px 0;">Post-Money (at 20%)</td><td style="text-align:right;">$35,000,000</td></tr>
+          </table>
+          <div style="font-size:9px;color:#444;">Seed raise is currency-agnostic. Operational financials in AUD.</div>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">Funding History</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr><td style="padding:3px 0;">Angel — Mar 2022</td><td style="text-align:right;color:var(--green);">$300,000 <span style="color:var(--green);">✓</span></td></tr>
+            <tr><td style="padding:3px 0;">Seed — FY26</td><td style="text-align:right;color:var(--coral);font-weight:700;">$7,000,000 (open)</td></tr>
+            <tr><td style="padding:3px 0;">Main — FY28</td><td style="text-align:right;color:#444;">$15,000,000 (planned)</td></tr>
+          </table>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">Revenue Projections (AUD)</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr style="color:#444;"><td></td><td style="text-align:right;">FY26</td><td style="text-align:right;">FY27</td><td style="text-align:right;">FY28</td><td style="text-align:right;">FY29</td></tr>
+            <tr><td style="padding:3px 0;">Revenue</td><td style="text-align:right;">$2.6M</td><td style="text-align:right;">$27.3M</td><td style="text-align:right;">$84.6M</td><td style="text-align:right;color:var(--white);">$191M</td></tr>
+            <tr><td style="padding:3px 0;">Gross Profit</td><td style="text-align:right;">$202K</td><td style="text-align:right;">$6.8M</td><td style="text-align:right;">$24.5M</td><td style="text-align:right;">$54.4M</td></tr>
+            <tr><td style="padding:3px 0;">EBITDA</td><td style="text-align:right;color:var(--coral);">-$1.9M</td><td style="text-align:right;color:var(--green);">$1.9M</td><td style="text-align:right;color:var(--green);">$16.3M</td><td style="text-align:right;color:var(--green);">$33.4M</td></tr>
+          </table>
+          <div style="font-size:9px;color:var(--green);">EBITDA positive FY27. $33.4M EBITDA on $191M revenue by FY29.</div>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">Site Growth</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr style="color:#444;"><td></td><td style="text-align:right;">FY26</td><td style="text-align:right;">FY27</td><td style="text-align:right;">FY28</td><td style="text-align:right;">FY29</td><td style="text-align:right;">FY30</td></tr>
+            <tr><td style="padding:3px 0;">Total Sites</td><td style="text-align:right;">4</td><td style="text-align:right;">23</td><td style="text-align:right;">67</td><td style="text-align:right;">155</td><td style="text-align:right;color:var(--white);">203</td></tr>
+          </table>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">Historical Actuals (AUD)</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr style="color:#444;"><td></td><td style="text-align:right;">FY22</td><td style="text-align:right;">FY23</td><td style="text-align:right;">FY24</td><td style="text-align:right;">FY25</td></tr>
+            <tr><td style="padding:3px 0;">Gross Credits</td><td style="text-align:right;">$324K</td><td style="text-align:right;">$161K</td><td style="text-align:right;">$164K</td><td style="text-align:right;">$120K</td></tr>
+            <tr><td style="padding:3px 0;">Net P/(L)</td><td style="text-align:right;color:var(--green);">$81K</td><td style="text-align:right;color:var(--coral);">-$65K</td><td style="text-align:right;color:var(--coral);">-$3K</td><td style="text-align:right;color:var(--green);">$58K</td></tr>
+          </table>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">Cap Table (Post-Seed)</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr><td style="padding:3px 0;">Party 1 — Founder</td><td style="text-align:right;">70,000</td><td style="text-align:right;color:var(--white);">58.3%</td></tr>
+            <tr><td style="padding:3px 0;">Party 2 — TRAC</td><td style="text-align:right;">5,000</td><td style="text-align:right;">4.2%</td></tr>
+            <tr><td style="padding:3px 0;">Party 3 — GCBG</td><td style="text-align:right;">2,500</td><td style="text-align:right;">2.1%</td></tr>
+            <tr><td style="padding:3px 0;">Party 4 — GreenPath</td><td style="text-align:right;">2,500</td><td style="text-align:right;">2.1%</td></tr>
+            <tr><td style="padding:3px 0;">Seed Investors</td><td style="text-align:right;color:var(--coral);">TBD</td><td style="text-align:right;color:var(--coral);">10–20%</td></tr>
+            <tr style="color:#333;"><td style="padding:3px 0;font-style:italic;">Milestone Equity Pool</td><td style="text-align:right;">12,500</td><td style="text-align:right;">—</td></tr>
+            <tr style="color:#333;"><td style="padding:3px 0;font-style:italic;">Bonus/ESOP Pool</td><td style="text-align:right;">7,500</td><td style="text-align:right;">—</td></tr>
+          </table>
+          <div style="font-size:9px;color:#444;">100,000 total shares. Entity names used for consistency. All parties known to CHARM Holdings.</div>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">HOA Equity Milestones (2.5% each)</div>
+          <table style="width:100%;font-size:10px;color:var(--muted);border-collapse:collapse;margin:6px 0;">
+            <tr><td style="padding:3px 0;"><span style="color:var(--green);">✓</span> Initial Investment ($250K)</td><td style="text-align:right;">TRAC</td></tr>
+            <tr><td style="padding:3px 0;"><span style="color:var(--green);">✓</span> Corp Structure + $50K</td><td style="text-align:right;">GCBG</td></tr>
+            <tr><td style="padding:3px 0;"><span style="color:var(--green);">✓</span> Build CHARM Office (off-grid)</td><td style="text-align:right;">GreenPath</td></tr>
+            <tr><td style="padding:3px 0;"><span style="color:var(--green);">✓</span> Strategic Plan #1 (Coral Charms)</td><td style="text-align:right;">TRAC</td></tr>
+            <tr><td style="padding:3px 0;"><span style="color:var(--coral);">→</span> <strong style="color:var(--white);">Raise $7M (we are here)</strong></td><td style="text-align:right;">GCBG</td></tr>
+            <tr style="color:#444;"><td style="padding:3px 0;">CHARM Bot MVP w/ supply chain</td><td style="text-align:right;">GreenPath</td></tr>
+            <tr style="color:#444;"><td style="padding:3px 0;">Strategic Plans #2–5</td><td style="text-align:right;">TRAC</td></tr>
+            <tr style="color:#444;"><td style="padding:3px 0;">Raise $15M</td><td style="text-align:right;">GCBG</td></tr>
+            <tr style="color:#444;"><td style="padding:3px 0;">Off-Grid System MVP</td><td style="text-align:right;">GreenPath</td></tr>
+          </table>
+
+          <div style="margin-top:12px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--green);border-top:1px solid #1a1a1a;padding-top:10px;">SAFE Note</div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.8;margin-top:6px;">
+            <div><span style="color:var(--coral);">→</span> <strong style="color:var(--white);">Simple Agreement for Future Equity</strong></div>
+            <div><span style="color:var(--coral);">→</span> Valuation cap: <strong style="color:var(--white);">$35M</strong></div>
+            <div><span style="color:var(--coral);">→</span> Discount rate: <strong style="color:var(--white);">20%</strong> for early investors</div>
+            <div><span style="color:var(--coral);">→</span> No minimum investment. Rolling close.</div>
+            <div><span style="color:var(--coral);">→</span> Standard <a href="https://www.ycombinator.com/documents" target="_blank" style="color:var(--green);">YC SAFE template</a></div>
+          </div>
         </div>
 
         <div class="card" style="margin-bottom:12px;">
           <div class="card-label">II. Beyond Coral Foundation</div>
           <div style="font-size:11px;color:var(--muted);line-height:1.8;">
             <div><span style="color:var(--teal);">→</span> Registered <strong style="color:var(--white);">501(c)(3)</strong> tax-deductible not-for-profit</div>
+            <div><span style="color:var(--teal);">→</span> EIN: 83-4232094 · Section 509(a)(2)</div>
             <div><span style="color:var(--teal);">→</span> Grows and restores real corals on the Great Barrier Reef</div>
+            <div><span style="color:var(--teal);">→</span> <strong style="color:var(--white);">$0 executive compensation</strong> — 100% volunteer leadership</div>
+            <div><span style="color:var(--teal);">→</span> <strong style="color:var(--white);">86.69%</strong> publicly supported (IRS verified, 5-yr avg)</div>
             <div><span style="color:var(--teal);">→</span> <strong style="color:var(--white);">$10/month</strong> grows one coral</div>
             <div><span style="color:var(--teal);">→</span> <a href="https://beyondcoral.com" target="_blank" style="color:var(--teal);">beyondcoral.com</a></div>
           </div>
+          <div style="margin-top:8px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--teal);border-top:1px solid #1a1a1a;padding-top:8px;">2025 Impact</div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.8;margin-top:4px;">
+            <div><span style="color:var(--teal);">→</span> <strong style="color:var(--white);">8 CHARM machines</strong> built to date</div>
+            <div><span style="color:var(--teal);">→</span> 1 machine on <strong style="color:var(--white);">Tiwi Island</strong> (indigenous community)</div>
+            <div><span style="color:var(--teal);">→</span> 1 machine on <strong style="color:var(--white);">Magnetic Island</strong></div>
+            <div><span style="color:var(--teal);">→</span> 1 machine with <strong style="color:var(--white);">CSIRO Data61</strong> (Australian govt research)</div>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:#444;">Board: Stephen Rodan (President), Jeanne Littooy (Director), Emiliano Shea (Director)</div>
         </div>
 
         <div class="card">
@@ -1707,6 +1787,99 @@
     var writeTimer = null;
     var colonyDisplayName = '';
 
+    // ---- CoralDaddy Special Corals ----
+    var CORAL_DADDY_NAME = 'CoralDaddy';
+    var SPECIAL_CORALS = [
+      { id: 'legend_1', seedText: '1', value: 1000000, presetIdx: 0, colorIdx: 0, type: 'legendary' },
+      { id: 'legend_2', seedText: '2', value: 1000000, presetIdx: 1, colorIdx: 1, type: 'legendary' },
+      { id: 'legend_3', seedText: '3', value: 1000000, presetIdx: 2, colorIdx: 2, type: 'legendary' },
+      { id: 'legend_4', seedText: '4', value: 1000000, presetIdx: 3, colorIdx: 0, type: 'legendary' },
+      { id: 'legend_5', seedText: '5', value: 1000000, presetIdx: 4, colorIdx: 1, type: 'legendary' },
+      { id: 'legend_6', seedText: '6', value: 1000000, presetIdx: 0, colorIdx: 2, type: 'legendary' },
+      { id: 'legend_7', seedText: '7', value: 1000000, presetIdx: 1, colorIdx: 0, type: 'legendary' },
+      { id: 'legend_8', seedText: 'CHARM', value: 0, presetIdx: 2, colorIdx: 1, type: 'easter' },
+      { id: 'legend_9', seedText: 'Easter Egg', value: 0, presetIdx: 3, colorIdx: 2, type: 'easter' }
+    ];
+
+    // Minimal 5x7 pixel font for text seed rendering
+    var PIXEL_FONT = {
+      '0': [0x7C,0xC6,0xCE,0xD6,0xE6,0xC6,0x7C], '1': [0x30,0x70,0x30,0x30,0x30,0x30,0xFC],
+      '2': [0x78,0xCC,0x0C,0x38,0x60,0xCC,0xFC], '3': [0x78,0xCC,0x0C,0x38,0x0C,0xCC,0x78],
+      '4': [0x1C,0x3C,0x6C,0xCC,0xFE,0x0C,0x0C], '5': [0xFC,0xC0,0xF8,0x0C,0x0C,0xCC,0x78],
+      '6': [0x38,0x60,0xC0,0xF8,0xCC,0xCC,0x78], '7': [0xFC,0xCC,0x0C,0x18,0x30,0x30,0x30],
+      '8': [0x78,0xCC,0xCC,0x78,0xCC,0xCC,0x78], '9': [0x78,0xCC,0xCC,0x7C,0x0C,0x18,0x70],
+      'A': [0x30,0x78,0xCC,0xCC,0xFC,0xCC,0xCC], 'B': [0xF8,0xCC,0xCC,0xF8,0xCC,0xCC,0xF8],
+      'C': [0x78,0xCC,0xC0,0xC0,0xC0,0xCC,0x78], 'D': [0xF0,0xD8,0xCC,0xCC,0xCC,0xD8,0xF0],
+      'E': [0xFC,0xC0,0xC0,0xF8,0xC0,0xC0,0xFC], 'F': [0xFC,0xC0,0xC0,0xF8,0xC0,0xC0,0xC0],
+      'G': [0x78,0xCC,0xC0,0xDC,0xCC,0xCC,0x78], 'H': [0xCC,0xCC,0xCC,0xFC,0xCC,0xCC,0xCC],
+      'I': [0x78,0x30,0x30,0x30,0x30,0x30,0x78], 'K': [0xCC,0xD8,0xF0,0xE0,0xF0,0xD8,0xCC],
+      'L': [0xC0,0xC0,0xC0,0xC0,0xC0,0xC0,0xFC], 'M': [0xC6,0xEE,0xFE,0xD6,0xC6,0xC6,0xC6],
+      'N': [0xC6,0xE6,0xF6,0xDE,0xCE,0xC6,0xC6], 'O': [0x78,0xCC,0xCC,0xCC,0xCC,0xCC,0x78],
+      'P': [0xF8,0xCC,0xCC,0xF8,0xC0,0xC0,0xC0], 'R': [0xF8,0xCC,0xCC,0xF8,0xD8,0xCC,0xCC],
+      'S': [0x78,0xCC,0xC0,0x78,0x0C,0xCC,0x78], 'T': [0xFC,0x30,0x30,0x30,0x30,0x30,0x30],
+      'U': [0xCC,0xCC,0xCC,0xCC,0xCC,0xCC,0x78], 'V': [0xCC,0xCC,0xCC,0xCC,0xCC,0x78,0x30],
+      'W': [0xC6,0xC6,0xC6,0xD6,0xFE,0xEE,0xC6], 'X': [0xCC,0xCC,0x78,0x30,0x78,0xCC,0xCC],
+      'Y': [0xCC,0xCC,0x78,0x30,0x30,0x30,0x30], 'Z': [0xFC,0x0C,0x18,0x30,0x60,0xC0,0xFC],
+      ' ': [0x00,0x00,0x00,0x00,0x00,0x00,0x00],
+      'a': [0x00,0x00,0x78,0x0C,0x7C,0xCC,0x76], 'e': [0x00,0x00,0x78,0xCC,0xFC,0xC0,0x78],
+      'g': [0x00,0x00,0x76,0xCC,0x7C,0x0C,0x78], 'r': [0x00,0x00,0xD8,0xEC,0xC0,0xC0,0xC0],
+      's': [0x00,0x00,0x78,0xC0,0x78,0x0C,0xF8], 't': [0x30,0x30,0xFC,0x30,0x30,0x30,0x1C]
+    };
+
+    function textToSeeds(text, gridW, gridH) {
+      var seeds = [];
+      var chars = text.toUpperCase().split('');
+      var totalWidth = chars.length * 8 - 2;
+      var startX = Math.floor((gridW - totalWidth) / 2);
+      var startY = Math.floor((gridH - 7) / 2);
+      for (var ci = 0; ci < chars.length; ci++) {
+        var ch = chars[ci];
+        var glyph = PIXEL_FONT[ch] || PIXEL_FONT[ch.toLowerCase()] || PIXEL_FONT[' '];
+        if (!glyph) continue;
+        for (var row = 0; row < 7; row++) {
+          for (var bit = 7; bit >= 0; bit--) {
+            if (glyph[row] & (1 << bit)) {
+              var px = startX + ci * 8 + (7 - bit);
+              var py = startY + row;
+              if (px >= 0 && px < gridW && py >= 0 && py < gridH) {
+                seeds.push({ nx: px / gridW, ny: py / gridH, nr: 3 / gridW });
+              }
+            }
+          }
+        }
+      }
+      return seeds;
+    }
+
+    function getSpecialCoralsForPlayer(player) {
+      if (!player || player.name !== CORAL_DADDY_NAME) return [];
+      var specials = [];
+      for (var i = 0; i < SPECIAL_CORALS.length; i++) {
+        var sc = SPECIAL_CORALS[i];
+        var tradedTo = null;
+        // Check if this special coral has been traded (stored in Firebase under player's specialTrades)
+        if (player.specialTrades && player.specialTrades[sc.id]) {
+          tradedTo = player.specialTrades[sc.id];
+        }
+        specials.push({
+          id: sc.id,
+          seedText: sc.seedText,
+          value: sc.value,
+          presetIdx: sc.presetIdx,
+          colorIdx: sc.colorIdx,
+          type: sc.type,
+          tradedTo: tradedTo,
+          coralName: tradedTo ? ('🏆 ' + tradedTo.name) : ('Legendary #' + (i + 1)),
+          feedsAtSave: sc.value,
+          stageName: sc.type === 'easter' ? '???' : 'LEGENDARY',
+          seeds: textToSeeds(sc.seedText, 256, 256),
+          isSpecial: true,
+          timestamp: 0
+        });
+      }
+      return specials;
+    }
+
     // ---- Engagement popup ----
     var ENGAGE_AT = [200, 500, 1000];
     var engageShown = JSON.parse(localStorage.getItem('charm_engage_shown') || '[]');
@@ -1748,6 +1921,9 @@
       }
       closeEngage();
       if (action === 'invest') {
+        // Auto-reveal investment details so user doesn't just see a hidden button
+        document.getElementById('backPrompt').style.display = 'none';
+        document.getElementById('backReveal').style.display = 'block';
         document.getElementById('back-charm').scrollIntoView({behavior:'smooth'});
       } else if (action === 'donate') {
         document.getElementById('feed-section').scrollIntoView({behavior:'smooth'});
@@ -2184,11 +2360,21 @@
         if (backerEl) backerEl.textContent = playerCount.toLocaleString();
         window._backerCount = playerCount;
       });
+      // Read treasury value
+      db.ref('events/' + eventId + '/meta/treasury').once('value', function(snap) {
+        window._treasuryPool = snap.val() || 0;
+      });
     })();
     // These write functions are no-ops — counters are computed from player data
     function addToBcrlMined(amount) { }
     function flushBcrlMined() { }
-    function addToTreasuryPool(amount) { }
+    function addToTreasuryPool(amount) {
+      if (!amount || amount <= 0) return;
+      db.ref('events/' + eventId + '/meta/treasury').transaction(function(current) {
+        return (current || 0) + amount;
+      });
+      window._treasuryPool = (window._treasuryPool || 0) + amount;
+    }
     function incrementDigitalCorals() { }
 
     // ---- Info Popups ----
@@ -2341,7 +2527,20 @@
       }
       if (!player) return;
 
-      if (!player.corals || Object.keys(player.corals).length === 0) {
+      // Get special corals if this is CoralDaddy
+      var specials = getSpecialCoralsForPlayer(player);
+
+      // Get regular corals
+      var corals = [];
+      if (player.corals) {
+        var keys = Object.keys(player.corals);
+        for (var i = 0; i < keys.length; i++) corals.push(player.corals[keys[i]]);
+        corals.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+      }
+
+      var allCorals = specials.concat(corals);
+
+      if (allCorals.length === 0) {
         var html = '<h4 style="color:var(--green);">' + esc(player.name) + '</h4>' +
           '<p style="color:var(--muted);font-size:11px;">' + player.feeds + ' feeds · no corals saved yet</p>' +
           '<p style="margin-top:12px;color:var(--muted);font-size:12px;">This player hasn\'t saved any corals yet. Corals are auto-saved at each stage evolution.</p>';
@@ -2350,32 +2549,125 @@
         return;
       }
 
-      var corals = [];
-      var keys = Object.keys(player.corals);
-      for (var i = 0; i < keys.length; i++) corals.push(player.corals[keys[i]]);
-      corals.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
-
       var html = '<h4 style="color:var(--green);">' + esc(player.name) + '\'s corals</h4>' +
-        '<p style="color:var(--muted);font-size:11px;">' + corals.length + ' coral' + (corals.length !== 1 ? 's' : '') + ' · ' + player.feeds + ' feeds</p>' +
+        '<p style="color:var(--muted);font-size:11px;">' + allCorals.length + ' coral' + (allCorals.length !== 1 ? 's' : '') + ' · ' + player.feeds.toLocaleString() + ' feeds</p>' +
         '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">';
-      for (var i = 0; i < corals.length; i++) {
-        var c = corals[i];
+      for (var i = 0; i < allCorals.length; i++) {
+        var c = allCorals[i];
         var thumbStyle = '';
-        if (c.thumb) {
+        var borderStyle = '';
+        if (c.isSpecial) {
+          if (c.type === 'legendary') {
+            borderStyle = 'border:2px solid var(--coral);';
+          } else {
+            borderStyle = 'border:1px solid #333;';
+          }
+          thumbStyle = 'background:linear-gradient(135deg,#0a0a0a,#1a1a1a);';
+        } else if (c.thumb) {
           thumbStyle = 'background-image:url(' + c.thumb + ');background-size:cover;image-rendering:pixelated;';
         } else {
           thumbStyle = 'background:linear-gradient(135deg,#1a1a1a,#222);';
         }
-        html += '<div style="aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;' + thumbStyle + '">' +
-          '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 5px;font-size:8px;line-height:1.3;">' +
-          '<div style="color:var(--green);">' + esc(c.coralName || c.stageName || '?') + '</div>' +
-          '<div style="color:var(--muted);">' + (c.feedsAtSave || 0) + ' feeds</div>' +
+
+        var nameColor = c.isSpecial && c.type === 'legendary' ? 'var(--coral)' : 'var(--green)';
+        var valueLabel = '';
+        if (c.isSpecial) {
+          if (c.type === 'easter') {
+            valueLabel = '<div style="color:#444;">???</div>';
+          } else if (c.tradedTo) {
+            valueLabel = '<div style="color:var(--coral);">traded</div>';
+          } else {
+            valueLabel = '<div style="color:var(--coral);">' + (c.value || 0).toLocaleString() + ' feeds</div>';
+          }
+        } else {
+          valueLabel = '<div style="color:var(--muted);">' + (c.feedsAtSave || 0) + ' feeds</div>';
+        }
+
+        var seedLabel = c.isSpecial ? '<div style="color:#555;font-size:7px;margin-top:1px;">seed: ' + esc(c.seedText) + '</div>' : '';
+
+        html += '<div style="aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;' + thumbStyle + borderStyle + '">';
+        if (c.isSpecial && !c.tradedTo && c.type === 'legendary') {
+          html += '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:28px;font-weight:900;color:var(--coral);opacity:0.3;font-family:var(--mono);">' + esc(c.seedText) + '</div>';
+        } else if (c.isSpecial && c.type === 'easter') {
+          html += '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;opacity:0.15;">?</div>';
+        }
+        html += '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.8);padding:3px 5px;font-size:8px;line-height:1.3;">' +
+          '<div style="color:' + nameColor + ';">' + esc(c.coralName || c.stageName || '?') + '</div>' +
+          valueLabel + seedLabel +
           '</div></div>';
       }
       html += '</div>';
 
+      // Trade section for special corals (only show for CoralDaddy's legendaries, not easter eggs)
+      if (specials.length > 0 && player.name === CORAL_DADDY_NAME && player.id !== playerId) {
+        var availableLegendaries = specials.filter(function(s) { return s.type === 'legendary' && !s.tradedTo; });
+        if (availableLegendaries.length > 0) {
+          // Find the viewer's best coral
+          var bestFeedsAtSave = 0;
+          for (var i = 0; i < myCorals.length; i++) {
+            if ((myCorals[i].feedsAtSave || 0) > bestFeedsAtSave) bestFeedsAtSave = myCorals[i].feedsAtSave;
+          }
+          var minRequired = 1000000;
+          html += '<div style="margin-top:16px;border-top:1px solid #1a1a1a;padding-top:12px;">';
+          html += '<div style="font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--coral);margin-bottom:8px;">Legendary Coral Trade</div>';
+          if (bestFeedsAtSave >= minRequired) {
+            html += '<p style="font-size:10px;color:var(--muted);line-height:1.5;">You have a coral worth ' + bestFeedsAtSave.toLocaleString() + ' feeds — you qualify to trade for a legendary coral!</p>';
+            html += '<select id="legendTradeSelect" style="width:100%;padding:6px;background:#111;border:1px solid #333;color:var(--green);font-family:var(--mono);font-size:10px;margin:6px 0;">';
+            for (var i = 0; i < availableLegendaries.length; i++) {
+              html += '<option value="' + availableLegendaries[i].id + '">Legendary #' + (SPECIAL_CORALS.indexOf(SPECIAL_CORALS.filter(function(s){return s.id===availableLegendaries[i].id;})[0]) + 1) + ' (seed: ' + esc(availableLegendaries[i].seedText) + ')</option>';
+            }
+            html += '</select>';
+            html += '<button onclick="requestLegendaryTrade()" style="width:100%;padding:8px;background:none;border:1px solid var(--coral);color:var(--coral);font-family:var(--mono);font-size:11px;cursor:pointer;margin-top:4px;">> request trade</button>';
+          } else {
+            html += '<p style="font-size:10px;color:var(--muted);line-height:1.5;">To trade for a legendary coral, you need a coral with <strong style="color:var(--coral);">&ge; 1,000,000 feeds</strong>.</p>';
+            html += '<p style="font-size:10px;color:#444;margin-top:4px;">Your best coral: ' + (bestFeedsAtSave > 0 ? bestFeedsAtSave.toLocaleString() + ' feeds' : 'none yet') + '</p>';
+          }
+          html += '</div>';
+        }
+      }
+
       document.getElementById('infoPopupContent').innerHTML = html;
       document.getElementById('infoPopupOverlay').classList.add('show');
+    }
+
+    function requestLegendaryTrade() {
+      var select = document.getElementById('legendTradeSelect');
+      if (!select) return;
+      var legendId = select.value;
+      var legend = null;
+      for (var i = 0; i < SPECIAL_CORALS.length; i++) {
+        if (SPECIAL_CORALS[i].id === legendId) { legend = SPECIAL_CORALS[i]; break; }
+      }
+      if (!legend) return;
+
+      // Find user's best coral for the trade offer
+      var bestCoral = null;
+      for (var i = 0; i < myCorals.length; i++) {
+        if (!bestCoral || (myCorals[i].feedsAtSave || 0) > (bestCoral.feedsAtSave || 0)) {
+          bestCoral = myCorals[i];
+        }
+      }
+      if (!bestCoral || (bestCoral.feedsAtSave || 0) < 1000000) {
+        showAchievement('> you need a coral worth 1M+ feeds to trade');
+        return;
+      }
+
+      var subject = encodeURIComponent('CHARM Legendary Coral Trade Request — ' + legend.id);
+      var body = encodeURIComponent(
+        'Legendary Coral Trade Request\n\n' +
+        'Player: ' + playerName + '\n' +
+        'Player ID: ' + playerId + '\n' +
+        'Player Feeds: ' + myFeeds.toLocaleString() + '\n\n' +
+        'Requesting: ' + legend.id + ' (seed: "' + legend.seedText + '")\n' +
+        'Value: ' + legend.value.toLocaleString() + ' feeds\n\n' +
+        'Offering Coral: ' + (bestCoral.coralName || bestCoral.stageName || 'unnamed') + '\n' +
+        'Offering Coral Feeds: ' + (bestCoral.feedsAtSave || 0).toLocaleString() + '\n' +
+        'Offering Coral ID: ' + (bestCoral.id || 'unknown') + '\n\n' +
+        'This trade request was generated from charm.bot'
+      );
+      window.open('mailto:stephen.rodan@beyondcoral.com?subject=' + subject + '&body=' + body, '_self');
+      showAchievement('> trade request sent! check your email');
+      closeInfoPopup();
     }
 
     function renderGlobalStats() {
@@ -2590,9 +2882,19 @@
 
           var newStage = getStage(myFeeds);
           if (oldStage.name !== newStage.name) {
+            // Snapshot the COMPLETED coral before resetting (same as manual feed)
+            var completedCoral = {
+              thumb: captureCoralThumb(),
+              presetIdx: rdPresetIdx,
+              colorIdx: RD.colorIdx,
+              seeds: RD.lastSeeds.slice(),
+              stageName: oldStage.name,
+              coralName: generateCoralName(),
+              feedsAtSave: myFeeds - 1
+            };
             RD.newLevel(myFeeds);
-            showAchievement('> ' + newStage.name.toLowerCase() + ' // ' + RD_PRESETS[rdPresetIdx].name);
-            autoSaveCoral();
+            showAchievement('> ' + completedCoral.coralName + ' saved! // ' + newStage.name.toLowerCase() + ' unlocked');
+            autoSaveCoral(completedCoral);
           }
         }
 
@@ -2868,9 +3170,12 @@
       setTimeout(function() {
         if (document.getElementById('coralViewer').classList.contains('show')) {
           closeCoralViewer();
-          var farm = document.getElementById('coralFarm');
-          if (farm) farm.scrollIntoView({behavior: 'smooth', block: 'center'});
-          showAchievement('> first coral saved to your farm! 🪸');
+          // Small delay to let overlay fully close before scrolling
+          setTimeout(function() {
+            var farm = document.getElementById('coralFarm');
+            if (farm) farm.scrollIntoView({behavior: 'smooth', block: 'start'});
+            showAchievement('> first coral saved to your coral farm! 🪸');
+          }, 300);
         }
       }, 6000);
     }
