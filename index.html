@@ -1219,8 +1219,12 @@
         <a href="https://reefbites.com/2021/02/06/science-saturday-beyond-coral-foundation/amp/" target="_blank" style="color:#555;">ReefBites</a>
       </div>
 
-      <div id="backPrompt" style="display:none;"></div>
-      <div id="backReveal">
+      <div id="backPrompt">
+        <button class="feed-btn" onclick="document.getElementById('backPrompt').style.display='none';document.getElementById('backReveal').style.display='block';" style="border-color:var(--green);color:var(--green);margin-bottom:12px;">
+          > show investment details
+        </button>
+      </div>
+      <div id="backReveal" style="display:none;">
         <div style="text-align:center;padding:12px 0;">
           <div style="color:var(--green);font-size:13px;font-weight:700;">want to be a reef builder?</div>
           <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;">reach out directly — <a href="mailto:stephen.rodan@beyondcoral.com?subject=CHARM%20Investment%20Inquiry" style="color:var(--green);font-weight:700;">stephen.rodan@beyondcoral.com</a></div>
