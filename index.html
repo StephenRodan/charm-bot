@@ -221,6 +221,33 @@
       color: var(--bg);
     }
 
+    /* Pulsing feed button hint — disappears after first click */
+    .feed-hint {
+      text-align: center;
+      margin-bottom: 6px;
+      animation: hintPulse 1.2s ease-in-out infinite;
+      font-size: 28px;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes hintPulse {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+    .feed-btn-wrap { position: relative; }
+    .feed-btn-wrap .feed-btn {
+      animation: btnGlow 1.5s ease-in-out infinite;
+    }
+    .feed-btn-wrap.clicked .feed-btn { animation: none; }
+    .feed-btn-wrap.clicked .feed-hint { display: none; }
+    @keyframes btnGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(255,107,53,0.3); }
+      50% { box-shadow: 0 0 24px rgba(255,107,53,0.7), 0 0 48px rgba(255,107,53,0.3); }
+    }
+
+    /* Canvas touch-to-seed cursor */
+    #coralCanvas { cursor: crosshair; touch-action: none; }
+
     /* Stats */
     .stats {
       display: flex;
@@ -958,7 +985,7 @@
             <span style="color:var(--teal);">→</span> <strong style="color:var(--white);">Donate</strong> — support Beyond Coral Foundation
           </div>
           <div class="arcade-label">> enter gamer tag:</div>
-          <input type="text" class="arcade-input" id="nameInput" placeholder="CoralDaddy" maxlength="20" autofocus autocomplete="off" spellcheck="false">
+          <input type="text" class="arcade-input" id="nameInput" placeholder="ReefBuilder99" maxlength="20" autofocus autocomplete="off" spellcheck="false">
           <button class="arcade-start" onclick="startGame()">start</button>
 
           <div class="consent-wrap">
@@ -989,9 +1016,12 @@
           <span class="mult-text" id="multText"></span>
         </div>
 
-        <button class="feed-btn" id="feedBtn" onclick="feed()">
-          > Feed Your Brain Coral
-        </button>
+        <div class="feed-btn-wrap" id="feedBtnWrap">
+          <div class="feed-hint" id="feedHint">👇</div>
+          <button class="feed-btn" id="feedBtn" onclick="feed()">
+            > Feed Your Brain Coral
+          </button>
+        </div>
 
         <!-- Multiplier shop -->
         <div class="mult-shop" id="multShop">
@@ -1151,7 +1181,7 @@
           <div class="traction-sub" style="color:#333;">tap to learn more</div>
         </div>
         <div class="traction-box" onclick="showInfoPopup('real')">
-          <div class="traction-val" style="color:var(--teal);">🪸</div>
+          <div class="traction-val" style="color:var(--teal);">2,500+</div>
           <div class="traction-label">Real Corals Restored</div>
           <div class="traction-sub" style="color:var(--teal);">via Beyond Coral Foundation</div>
         </div>
@@ -1304,6 +1334,38 @@
     </div>
   </div>
 
+  <!-- ==================== REAL CORAL GALLERY ==================== -->
+  <div style="max-width:900px;margin:0 auto;padding:24px 4px 0;">
+    <div style="text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--teal);margin-bottom:12px;">// real corals grown by patrons</div>
+    <div style="display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px;" id="coralGallery">
+      <img src="coral-img/coral-beauty.jpg" alt="Coral beauty" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/coral-charms-collage.jpg" alt="Coral charms collage" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/coral-plugs.jpg" alt="Coral plugs" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231207_13_49_36_Pro.jpg" alt="Coral nursery" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231031_10_02_13_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231121_10_34_04_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231121_10_34_29_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231122_17_56_17_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231125_13_05_42_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231130_20_21_45_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_12_47_59_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_16_54_02_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_16_54_20_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_16_54_35_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_16_55_11_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_17_03_32_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231201_17_04_08_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231215_14_14_20_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20231215_14_14_51_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20240218_16_27_42_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20240531_16_41_34_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20240531_16_41_58_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20240531_16_42_12_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+      <img src="coral-img/WIN_20240531_16_42_21_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
+    </div>
+    <div style="text-align:center;font-size:9px;color:var(--muted);margin-top:6px;">scroll → to see more · each coral is engraved with its patron's name</div>
+  </div>
+
   <!-- ==================== SLIDES ==================== -->
   <div class="slides-header">// the pitch</div>
   <div class="slides">
@@ -1343,14 +1405,14 @@
         '      _|_\n' +
         '    ~~   ~~'
       },
-      { name: 'POLYP', threshold: 10, art:
+      { name: 'POLYP', threshold: 16, art:
         '              .\n' +
         '       o     o\n' +
         '      /|\\\n' +
         '     / | \\\n' +
         '    ~~~|~~~'
       },
-      { name: 'BRANCH', threshold: 30, art:
+      { name: 'BRANCH', threshold: 46, art:
         '                ><>\n' +
         '     \\o/\n' +
         '    \\ | /\n' +
@@ -1358,7 +1420,7 @@
         '      |\n' +
         '    ~~|||~~'
       },
-      { name: 'COLONY', threshold: 75, art:
+      { name: 'COLONY', threshold: 100, art:
         '  <><           ><>\n' +
         '    \\\\|o|//\n' +
         '   --\\|/|/--\n' +
@@ -1367,7 +1429,7 @@
         '    ~~||||~~\n' +
         '   ~~~~~~~~  V(..)V'
       },
-      { name: 'REEF', threshold: 150, art:
+      { name: 'REEF', threshold: 200, art:
         '           ><>    <><\n' +
         '  ** \\\\|o|// **\n' +
         '  *--\\\\|/|//--*  ><>\n' +
@@ -1377,7 +1439,7 @@
         '  ~~~~~~~~~~~~ V(..)V\n' +
         '  ~ ~ ~ ~ ~ ~ ~'
       },
-      { name: 'ECOSYSTEM', threshold: 300, art:
+      { name: 'ECOSYSTEM', threshold: 400, art:
         '  ><>  <><  ><>   <><\n' +
         ' .o*  \\\\\\|o|///  *o.\n' +
         '  **--\\\\\\|/|///--** ><>\n' +
@@ -1388,7 +1450,7 @@
         '  ~ V(..)V ~ ~ ~ ~ ~  >,,>\n' +
         '    REEF RESTORED'
       },
-      { name: 'DEEP REEF', threshold: 500, art:
+      { name: 'DEEP REEF', threshold: 800, art:
         '  ><> <><  ><>  <>< ><>\n' +
         '  o   .o*\\\\\\|o|///*o.   o\n' +
         '  *--**--\\\\\\|/|///--**--*\n' +
@@ -1400,7 +1462,7 @@
         '    _.--._            >=>\n' +
         '   V(..)V    DEEP REEF'
       },
-      { name: 'OCEAN', threshold: 1000, art:
+      { name: 'OCEAN', threshold: 1500, art:
         ' ><> <>< ><>  <>< ><> <><\n' +
         '    <>< ><>  <><  ><>\n' +
         ' <>< o  .o*\\\\\\|o|///*o.  o ><>\n' +
@@ -1414,7 +1476,7 @@
         '~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
         '        THE OCEAN'
       },
-      { name: 'BLUE PLANET', threshold: 2000, art:
+      { name: 'BLUE PLANET', threshold: 2800, art:
         '       ~  ^  ~    ^  ~\n' +
         ' ><> <>< ><> <>< ><> <>< ><>\n' +
         '    <>< ><>  <><  ><> <><\n' +
@@ -1430,7 +1492,7 @@
         '~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n' +
         '       BLUE PLANET'
       },
-      { name: 'GENESIS', threshold: 5000, art:
+      { name: 'GENESIS', threshold: 5500, art:
         '     *  .  *  . *  .  *  . *\n' +
         '   ~  ^  ~  ^  ~  ^  ~  ^  ~\n' +
         ' ><> <>< ><> <>< ><> <>< ><>\n' +
@@ -1558,22 +1620,20 @@
 
     var ACHIEVEMENTS = [
       { at: 1, msg: '> first feed!' },
-      { at: 10, msg: '> polyp unlocked' },
-      { at: 30, msg: '> branch unlocked' },
-      { at: 50, msg: '> halfway to colony' },
-      { at: 75, msg: '> colony unlocked' },
+      { at: 10, msg: '> keep going...' },
+      { at: 25, msg: '> quarter century' },
+      { at: 50, msg: '> fifty feeds strong' },
       { at: 100, msg: '> centurion' },
-      { at: 150, msg: '> reef unlocked' },
-      { at: 200, msg: '> reef guardian' },
-      { at: 300, msg: '> ecosystem unlocked' },
-      { at: 500, msg: '> deep reef unlocked' },
-      { at: 750, msg: '> unstoppable' },
-      { at: 1000, msg: '> ocean unlocked' },
-      { at: 1500, msg: '> relentless' },
-      { at: 2000, msg: '> blue planet unlocked' },
-      { at: 3000, msg: '> force of nature' },
-      { at: 5000, msg: '> genesis unlocked' },
-      { at: 7500, msg: '> mythical' },
+      { at: 150, msg: '> halfway to reef' },
+      { at: 250, msg: '> unstoppable' },
+      { at: 500, msg: '> reef guardian' },
+      { at: 750, msg: '> relentless' },
+      { at: 1000, msg: '> one thousand feeds' },
+      { at: 1250, msg: '> force of nature' },
+      { at: 2000, msg: '> deep diver' },
+      { at: 3500, msg: '> mythical' },
+      { at: 5000, msg: '> legendary' },
+      { at: 7500, msg: '> transcendent' },
       { at: 10000, msg: '> IMMORTAL' },
       { at: 15000, msg: '> ETERNAL' },
       { at: 20000, msg: '> INFINITE' },
@@ -1621,7 +1681,7 @@
     }
 
     // ---- Cycling placeholder gamer tags ----
-    var PLACEHOLDER_TAGS = ['CoralDaddy', 'ReefBuilder99', 'OceanLord', 'TidalWave', 'PolyPrincess', 'CoralCrusader', 'SeaTurtle42', 'ReefWhisperer'];
+    var PLACEHOLDER_TAGS = ['ReefBuilder99', 'OceanLord', 'TidalWave', 'PolyPrincess', 'CoralCrusader', 'SeaTurtle42', 'ReefWhisperer', 'NemoFan', 'CoralQueen', 'AquaNaut'];
     var placeholderIdx = 0;
     var placeholderInterval = setInterval(function() {
       var inp = document.getElementById('nameInput');
@@ -1648,7 +1708,7 @@
     var colonyDisplayName = '';
 
     // ---- Engagement popup ----
-    var ENGAGE_AT = [50, 200, 500];
+    var ENGAGE_AT = [200, 500, 1000];
     var engageShown = JSON.parse(localStorage.getItem('charm_engage_shown') || '[]');
 
     function maybeShowEngage(feeds) {
@@ -1704,9 +1764,7 @@
       { name: 'worms join into maze',  f: 0.046, k: 0.063, fill: 2800 },
       { name: 'turing patterns',       f: 0.042, k: 0.063, fill: 3000 },
       { name: 'chaos to negatons',     f: 0.039, k: 0.058, fill: 3200 },
-      { name: 'fingerprints',          f: 0.037, k: 0.06,  fill: 3500 },
-      { name: 'spots and worms',       f: 0.014, k: 0.054, fill: 3500 },
-      { name: 'mazes',                 f: 0.029, k: 0.057, fill: 3000 }
+      { name: 'fingerprints',          f: 0.037, k: 0.06,  fill: 3500 }
     ];
     var rdPresetIdx = 0;
     var RD_COLORS = [
@@ -1893,6 +1951,7 @@
       document.getElementById('login').classList.add('hidden');
       document.getElementById('gameArea').classList.remove('hidden');
       RD.init(myFeeds);
+      setupCanvasDrawing();
       updateColonyUI();
       renderLocal();
       setTimeout(function() {
@@ -1915,6 +1974,10 @@
 
     function feed() {
       var now = Date.now();
+
+      // Dismiss hint on first click
+      var wrap = document.getElementById('feedBtnWrap');
+      if (wrap && !wrap.classList.contains('clicked')) wrap.classList.add('clicked');
 
       // Anti-bot: cooldown active
       if (botCooldown) return;
@@ -1992,6 +2055,66 @@
       renderLocal();
     }
 
+    // ---- Canvas Touch-to-Draw Seeds ----
+    function setupCanvasDrawing() {
+      var cvs = document.getElementById('coralCanvas');
+      if (!cvs) return;
+      var drawing = false;
+      var lastX = -1, lastY = -1;
+
+      function canvasToGrid(e) {
+        var rect = cvs.getBoundingClientRect();
+        var clientX, clientY;
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        var nx = (clientX - rect.left) / rect.width;
+        var ny = (clientY - rect.top) / rect.height;
+        return { x: Math.floor(nx * RD.W), y: Math.floor(ny * RD.H) };
+      }
+
+      function placeSeed(gx, gy) {
+        var r = 6 + Math.floor(Math.random() * 4);
+        if (gx >= 0 && gx < RD.W && gy >= 0 && gy < RD.H) {
+          RD.seed(gx, gy, r);
+          RD.lastSeeds.push({ nx: gx / RD.W, ny: gy / RD.H, nr: r / RD.W });
+          RD.render();
+        }
+      }
+
+      function drawLine(x0, y0, x1, y1) {
+        var dx = x1 - x0, dy = y1 - y0;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var steps = Math.max(1, Math.floor(dist / 8));
+        for (var i = 0; i <= steps; i++) {
+          var t = i / steps;
+          placeSeed(Math.floor(x0 + dx * t), Math.floor(y0 + dy * t));
+        }
+      }
+
+      cvs.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
+        drawing = true;
+        var g = canvasToGrid(e);
+        placeSeed(g.x, g.y);
+        lastX = g.x; lastY = g.y;
+      });
+      cvs.addEventListener('pointermove', function(e) {
+        if (!drawing) return;
+        e.preventDefault();
+        var g = canvasToGrid(e);
+        if (lastX >= 0) drawLine(lastX, lastY, g.x, g.y);
+        lastX = g.x; lastY = g.y;
+      });
+      cvs.addEventListener('pointerup', function() { drawing = false; lastX = -1; });
+      cvs.addEventListener('pointerleave', function() { drawing = false; lastX = -1; });
+      cvs.addEventListener('pointercancel', function() { drawing = false; lastX = -1; });
+    }
+
     function writePlayer() {
       db.ref('events/' + eventId + '/players/' + playerId).transaction(function(current) {
         if (current === null) {
@@ -2039,12 +2162,35 @@
 
     }
 
-    // Traction counters are computed from allPlayers in renderGlobalStats()
-    // These write functions are best-effort for analytics only
-    function addToBcrlMined(amount) { /* computed from player feeds */ }
-    function flushBcrlMined() { /* no-op */ }
-    function addToTreasuryPool(amount) { /* no-op */ }
-    function incrementDigitalCorals() { /* no-op */ }
+    // Traction counters — pre-login listener so numbers show before anyone logs in
+    (function() {
+      db.ref('events/' + eventId + '/players').once('value', function(snap) {
+        var global = 0, totalCorals = 0, playerCount = 0;
+        snap.forEach(function(child) {
+          var p = child.val();
+          playerCount++;
+          global += (p.feeds || 0);
+          if (p.corals) totalCorals += Object.keys(p.corals).length;
+        });
+        // Also count local corals not yet in Firebase
+        var localCorals = JSON.parse(localStorage.getItem('charm_corals') || '[]');
+        totalCorals = Math.max(totalCorals, localCorals.length);
+        var bcrlEl = document.getElementById('bcrlMinedVal');
+        if (bcrlEl) bcrlEl.textContent = global.toLocaleString();
+        window._bcrlMined = global;
+        var digiEl = document.getElementById('digitalCoralsVal');
+        if (digiEl) digiEl.textContent = totalCorals.toLocaleString();
+        window._digitalCorals = totalCorals;
+        var backerEl = document.getElementById('backerCount');
+        if (backerEl) backerEl.textContent = playerCount.toLocaleString();
+        window._backerCount = playerCount;
+      });
+    })();
+    // These write functions are no-ops — counters are computed from player data
+    function addToBcrlMined(amount) { }
+    function flushBcrlMined() { }
+    function addToTreasuryPool(amount) { }
+    function incrementDigitalCorals() { }
 
     // ---- Info Popups ----
     function showInfoPopup(type) {
@@ -2176,9 +2322,11 @@
       var show = Math.min(list.length, 10);
       for (var i = 0; i < show; i++) {
         var isYou = list[i].id === playerId;
+        var hasCorals = list[i].corals && Object.keys(list[i].corals).length > 0;
+        var nameClick = hasCorals ? ' onclick="viewPlayerCorals(\'' + esc(list[i].id) + '\')" style="cursor:pointer;text-decoration:underline;text-decoration-color:#333;"' : '';
         html += '<div class="lb-row' + (isYou ? ' you' : '') + '">' +
           '<span class="rank">' + (i + 1) + '</span>' +
-          '<span class="name">' + esc(list[i].name) + (isYou ? ' (you)' : '') + '</span>' +
+          '<span class="name"' + nameClick + '>' + esc(list[i].name) + (isYou ? ' (you)' : '') + (hasCorals ? ' 🪸' : '') + '</span>' +
           '<span class="score">' + list[i].feeds + '</span>' +
           '</div>';
       }
@@ -2186,6 +2334,41 @@
         html = '<div style="font-size:10px;color:var(--muted);padding:8px 0;">no players yet</div>';
       }
       document.getElementById('lbList').innerHTML = html;
+    }
+
+    function viewPlayerCorals(pid) {
+      var player = null;
+      for (var i = 0; i < allPlayers.length; i++) {
+        if (allPlayers[i].id === pid) { player = allPlayers[i]; break; }
+      }
+      if (!player || !player.corals) return;
+
+      var corals = [];
+      var keys = Object.keys(player.corals);
+      for (var i = 0; i < keys.length; i++) corals.push(player.corals[keys[i]]);
+      corals.sort(function(a, b) { return (b.timestamp || 0) - (a.timestamp || 0); });
+
+      var html = '<h4 style="color:var(--green);">' + esc(player.name) + '\'s corals</h4>' +
+        '<p style="color:var(--muted);font-size:11px;">' + corals.length + ' coral' + (corals.length !== 1 ? 's' : '') + ' · ' + player.feeds + ' feeds</p>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">';
+      for (var i = 0; i < corals.length; i++) {
+        var c = corals[i];
+        var thumbStyle = '';
+        if (c.thumb) {
+          thumbStyle = 'background-image:url(' + c.thumb + ');background-size:cover;image-rendering:pixelated;';
+        } else {
+          thumbStyle = 'background:linear-gradient(135deg,#1a1a1a,#222);';
+        }
+        html += '<div style="aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;' + thumbStyle + '">' +
+          '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.7);padding:3px 5px;font-size:8px;line-height:1.3;">' +
+          '<div style="color:var(--green);">' + esc(c.coralName || c.stageName || '?') + '</div>' +
+          '<div style="color:var(--muted);">' + (c.feedsAtSave || 0) + ' feeds</div>' +
+          '</div></div>';
+      }
+      html += '</div>';
+
+      document.getElementById('infoPopupContent').innerHTML = html;
+      document.getElementById('infoPopupOverlay').classList.add('show');
     }
 
     function renderGlobalStats() {
@@ -2198,6 +2381,9 @@
           totalCorals += Object.keys(allPlayers[i].corals).length;
         }
       }
+      // Ensure local corals are counted even if Firebase hasn't synced yet
+      var localCorals = JSON.parse(localStorage.getItem('charm_corals') || '[]');
+      totalCorals = Math.max(totalCorals, localCorals.length);
       document.getElementById('globalFeeds').textContent = global;
 
       // Update traction counters from real player data
@@ -2671,11 +2857,12 @@
       ViewerRD.init(coral.presetIdx || 0, coral.colorIdx || 0, Math.max(coral.feedsAtSave, 80), coral.seeds || null);
       ViewerRD.play();
 
-      // Auto-close after 6 seconds, scroll to top
+      // Auto-close after 6 seconds, scroll to farm so they see the saved coral
       setTimeout(function() {
         if (document.getElementById('coralViewer').classList.contains('show')) {
           closeCoralViewer();
-          window.scrollTo({top: 0, behavior: 'smooth'});
+          var farm = document.getElementById('coralFarm');
+          if (farm) farm.scrollIntoView({behavior: 'smooth', block: 'center'});
           showAchievement('> first coral saved to your farm! 🪸');
         }
       }, 6000);
