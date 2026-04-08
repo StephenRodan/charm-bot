@@ -2403,7 +2403,8 @@
         snap.forEach(function(child) {
           var p = child.val();
           playerCount++;
-          global += (p.feeds || 0);
+          // Exclude CoralDaddy's hardcoded feeds from click-mined total
+          if (p.name !== 'CoralDaddy') global += (p.feeds || 0);
           if (p.corals) totalCorals += Object.keys(p.corals).length;
         });
         // Also count local corals not yet in Firebase
@@ -2733,7 +2734,8 @@
       var global = 0;
       var totalCorals = 0;
       for (var i = 0; i < allPlayers.length; i++) {
-        global += allPlayers[i].feeds;
+        // Exclude CoralDaddy's hardcoded feeds from click-mined total
+        if (allPlayers[i].name !== 'CoralDaddy') global += allPlayers[i].feeds;
         // Count corals stored under each player
         if (allPlayers[i].corals) {
           totalCorals += Object.keys(allPlayers[i].corals).length;
