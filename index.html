@@ -2129,12 +2129,11 @@
         }
         // Cap increment to prevent massive jumps (max 100 feeds per write)
         var maxAllowed = (current.feeds || 0) + 100;
-        return {
-          name: playerName,
-          feeds: Math.min(myFeeds, maxAllowed),
-          colony: myColony || null,
-          lastWrite: firebase.database.ServerValue.TIMESTAMP
-        };
+        current.name = playerName;
+        current.feeds = Math.min(myFeeds, maxAllowed);
+        current.colony = myColony || null;
+        current.lastWrite = firebase.database.ServerValue.TIMESTAMP;
+        return current;
       });
     }
 
@@ -2323,10 +2322,9 @@
       for (var i = 0; i < show; i++) {
         var isYou = list[i].id === playerId;
         var hasCorals = list[i].corals && Object.keys(list[i].corals).length > 0;
-        var nameClick = hasCorals ? ' onclick="viewPlayerCorals(\'' + esc(list[i].id) + '\')" style="cursor:pointer;text-decoration:underline;text-decoration-color:#333;"' : '';
         html += '<div class="lb-row' + (isYou ? ' you' : '') + '">' +
           '<span class="rank">' + (i + 1) + '</span>' +
-          '<span class="name"' + nameClick + '>' + esc(list[i].name) + (isYou ? ' (you)' : '') + (hasCorals ? ' 🪸' : '') + '</span>' +
+          '<span class="name" onclick="viewPlayerCorals(\'' + esc(list[i].id) + '\')" style="cursor:pointer;text-decoration:underline;text-decoration-color:#333;">' + esc(list[i].name) + (isYou ? ' (you)' : '') + (hasCorals ? ' 🪸' : '') + '</span>' +
           '<span class="score">' + list[i].feeds + '</span>' +
           '</div>';
       }
@@ -2341,7 +2339,16 @@
       for (var i = 0; i < allPlayers.length; i++) {
         if (allPlayers[i].id === pid) { player = allPlayers[i]; break; }
       }
-      if (!player || !player.corals) return;
+      if (!player) return;
+
+      if (!player.corals || Object.keys(player.corals).length === 0) {
+        var html = '<h4 style="color:var(--green);">' + esc(player.name) + '</h4>' +
+          '<p style="color:var(--muted);font-size:11px;">' + player.feeds + ' feeds · no corals saved yet</p>' +
+          '<p style="margin-top:12px;color:var(--muted);font-size:12px;">This player hasn\'t saved any corals yet. Corals are auto-saved at each stage evolution.</p>';
+        document.getElementById('infoPopupContent').innerHTML = html;
+        document.getElementById('infoPopupOverlay').classList.add('show');
+        return;
+      }
 
       var corals = [];
       var keys = Object.keys(player.corals);
