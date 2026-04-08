@@ -1417,32 +1417,91 @@
   <!-- ==================== REAL CORAL GALLERY ==================== -->
   <div style="max-width:900px;margin:0 auto;padding:24px 4px 0;">
     <div style="text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--teal);margin-bottom:12px;">// real corals grown by patrons</div>
-    <div style="display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px;" id="coralGallery">
-      <img src="coral-img/coral-beauty.jpg" alt="Coral beauty" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/coral-charms-collage.jpg" alt="Coral charms collage" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/coral-plugs.jpg" alt="Coral plugs" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231207_13_49_36_Pro.jpg" alt="Coral nursery" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231031_10_02_13_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231121_10_34_04_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231121_10_34_29_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231122_17_56_17_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231125_13_05_42_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231130_20_21_45_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_12_47_59_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_16_54_02_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_16_54_20_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_16_54_35_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_16_55_11_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_17_03_32_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231201_17_04_08_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231215_14_14_20_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20231215_14_14_51_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20240218_16_27_42_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20240531_16_41_34_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20240531_16_41_58_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20240531_16_42_12_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-      <img src="coral-img/WIN_20240531_16_42_21_Pro.jpg" alt="Coral" loading="lazy" style="scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;">
-    </div>
+    <div style="display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px;" id="coralGallery"></div>
+    <script>
+    (function() {
+      var pinned = [
+        'coral-img/coral-beauty.jpg',
+        'coral-img/coral-charms-collage.jpg'
+      ];
+      var newBatch = [
+        'coral-img/318549916_510608274370690_8270994534909883383_n.jpg',
+        'coral-img/WIN_20221224_09_34_06_Pro.jpg',
+        'coral-img/WIN_20221224_18_28_17_Pro.jpg',
+        'coral-img/WIN_20221225_17_21_47_Pro.jpg',
+        'coral-img/WIN_20221226_17_52_46_Pro.jpg',
+        'coral-img/WIN_20230101_13_59_33_Pro.jpg',
+        'coral-img/WIN_20230101_14_00_03_Pro.jpg',
+        'coral-img/WIN_20230101_14_01_17_Pro.jpg',
+        'coral-img/WIN_20230101_14_02_06_Pro.jpg',
+        'coral-img/WIN_20230101_14_03_24_Pro.jpg',
+        'coral-img/WIN_20230101_14_03_48_Pro.jpg',
+        'coral-img/WIN_20230101_14_04_06_Pro.jpg',
+        'coral-img/WIN_20230101_14_04_54_Pro.jpg',
+        'coral-img/WIN_20230101_14_05_34_Pro.jpg',
+        'coral-img/WIN_20230101_14_06_04_Pro.jpg',
+        'coral-img/WIN_20230101_14_11_11_Pro.jpg',
+        'coral-img/WIN_20230101_14_11_37_Pro.jpg',
+        'coral-img/WIN_20230101_14_12_03_Pro.jpg',
+        'coral-img/WIN_20230101_14_12_32_Pro.jpg',
+        'coral-img/WIN_20230101_14_17_12_Pro.jpg',
+        'coral-img/WIN_20230101_14_19_44_Pro.jpg',
+        'coral-img/WIN_20230101_14_20_51_Pro.jpg',
+        'coral-img/WIN_20230101_14_21_52_Pro.jpg',
+        'coral-img/WIN_20230101_14_22_37_Pro.jpg',
+        'coral-img/WIN_20230101_14_23_32_Pro.jpg',
+        'coral-img/WIN_20230104_10_29_19_Pro.jpg',
+        'coral-img/WIN_20230104_10_45_25_Pro.jpg',
+        'coral-img/WIN_20230107_16_56_58_Pro.jpg',
+        'coral-img/WIN_20230107_17_00_55_Pro.jpg'
+      ];
+      var existing = [
+        'coral-img/coral-plugs.jpg',
+        'coral-img/WIN_20231207_13_49_36_Pro.jpg',
+        'coral-img/WIN_20231031_10_02_13_Pro.jpg',
+        'coral-img/WIN_20231121_10_34_04_Pro.jpg',
+        'coral-img/WIN_20231121_10_34_29_Pro.jpg',
+        'coral-img/WIN_20231122_17_56_17_Pro.jpg',
+        'coral-img/WIN_20231125_13_05_42_Pro.jpg',
+        'coral-img/WIN_20231130_20_21_45_Pro.jpg',
+        'coral-img/WIN_20231201_12_47_59_Pro.jpg',
+        'coral-img/WIN_20231201_16_54_02_Pro.jpg',
+        'coral-img/WIN_20231201_16_54_20_Pro.jpg',
+        'coral-img/WIN_20231201_16_54_35_Pro.jpg',
+        'coral-img/WIN_20231201_16_55_11_Pro.jpg',
+        'coral-img/WIN_20231201_17_03_32_Pro.jpg',
+        'coral-img/WIN_20231201_17_04_08_Pro.jpg',
+        'coral-img/WIN_20231215_14_14_20_Pro.jpg',
+        'coral-img/WIN_20231215_14_14_51_Pro.jpg',
+        'coral-img/WIN_20240218_16_27_42_Pro.jpg',
+        'coral-img/WIN_20240531_16_41_34_Pro.jpg',
+        'coral-img/WIN_20240531_16_41_58_Pro.jpg',
+        'coral-img/WIN_20240531_16_42_12_Pro.jpg',
+        'coral-img/WIN_20240531_16_42_21_Pro.jpg'
+      ];
+      // Shuffle: Fisher-Yates
+      function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+      }
+      // Mix new batch + existing, shuffle together
+      var rest = shuffle(newBatch.concat(existing));
+      var all = pinned.concat(rest);
+      var gallery = document.getElementById('coralGallery');
+      var imgStyle = 'scroll-snap-align:start;height:180px;border-radius:6px;flex-shrink:0;object-fit:cover;';
+      for (var i = 0; i < all.length; i++) {
+        var img = document.createElement('img');
+        img.src = all[i];
+        img.alt = 'Coral';
+        img.setAttribute('style', imgStyle);
+        if (i >= 2) img.loading = 'lazy';
+        gallery.appendChild(img);
+      }
+    })();
+    </script>
     <div style="text-align:center;font-size:9px;color:var(--muted);margin-top:6px;">scroll → to see more · each coral is engraved with its patron's name</div>
   </div>
 
